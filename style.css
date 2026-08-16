@@ -82,3 +82,144 @@ body {
     text-shadow: 1px 1px 0px var(--shadow-pink);
     letter-spacing: 2px;
 }
+
+/* --- СТРОКА ПОИСКА --- */
+.search-container {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px 40px 12px 15px;
+    border: 1px solid var(--main-pink);
+    border-radius: 20px;
+    background-color: transparent;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    color: var(--text-dark);
+    outline: none;
+}
+
+.search-input::placeholder {
+    color: #A9A9A9;
+}
+
+.search-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--main-pink);
+    font-size: 18px;
+    transform: translateY(-50%) rotate(-45deg); /* Поворачиваем символ лупы */
+}
+
+/* --- ФИЛЬТРЫ КАТЕГОРИЙ --- */
+.category-filters {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+    overflow-x: auto; /* Позволяет листать фильтры вбок, если они не влезают */
+    padding-bottom: 5px;
+}
+
+/* Прячем полосу прокрутки для красоты */
+.category-filters::-webkit-scrollbar {
+    display: none; 
+}
+
+.filter-btn {
+    padding: 6px 14px;
+    border: 1px solid var(--main-pink);
+    border-radius: 15px;
+    background: transparent;
+    color: var(--main-pink);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.active-filter {
+    background-color: var(--main-pink);
+    color: var(--bg-color);
+}
+
+/* --- СЕТКА КНИГ (3 В РЯД) --- */
+.books-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Ровно 3 колонки одинаковой ширины */
+    gap: 12px; /* Расстояние между карточками */
+    padding-bottom: 80px; /* Отступ снизу, чтобы нижнее меню не перекрывало книги */
+}
+
+/* --- КАРТОЧКА КНИГИ --- */
+.book-card {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Заглушка вместо картинки (потом заменим на тег img) */
+.cover-placeholder {
+    width: 100%;
+    aspect-ratio: 2 / 3; /* Пропорции книжной обложки */
+    background-color: #f5ecef;
+    border-radius: 6px;
+    margin-bottom: 8px;
+}
+
+.book-title {
+    font-family: 'Felidae', serif; /* Твой строгий шрифт для названия */
+    font-size: 12px;
+    color: var(--text-dark);
+    margin-bottom: 3px;
+    line-height: 1.2;
+    /* Обрезаем слишком длинные названия троеточием */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.book-author {
+    font-size: 10px;
+    color: #888;
+    margin-bottom: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* --- КНОПКИ ПОД АВТОРОМ --- */
+.card-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto; /* Прижимает кнопки к низу карточки */
+}
+
+.action-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+/* Стрелочка в кружочке */
+.arrow-btn {
+    width: 22px;
+    height: 22px;
+    border: 1px solid var(--shadow-pink);
+    border-radius: 50%;
+    color: var(--shadow-pink);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 10px;
+}
+
+/* Искорка */
+.fav-btn {
+    color: var(--shadow-pink);
+    font-size: 14px;
+    letter-spacing: -2px; /* Приближаем искорку к сердечку */
+}
