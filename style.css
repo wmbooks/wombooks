@@ -40,28 +40,21 @@ body {
     margin: 0 auto;
 }
 
-/* Шапка */
+/* Шапка с картинкой */
 .header {
+    width: 100%;
+    margin-bottom: 30px;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 50px;
-    color: var(--main-pink);
+    justify-content: center;
 }
 
-.logo-title {
-    font-family: 'Felidae', serif;
-    font-size: 14px;
-    letter-spacing: 4px;
-    font-weight: normal;
-    color: var(--main-pink);
+.top-image {
+    width: 100%; /* Картинка будет занимать всю ширину экрана */
+    height: auto;
+    object-fit: cover; /* Чтобы изображение не искажалось */
+    border-radius: 8px; /* Легкое скругление углов картинки (можешь удалить эту строчку, если нужны прямые углы) */
 }
 
-.header-icon, .heart-icon {
-    font-size: 24px;
-    cursor: pointer;
-    color: var(--shadow-pink); /* Иконки делаем цветом тени для контраста */
-}
 
 /* Главный баннер */
 .banner {
