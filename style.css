@@ -1,0 +1,91 @@
+:root {
+    --bg-color: #FFFFFF;
+    --main-pink: #FFC0E4; /* Основной цвет текста */
+    --shadow-pink: #D673AB; /* Цвет тени */
+    --text-dark: #2D2D2D;
+}
+
+/* --- ПОДКЛЮЧЕНИЕ КАСТОМНЫХ ШРИФТОВ --- */
+@font-face {
+    font-family: 'Sloop Script Pro';
+    src: url('SloopScriptPro.ttf') format('truetype'); /* Убедись, что файл называется именно так */
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Felidae';
+    src: url('Felidae.ttf') format('truetype'); /* Убедись, что файл называется именно так */
+    font-weight: normal;
+    font-style: normal;
+}
+/* ------------------------------------- */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-dark);
+    font-family: 'Montserrat', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+}
+
+#app {
+    padding: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Шапка */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 50px;
+    color: var(--main-pink);
+}
+
+.logo-title {
+    font-family: 'Felidae', serif;
+    font-size: 14px;
+    letter-spacing: 4px;
+    font-weight: normal;
+    color: var(--main-pink);
+}
+
+.header-icon, .heart-icon {
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--shadow-pink); /* Иконки делаем цветом тени для контраста */
+}
+
+/* Главный баннер */
+.banner {
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+/* Слово Wom (рукописный шрифт + тень) */
+.script-text {
+    font-family: 'Sloop Script Pro', cursive, sans-serif; /* sans-serif как подстраховка */
+    font-size: 90px;
+    color: var(--main-pink);
+    /* Создаем красивую тень по твоему цвету */
+    text-shadow: 2px 2px 0px var(--shadow-pink); 
+    line-height: 0.7;
+    margin-bottom: 0px;
+    padding-right: 15px; /* Сдвиг, чтобы завитки не обрезались */
+}
+
+/* Слово books (печатный шрифт) */
+.serif-text {
+    font-family: 'Felidae', serif;
+    font-size: 45px;
+    color: var(--main-pink);
+    text-shadow: 1px 1px 0px var(--shadow-pink);
+    letter-spacing: 2px;
+}
