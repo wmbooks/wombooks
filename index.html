@@ -14,18 +14,12 @@
 <body>
 
     <div id="app">
-        
-<!-- Шапка с картинкой -->
-<header class="header">
-    <img src="header-img.png" alt="WOMBOOKS" class="top-image">
-</header>
-
         <!-- СТРАНИЦА 1: ГЛАВНАЯ -->
         <div id="page-home" class="page active">
             
             <!-- Поисковая строка -->
             <div class="search-container">
-                <input type="text" class="search-input" placeholder="Найти книгу">
+                <input type="text" class="search-input" placeholder="Найти книгу или автора">
                 <span class="search-icon">⚲</span>
             </div>
 
@@ -33,6 +27,7 @@
             <div class="category-filters">
                 <button class="filter-btn active-filter">Все</button>
                 <button class="filter-btn">Одиночные</button>
+                <button class="filter-btn">Серии</button>
                 <button class="filter-btn">Авторы</button>
             </div>
 
@@ -47,7 +42,7 @@
                         <p class="book-author">Софи Траверс</p>
                         <div class="card-actions">
                             <button class="action-btn arrow-btn">➔</button>
-                            <button class="action-btn fav-btn">♡</button>
+                            <button class="action-btn fav-btn">♡✨</button>
                         </div>
                     </div>
                 </div>
@@ -60,7 +55,7 @@
                         <p class="book-author">Элси Сильвер</p>
                         <div class="card-actions">
                             <button class="action-btn arrow-btn">➔</button>
-                            <button class="action-btn fav-btn">♡</button>
+                            <button class="action-btn fav-btn">♡✨</button>
                         </div>
                     </div>
                 </div>
@@ -73,43 +68,25 @@
                         <p class="book-author">Крис Эндрюс</p>
                         <div class="card-actions">
                             <button class="action-btn arrow-btn">➔</button>
-                            <button class="action-btn fav-btn">♡</button>
+                            <button class="action-btn fav-btn">♡✨</button>
                         </div>
                     </div>
                 </div>
 
             </div>
-
-
-
-        <!-- СТРАНИЦА 2: КАТАЛОГ -->
-        <div id="page-catalog" class="page" style="display: none;">
-            <div class="content-block">
-                <h3>Каталог книг</h3>
-                <p>Здесь будет список всех доступных книг канала.</p>
-                <!-- Сюда мы позже добавим карточки книг -->
-            </div>
-        </div>
-
-        <!-- СТРАНИЦА 3: ИЗБРАННОЕ -->
-        <div id="page-favorites" class="page" style="display: none;">
-            <div class="content-block">
-                <h3>Моя полка</h3>
-                <p>Здесь будут книги, которые вы сохранили.</p>
-            </div>
         </div>
 
         <!-- НИЖНЕЕ МЕНЮ НАВИГАЦИИ -->
         <nav class="bottom-nav">
-            <button id="nav-home" class="nav-btn active-nav">
+            <button class="nav-btn active-nav">
                 <span class="nav-icon">⌂</span>
                 <span>Главная</span>
             </button>
-            <button id="nav-catalog" class="nav-btn">
+            <button class="nav-btn">
                 <span class="nav-icon">▦</span>
                 <span>Каталог</span>
             </button>
-            <button id="nav-favorites" class="nav-btn">
+            <button class="nav-btn">
                 <span class="nav-icon">♡</span>
                 <span>Избранное</span>
             </button>
@@ -117,7 +94,5 @@
 
     </div>
 
-    <!-- Подключаем наш файл с логикой (создадим его на следующем шаге, если еще не создала) -->
-    <script src="app.js"></script>
 </body>
 </html>
