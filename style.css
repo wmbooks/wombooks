@@ -154,48 +154,67 @@ body {
     padding-bottom: 80px; /* Отступ снизу, чтобы нижнее меню не перекрывало книги */
 }
 
+/* --- СЕТКА КНИГ (3 В РЯД) --- */
+.books-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px; /* Чуть уменьшили расстояние, чтобы карточки были шире */
+    padding-bottom: 80px;
+}
+
 /* --- КАРТОЧКА КНИГИ --- */
 .book-card {
+    background-color: #FFFFFF; /* Та самая белая подложка */
+    border-radius: 12px; /* Закругленные края карточки */
+    overflow: hidden; /* Чтобы картинка не вылезала за края */
+    box-shadow: 0 4px 15px rgba(214, 115, 171, 0.08); /* Очень легкая розовая тень для объема */
     display: flex;
     flex-direction: column;
 }
 
-/* Заглушка вместо картинки (потом заменим на тег img) */
+/* Заглушка вместо картинки */
 .cover-placeholder {
     width: 100%;
-    aspect-ratio: 2 / 3; /* Пропорции книжной обложки */
-    background-color: #f5ecef;
-    border-radius: 6px;
-    margin-bottom: 8px;
+    aspect-ratio: 2 / 3;
+    background-color: #FDF4F8; /* Нежно-розовый цвет заглушки */
+}
+
+/* Блок с текстом под обложкой */
+.card-info {
+    padding: 10px 8px; /* Отступы внутри белой карточки */
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Прижимает кнопки к самому низу */
 }
 
 .book-title {
-    font-family: 'Felidae', serif; /* Твой строгий шрифт для названия */
-    font-size: 12px;
+    font-family: 'Felidae', serif;
+    font-size: 13px; /* Сделали крупнее */
     color: var(--text-dark);
-    margin-bottom: 3px;
-    line-height: 1.2;
-    /* Обрезаем слишком длинные названия троеточием */
-    white-space: nowrap;
+    margin-bottom: 4px;
+    line-height: 1.1;
+    /* Если название длинное — обрезаем на 2 строке */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
     overflow: hidden;
-    text-overflow: ellipsis;
 }
 
 .book-author {
     font-size: 10px;
-    color: #888;
-    margin-bottom: 8px;
+    color: #A0A0A0;
+    margin-bottom: 12px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-/* --- КНОПКИ ПОД АВТОРОМ --- */
+/* --- КНОПКИ --- */
 .card-actions {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: auto; /* Прижимает кнопки к низу карточки */
+    margin-top: auto; 
 }
 
 .action-btn {
@@ -204,10 +223,9 @@ body {
     cursor: pointer;
 }
 
-/* Стрелочка в кружочке */
 .arrow-btn {
-    width: 22px;
-    height: 22px;
+    width: 20px;
+    height: 20px;
     border: 1px solid var(--shadow-pink);
     border-radius: 50%;
     color: var(--shadow-pink);
@@ -217,9 +235,8 @@ body {
     font-size: 10px;
 }
 
-/* Искорка */
 .fav-btn {
     color: var(--shadow-pink);
     font-size: 14px;
-    letter-spacing: -2px; /* Приближаем искорку к сердечку */
+    letter-spacing: -1px;
 }
