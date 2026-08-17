@@ -1,5 +1,5 @@
 :root {
-    --bg-color: #FFFFFF; /* Кристально белый фон для эстетики WOMBOOKS */
+    --bg-color: #FFFFFF;
     --main-pink: #FFC0E4; 
     --shadow-pink: #D673AB; 
     --text-dark: #2D2D2D;
@@ -42,6 +42,7 @@ body {
 /* --- СТРОКА ПОИСКА --- */
 .search-container {
     position: relative;
+    margin-top: 30px; /* Увеличенный отступ сверху */
     margin-bottom: 20px;
 }
 
@@ -72,16 +73,16 @@ body {
 }
 
 /* --- ФИЛЬТРЫ --- */
-.category-filters {
+.category-filters-container {
     display: flex;
+    flex-direction: column;
     gap: 10px;
     margin-bottom: 25px;
-    overflow-x: auto;
-    padding-bottom: 5px;
 }
 
-.category-filters::-webkit-scrollbar {
-    display: none; 
+.category-filters-row {
+    display: flex;
+    gap: 10px;
 }
 
 .filter-btn {
@@ -115,7 +116,7 @@ body {
     background-color: #FFFFFF;
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 4px 15px rgba(214, 115, 171, 0.1); /* Легкая розовая тень */
+    box-shadow: 0 4px 15px rgba(214, 115, 171, 0.1);
     display: flex;
     flex-direction: column;
 }
@@ -123,7 +124,7 @@ body {
 .cover-placeholder {
     width: 100%;
     aspect-ratio: 2 / 3;
-    background-color: #F8EBF0; /* Цвет заглушки под твою палитру */
+    background-color: #F8EBF0; 
 }
 
 .card-info {
@@ -183,10 +184,9 @@ body {
 .fav-btn {
     color: var(--shadow-pink);
     font-size: 13px;
-    letter-spacing: -1px;
 }
 
-/* --- НИЖНЕЕ МЕНЮ (Текстовое) --- */
+/* --- НИЖНЕЕ МЕНЮ --- */
 .bottom-nav {
     position: fixed;
     bottom: 0;
@@ -194,38 +194,27 @@ body {
     width: 100%;
     background-color: #FFFFFF;
     display: flex;
-    justify-content: space-between; /* Разносит элементы по краям */
-    padding: 15px 40px 25px 40px; /* Отступы по бокам и снизу */
-    box-shadow: 0 -4px 20px rgba(0,0,0,0.02); /* Очень легкая тень, чтобы меню не сливалось с фоном */
+    justify-content: space-evenly; /* Равномерно распределяем плашки */
+    padding: 15px 20px 25px 20px; 
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.02); 
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
     z-index: 100;
 }
 
-.nav-text-btn {
-    background: none;
-    border: none;
-    color: #A0A0A0; /* Серый цвет для неактивной кнопки */
-    font-family: 'Montserrat', sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    padding-bottom: 4px;
-    position: relative;
-}
-
-/* Стили для активной (выбранной) страницы */
-.nav-text-btn.active-nav {
+.bottom-pill-btn {
+    padding: 8px 24px;
+    border: 1px solid var(--main-pink);
+    border-radius: 20px;
+    background: transparent;
     color: var(--shadow-pink);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
 }
 
-/* Изящное подчеркивание для активной страницы */
-.nav-text-btn.active-nav::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 1.5px;
-    background-color: var(--shadow-pink);
+.bottom-pill-btn.active-pill {
+    background-color: var(--main-pink);
+    color: #FFFFFF;
+    border-color: var(--main-pink);
 }
