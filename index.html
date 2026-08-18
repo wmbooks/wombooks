@@ -10,8 +10,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
     
-    <!-- Трюк против кэша Айфона: версия 15 -->
-    <link rel="stylesheet" href="style.css?ver=15">
+    <!-- Трюк против кэша Айфона: версия 16 -->
+    <link rel="stylesheet" href="style.css?ver=16">
 </head>
 <body>
 
@@ -46,17 +46,18 @@
             </div>
             
             <div class="details-content">
-                <img src="" alt="" class="details-cover" id="details-cover">
-                
+                <div class="details-cover-wrapper">
+                    <img src="" alt="" class="details-cover" id="details-cover">
+                    <div class="rating-badge" id="details-rating">Отзывы отсутствуют</div>
+                </div>
+
                 <h2 class="details-title" id="details-title">Название</h2>
                 <p class="details-author" id="details-author">Автор</p>
                 
-                <!-- Блок серии и количества страниц -->
                 <div class="details-series-wrapper" id="details-series-container"></div>
                 
-                <!-- Блок оценки (прямоугольная обводка) -->
                 <div class="details-rating-wrapper">
-                    <div class="details-rating-box" id="details-rating">0.00</div>
+                    <div class="details-rating-box" id="details-rating-box">0.00</div>
                 </div>
 
                 <div class="details-tropes" id="details-tropes"></div>
@@ -97,7 +98,7 @@
         </div>
     </div>
 
-    <!-- Трюк против кэша Айфона: версия 15 -->
-    <script src="app.js?ver=15"></script>
+    <!-- Трюк против кэша Айфона: версия 16 -->
+    <script src="app.js?ver=16"></script>
 </body>
 </html>
