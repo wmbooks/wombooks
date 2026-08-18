@@ -32,7 +32,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return `<span style="color: var(--shadow-pink); font-weight: 600;">${parseFloat(rating).toFixed(2)}</span>`;
     }
 
-    // ТЕПЕРЬ ПРОПУСКАЕТ ЦЕЛЫЕ (1) И ДРОБНЫЕ (1,5 или 2.5) ЧИСЛА
     function formatSeriesNumber(numStr) {
         if (!numStr) return '';
         const trimmed = numStr.trim();
@@ -240,9 +239,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const annEl = document.getElementById('details-annotation');
         if(annEl) annEl.innerText = book.annotation;
         
-        const dlEl = document.getElementById('details-download');
-        if(dlEl) dlEl.href = `books/${book.id}.epub`;
-
         const favBtn = document.getElementById('details-fav-btn');
         const isSaved = savedBookIds.includes(book.id); 
         if(favBtn) favBtn.innerText = isSaved ? '♥' : '♡';
@@ -265,6 +261,17 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     window.toggleSaveFromDetails = function() { if (!currentOpenBookId) return; const btn = document.getElementById('details-fav-btn'); if(btn) toggleSave(btn, currentOpenBookId); };
+
+    // --- НОВАЯ ФУНКЦИЯ СКАЧИВАНИЯ ДЛЯ АЙФОНОВ ---
+    window.downloadBook = function() {
+        if (!currentOpenBookId) return;
+        // Мы формируем полную ссылку на файл на основе адреса твоего сайта
+        const fileUrl = new URL(`books/${currentOpenBookId}.epub`, window.location.href).href;
+        
+        // Эта команда заставляет Телеграм открыть ссылку в Safari
+        // Safari знает, что такое EPUB, и предложит сохранить его или открыть в Книгах
+        tg.openLink(fileUrl);
+    };
 
     window.openReviewModal = function() {
         const modal = document.getElementById('review-modal');
