@@ -3,11 +3,10 @@ document.addEventListener('DOMContentLoaded', () => {
     tg.expand();
 
     const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQofE7L59iFriQgwIJ-P0MclqfZ2QhBHR-zbk6FgaaZ7VSJ_dmtv823zjZkXBRWDodnCJ11B_Pa1oPc/pub?output=csv';
-    // Твоя ссылка на сервер-мост для отзывов
     const scriptUrl = 'https://script.google.com/macros/s/AKfycbxF_KGJfmq8npELJDMecB1QxRl0zew1W6K8S18vRQ9CP4lf_DWc_RIdstdCqk_v1auX/exec';
 
     let allBooks = [];
-    let allRatings = []; // Сюда загружаются все оценки
+    let allRatings = []; 
     let savedBookIds = JSON.parse(localStorage.getItem('wombooks_saved')) || [];
     let currentOpenBookId = null;
     let currentRating = 0; 
@@ -26,12 +25,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function getRecentBooks() { return allBooks.slice(-3).reverse(); }
 
+    // Логика текста: 0.00 (серый) или ★ 5.00 (розовый)
     function getRatingText(rating) {
-        if (!rating || rating === 0) return 'Отзывы отсутствуют';
-        return `★ ${parseFloat(rating).toFixed(2)}`; // Формат 5.00
+        if (!rating || rating === 0) {
+            return `<span style="color: #A0A0A0;">0.00</span>`;
+        }
+        return `<span style="color: var(--shadow-pink); font-weight: 600;">★ ${parseFloat(rating).toFixed(2)}</span>`;
     }
 
-    // Скачиваем книги и оценки одновременно
     async function fetchBooksAndRatings() {
         try {
             const response = await fetch(csvUrl);
@@ -46,14 +47,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 allRatings = [];
             }
 
-            calculateRatings(); // Считаем средний балл
+            calculateRatings();
             renderBooks(getRecentBooks(), true);
         } catch (error) {
             booksGrid.innerHTML = '<p style="text-align:center; font-size: 12px; margin-top:20px;">Ошибка загрузки книг. Проверьте интернет.</p>';
         }
     }
 
-    // Высчитываем средний рейтинг для каждой книги
     function calculateRatings() {
         const ratingsByBook = {};
         allRatings.forEach(r => {
@@ -92,7 +92,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     id: arr[i][0].trim(), title: arr[i][1] ? arr[i][1].trim() : 'Без названия',
                     author: arr[i][2] ? arr[i][2].trim() : '', series: arr[i][3] ? arr[i][3].trim() : '',
                     tropes: arr[i][4] ? arr[i][4].trim() : '', annotation: arr[i][5] ? arr[i][5].trim() : '',
-                    seriesNumber: arr[i][6] ? arr[i][6].trim() : '', rating: 0 
+                    seriesNumber: arr[i][6] ? arr[i][6].trim() : '', 
+                    pages: arr[i][7] ? arr[i][7].trim() : '', // Новая колонка (H) для страниц
+                    rating: 0 
                 });
             }
         }
@@ -101,18 +103,15 @@ document.addEventListener('DOMContentLoaded', () => {
     function createBookCardHTML(book) {
         const isSaved = savedBookIds.includes(book.id);
         const heartIcon = isSaved ? '♥' : '♡';
-        const ratingText = getRatingText(book.rating);
         
         return `
-            <div class="grid-cover-wrapper">
-                <img src="covers/${book.id}.PNG" alt="${book.title}" class="book-cover" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\'><rect width=\\'100%\\' height=\\'100%\\' fill=\\'%23F8EBF0\\'/></svg>'">
-                <div class="grid-rating-badge">${ratingText}</div>
-            </div>
+            <img src="covers/${book.id}.PNG" alt="${book.title}" class="book-cover" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\'><rect width=\\'100%\\' height=\\'100%\\' fill=\\'%23F8EBF0\\'/></svg>'">
             <div class="card-info">
                 <h4 class="book-title">${book.title}</h4>
                 <p class="book-author">${book.author || 'Неизвестный автор'}</p>
                 <div class="card-actions">
                     <button class="action-btn arrow-btn" onclick="openBook('${book.id}')">➔</button>
+                    <div class="card-rating-text">${getRatingText(book.rating)}</div>
                     <button class="action-btn fav-btn" onclick="toggleSave(this, '${book.id}')">${heartIcon}</button>
                 </div>
             </div>
@@ -188,11 +187,24 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('details-title').innerText = book.title;
         document.getElementById('details-author').innerText = book.author;
         
-        document.getElementById('details-rating').innerText = getRatingText(book.rating);
+        document.getElementById('details-rating').innerHTML = getRatingText(book.rating);
 
-        const seriesContainer = document.getElementById('details-series-container'); seriesContainer.innerHTML = '';
-        if (book.series) { seriesContainer.innerHTML += `<span class="details-series">${book.series}</span>`; }
-        if (book.seriesNumber) { seriesContainer.innerHTML += `<span class="details-series">${book.seriesNumber}</span>`; }
+        const seriesContainer = document.getElementById('details-series-container'); 
+        seriesContainer.innerHTML = '';
+        
+        // Создаем плашку Серии с кружком номера внутри
+        if (book.series) { 
+            let seriesHtml = book.series;
+            if (book.seriesNumber) {
+                seriesHtml += `<span class="series-num-circle">${book.seriesNumber}</span>`;
+            }
+            seriesContainer.innerHTML += `<div class="details-series">${seriesHtml}</div>`; 
+        }
+        
+        // Создаем плашку Количества страниц
+        if (book.pages) {
+            seriesContainer.innerHTML += `<div class="details-pages">${book.pages}</div>`;
+        }
 
         const tropesContainer = document.getElementById('details-tropes'); tropesContainer.innerHTML = '';
         if (book.tropes) { book.tropes.split(',').forEach(trope => { if (trope.trim()) { const span = document.createElement('span'); span.className = 'trope-tag'; span.innerText = trope.trim(); tropesContainer.appendChild(span); } }); }
@@ -213,7 +225,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.toggleSaveFromDetails = function() { if (!currentOpenBookId) return; const btn = document.getElementById('details-fav-btn'); toggleSave(btn, currentOpenBookId); };
 
-    // --- ЛОГИКА ОТПРАВКИ ОТЗЫВОВ НА GOOGLE СЕРВЕР ---
     window.openReviewModal = function() {
         document.getElementById('review-modal').style.display = 'flex';
         currentRating = 0;
@@ -239,7 +250,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (currentRating === 0) { tg.showAlert('Пожалуйста, поставьте хотя бы одну звездочку!'); return; }
         
         const reviewText = document.getElementById('review-text').value;
-        // Забираем невидимый ID пользователя из Telegram
         const userId = tg.initDataUnsafe?.user?.id || 'Аноним'; 
 
         const payload = {
@@ -249,7 +259,6 @@ document.addEventListener('DOMContentLoaded', () => {
             reviewText: reviewText
         };
 
-        // Сразу закрываем окно, чтобы не заставлять человека ждать
         closeReviewModal();
         tg.showAlert('Отправляем ваш отзыв...');
 
@@ -262,12 +271,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             tg.showAlert('Спасибо! Оценка учтена.');
             
-            // Сразу "визуально" обновляем рейтинг, не дожидаясь перезагрузки приложения
             allRatings.push(payload);
             calculateRatings();
             
             const book = allBooks.find(b => b.id === currentOpenBookId);
-            if (book) { document.getElementById('details-rating').innerText = getRatingText(book.rating); }
+            if (book) { document.getElementById('details-rating').innerHTML = getRatingText(book.rating); }
 
         } catch (error) {
             tg.showAlert('Ошибка отправки. Проверьте интернет.');
@@ -277,5 +285,5 @@ document.addEventListener('DOMContentLoaded', () => {
     if (navHome) { navHome.addEventListener('click', () => { navHome.classList.add('active-pill'); if (navSaved) navSaved.classList.remove('active-pill'); if (filterRecent) setActiveFilter(filterRecent); authorsContainer.style.display = 'none'; booksGrid.style.display = 'grid'; renderBooks(getRecentBooks(), true); }); }
     if (navSaved) { navSaved.addEventListener('click', () => { navSaved.classList.add('active-pill'); if (navHome) navHome.classList.remove('active-pill'); authorsContainer.style.display = 'none'; booksGrid.style.display = 'grid'; renderBooks(allBooks.filter(book => savedBookIds.includes(book.id))); }); }
 
-    fetchBooksAndRatings(); // Запускаем главную функцию
+    fetchBooksAndRatings();
 });
