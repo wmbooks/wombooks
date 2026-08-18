@@ -1,79 +1,281 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WOMBOOKS</title>
+document.addEventListener('DOMContentLoaded', () => {
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+
+    const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQofE7L59iFriQgwIJ-P0MclqfZ2QhBHR-zbk6FgaaZ7VSJ_dmtv823zjZkXBRWDodnCJ11B_Pa1oPc/pub?output=csv';
+
+    let allBooks = [];
+    let savedBookIds = JSON.parse(localStorage.getItem('wombooks_saved')) || [];
+    let currentOpenBookId = null;
+
+    // Контейнеры
+    const booksGrid = document.getElementById('books-grid');
+    const authorsContainer = document.getElementById('authors-container');
+    const pageHome = document.getElementById('page-home');
+    const pageDetails = document.getElementById('page-book-details');
+    const bottomNav = document.getElementById('bottom-nav');
+
+    // Кнопки фильтров
+    const filterRecent = document.getElementById('filter-recent');
+    const filterTropes = document.getElementById('filter-tropes');
+    const filterAuthors = document.getElementById('filter-authors');
     
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
-    
-    <!-- Трюк против кэша Айфона: версия 4 -->
-    <link rel="stylesheet" href="style.css?ver=4">
-</head>
-<body>
+    // Кнопки нижнего меню
+    const navHome = document.getElementById('nav-home');
+    const navSaved = document.getElementById('nav-saved');
 
-    <div id="app">
-        <!-- СТРАНИЦА 1: ГЛАВНАЯ (ВИТРИНА) -->
-        <div id="page-home">
-            <div class="search-container">
-                <input type="text" class="search-input" placeholder="Найти книгу или автора">
-                <span class="search-icon">⚲</span>
-            </div>
+    async function fetchBooks() {
+        try {
+            const response = await fetch(csvUrl);
+            const data = await response.text();
+            parseCSV(data);
+            renderBooks(allBooks);
+        } catch (error) {
+            booksGrid.innerHTML = '<p style="text-align:center; font-size: 12px; margin-top:20px;">Ошибка загрузки книг. Проверьте интернет.</p>';
+        }
+    }
 
-            <!-- Добавили ID для кнопок, чтобы переключать экраны -->
-            <div class="category-filters-container">
-                <div class="category-filters-row">
-                    <button class="filter-btn active-filter" id="filter-recent">Недавно добавленное</button>
+    function parseCSV(str) {
+        const arr = [];
+        let quote = false;
+        for (let row = 0, col = 0, c = 0; c < str.length; c++) {
+            let cc = str[c], nc = str[c+1];
+            arr[row] = arr[row] || [];
+            arr[row][col] = arr[row][col] || '';
+            if (cc == '"' && quote && nc == '"') { arr[row][col] += cc; ++c; continue; }
+            if (cc == '"') { quote = !quote; continue; }
+            if (cc == ',' && !quote) { ++col; continue; }
+            if (cc == '\r' && nc == '\n' && !quote) { ++row; col = 0; ++c; continue; }
+            if (cc == '\n' && !quote) { ++row; col = 0; continue; }
+            if (cc == '\r' && !quote) { ++row; col = 0; continue; }
+            arr[row][col] += cc;
+        }
+        
+        allBooks = [];
+        for (let i = 1; i < arr.length; i++) {
+            if (arr[i].length >= 2 && arr[i][0]) {
+                allBooks.push({
+                    id: arr[i][0].trim(),
+                    title: arr[i][1] ? arr[i][1].trim() : 'Без названия',
+                    author: arr[i][2] ? arr[i][2].trim() : '',
+                    series: arr[i][3] ? arr[i][3].trim() : '',
+                    tropes: arr[i][4] ? arr[i][4].trim() : '',
+                    annotation: arr[i][5] ? arr[i][5].trim() : '',
+                    seriesNumber: arr[i][6] ? arr[i][6].trim() : '' 
+                });
+            }
+        }
+    }
+
+    // --- ОТРИСОВКА КНИГ (СЕТКА) ---
+    function renderBooks(books) {
+        booksGrid.innerHTML = ''; 
+        if (books.length === 0) {
+            booksGrid.innerHTML = '<p style="text-align:center; width: 300%; margin-top: 20px; font-size: 12px; color: #A0A0A0;">Здесь пока пусто.</p>';
+            return;
+        }
+        books.forEach(book => {
+            const isSaved = savedBookIds.includes(book.id);
+            const heartIcon = isSaved ? '♥' : '♡';
+            const card = document.createElement('div');
+            card.className = 'book-card';
+            card.innerHTML = `
+                <img src="covers/${book.id}.jpg" alt="${book.title}" class="book-cover" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\'><rect width=\\'100%\\' height=\\'100%\\' fill=\\'%23F8EBF0\\'/></svg>'">
+                <div class="card-info">
+                    <h4 class="book-title">${book.title}</h4>
+                    <p class="book-author">${book.author || 'Неизвестный автор'}</p>
+                    <div class="card-actions">
+                        <button class="action-btn arrow-btn" onclick="openBook('${book.id}')">➔</button>
+                        <button class="action-btn fav-btn" onclick="toggleSave(this, '${book.id}')">${heartIcon}</button>
+                    </div>
                 </div>
-                <div class="category-filters-row">
-                    <button class="filter-btn" id="filter-tropes">Тропы</button>
-                    <button class="filter-btn" id="filter-authors">Авторы</button>
-                </div>
-            </div>
+            `;
+            booksGrid.appendChild(card);
+        });
+    }
 
-            <!-- Сетка с книгами -->
-            <div class="books-grid" id="books-grid"></div>
+    // --- ОТРИСОВКА АВТОРОВ (АККОРДЕОН) ---
+    function renderAuthorsList() {
+        authorsContainer.innerHTML = '';
+        const authorsMap = {};
+        
+        allBooks.forEach(book => {
+            const author = book.author || 'Неизвестный автор';
+            if (!authorsMap[author]) authorsMap[author] = new Set();
+            const series = book.series ? book.series : 'Одиночные книги';
+            authorsMap[author].add(series);
+        });
 
-            <!-- Новый экран: Список авторов (скрыт по умолчанию) -->
-            <div class="authors-list-container" id="authors-container" style="display: none;"></div>
-        </div>
+        const sortedAuthors = Object.keys(authorsMap).sort();
+        if (sortedAuthors.length === 0) {
+            authorsContainer.innerHTML = '<p style="text-align:center; margin-top: 20px; font-size: 12px; color: #A0A0A0;">Авторов пока нет.</p>';
+            return;
+        }
 
-        <!-- СТРАНИЦА 2: ДЕТАЛИ КНИГИ (ШАБЛОН) -->
-        <div id="page-book-details" style="display: none;">
-            <div class="details-top-bar">
-                <button class="back-btn" onclick="closeBook()">← Назад</button>
-                <button class="action-btn fav-btn" id="details-fav-btn" onclick="toggleSaveFromDetails()">♡</button>
-            </div>
+        sortedAuthors.forEach(author => {
+            const seriesList = Array.from(authorsMap[author]).sort();
+            const authorItem = document.createElement('div');
+            authorItem.className = 'author-item';
             
-            <div class="details-content">
-                <img src="" alt="" class="details-cover" id="details-cover">
-                <h2 class="details-title" id="details-title">Название</h2>
-                <p class="details-author" id="details-author">Автор</p>
-                
-                <div class="details-series-wrapper" id="details-series-container"></div>
-                
-                <div class="details-tropes" id="details-tropes"></div>
-                
-                <div class="details-annotation" id="details-annotation">Аннотация...</div>
-                
-                <div class="download-section">
-                    <button class="round-back-btn" onclick="closeBook()">←</button>
-                    <a href="#" class="download-btn" id="details-download" download>Скачать книгу (.epub)</a>
+            let seriesHTML = '';
+            seriesList.forEach(series => {
+                seriesHTML += `<div class="series-item" onclick="filterByAuthorAndSeries('${author}', '${series}')">${series}</div>`;
+            });
+
+            authorItem.innerHTML = `
+                <div class="author-header" onclick="toggleAuthor(this)">
+                    <span>${author}</span>
+                    <span class="author-arrow">➔</span>
                 </div>
-            </div>
-        </div>
+                <div class="author-series-list">
+                    ${seriesHTML}
+                </div>
+            `;
+            authorsContainer.appendChild(authorItem);
+        });
+    }
 
-        <!-- НИЖНЕЕ МЕНЮ НАВИГАЦИИ -->
-        <nav class="bottom-nav" id="bottom-nav">
-            <button class="bottom-pill-btn active-pill" id="nav-home">Главная</button>
-            <button class="bottom-pill-btn" id="nav-saved">Сохраненное</button>
-        </nav>
-    </div>
+    window.toggleAuthor = function(headerElement) {
+        const arrow = headerElement.querySelector('.author-arrow');
+        const seriesList = headerElement.nextElementSibling;
+        if (seriesList.style.display === 'flex') {
+            seriesList.style.display = 'none';
+            arrow.classList.remove('open');
+        } else {
+            seriesList.style.display = 'flex';
+            arrow.classList.add('open');
+        }
+    };
 
-    <!-- Трюк против кэша Айфона: версия 4 -->
-    <script src="app.js?ver=4"></script>
-</body>
-</html>
+    window.filterByAuthorAndSeries = function(author, series) {
+        authorsContainer.style.display = 'none';
+        booksGrid.style.display = 'grid';
+        let filtered;
+        if (series === 'Одиночные книги') {
+            filtered = allBooks.filter(b => b.author === author && !b.series);
+        } else {
+            filtered = allBooks.filter(b => b.author === author && b.series === series);
+        }
+        renderBooks(filtered);
+    };
+
+    // --- ЛОГИКА ФИЛЬТРОВ ---
+    function setActiveFilter(activeBtn) {
+        [filterRecent, filterTropes, filterAuthors].forEach(btn => btn.classList.remove('active-filter'));
+        activeBtn.classList.add('active-filter');
+    }
+
+    if (filterRecent) {
+        filterRecent.addEventListener('click', () => {
+            setActiveFilter(filterRecent);
+            authorsContainer.style.display = 'none';
+            booksGrid.style.display = 'grid';
+            renderBooks(allBooks); 
+        });
+    }
+
+    if (filterAuthors) {
+        filterAuthors.addEventListener('click', () => {
+            setActiveFilter(filterAuthors);
+            booksGrid.style.display = 'none';
+            authorsContainer.style.display = 'block';
+            renderAuthorsList();
+        });
+    }
+
+    if (filterTropes) {
+        filterTropes.addEventListener('click', () => {
+            tg.showAlert('Фильтр по тропам настроим следующим шагом!');
+        });
+    }
+
+    // --- ИЗБРАННОЕ И ПЕРЕХОДЫ ---
+    window.toggleSave = function(btnElement, id) {
+        const index = savedBookIds.indexOf(id);
+        if (index > -1) {
+            savedBookIds.splice(index, 1); btnElement.innerText = '♡';
+        } else {
+            savedBookIds.push(id); btnElement.innerText = '♥';
+        }
+        localStorage.setItem('wombooks_saved', JSON.stringify(savedBookIds));
+    };
+
+    window.openBook = function(id) {
+        const book = allBooks.find(b => b.id === id);
+        if (!book) return;
+        currentOpenBookId = id;
+        
+        document.getElementById('details-cover').src = `covers/${book.id}.jpg`;
+        document.getElementById('details-title').innerText = book.title;
+        document.getElementById('details-author').innerText = book.author;
+        
+        const seriesContainer = document.getElementById('details-series-container');
+        seriesContainer.innerHTML = '';
+        if (book.series) { seriesContainer.innerHTML += `<span class="details-series">${book.series}</span>`; }
+        if (book.seriesNumber) { seriesContainer.innerHTML += `<span class="details-series">${book.seriesNumber}</span>`; }
+
+        const tropesContainer = document.getElementById('details-tropes');
+        tropesContainer.innerHTML = '';
+        if (book.tropes) {
+            book.tropes.split(',').forEach(trope => {
+                if (trope.trim()) {
+                    const span = document.createElement('span');
+                    span.className = 'trope-tag';
+                    span.innerText = trope.trim();
+                    tropesContainer.appendChild(span);
+                }
+            });
+        }
+        document.getElementById('details-annotation').innerText = book.annotation;
+        document.getElementById('details-download').href = `books/${book.id}.epub`;
+
+        const isSaved = savedBookIds.includes(book.id);
+        document.getElementById('details-fav-btn').innerText = isSaved ? '♥' : '♡';
+
+        pageHome.style.display = 'none'; bottomNav.style.display = 'none';
+        pageDetails.style.display = 'block'; window.scrollTo(0, 0); 
+    };
+
+    window.closeBook = function() {
+        pageDetails.style.display = 'none'; pageHome.style.display = 'block'; bottomNav.style.display = 'flex';
+        
+        if (navSaved && navSaved.classList.contains('active-pill')) {
+            renderBooks(allBooks.filter(b => savedBookIds.includes(b.id)));
+        } else if (filterAuthors && filterAuthors.classList.contains('active-filter')) {
+            booksGrid.style.display = 'none';
+            authorsContainer.style.display = 'block';
+        } else {
+            renderBooks(allBooks);
+        }
+    };
+
+    window.toggleSaveFromDetails = function() {
+        if (!currentOpenBookId) return;
+        const btn = document.getElementById('details-fav-btn');
+        toggleSave(btn, currentOpenBookId);
+    };
+
+    // --- НИЖНЕЕ МЕНЮ ---
+    if (navHome) {
+        navHome.addEventListener('click', () => {
+            navHome.classList.add('active-pill'); 
+            if (navSaved) navSaved.classList.remove('active-pill');
+            
+            if (filterRecent) setActiveFilter(filterRecent); 
+            authorsContainer.style.display = 'none'; booksGrid.style.display = 'grid';
+            renderBooks(allBooks);
+        });
+    }
+
+    if (navSaved) {
+        navSaved.addEventListener('click', () => {
+            navSaved.classList.add('active-pill'); 
+            if (navHome) navHome.classList.remove('active-pill');
+            
+            authorsContainer.style.display = 'none'; booksGrid.style.display = 'grid';
+            renderBooks(allBooks.filter(book => savedBookIds.includes(book.id)));
+        });
+    }
+
+    fetchBooks();
+});
