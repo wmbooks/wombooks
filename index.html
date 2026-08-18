@@ -10,8 +10,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
     
-    <!-- Трюк против кэша Айфона: версия 3 -->
-    <link rel="stylesheet" href="style.css?ver=3">
+    <!-- Трюк против кэша Айфона: версия 4 -->
+    <link rel="stylesheet" href="style.css?ver=4">
 </head>
 <body>
 
@@ -23,17 +23,22 @@
                 <span class="search-icon">⚲</span>
             </div>
 
+            <!-- Добавили ID для кнопок, чтобы переключать экраны -->
             <div class="category-filters-container">
                 <div class="category-filters-row">
-                    <button class="filter-btn active-filter">Недавно добавленное</button>
+                    <button class="filter-btn active-filter" id="filter-recent">Недавно добавленное</button>
                 </div>
                 <div class="category-filters-row">
-                    <button class="filter-btn">Тропы</button>
-                    <button class="filter-btn">Авторы</button>
+                    <button class="filter-btn" id="filter-tropes">Тропы</button>
+                    <button class="filter-btn" id="filter-authors">Авторы</button>
                 </div>
             </div>
 
-            <div class="books-grid"></div>
+            <!-- Сетка с книгами -->
+            <div class="books-grid" id="books-grid"></div>
+
+            <!-- Новый экран: Список авторов (скрыт по умолчанию) -->
+            <div class="authors-list-container" id="authors-container" style="display: none;"></div>
         </div>
 
         <!-- СТРАНИЦА 2: ДЕТАЛИ КНИГИ (ШАБЛОН) -->
@@ -48,14 +53,12 @@
                 <h2 class="details-title" id="details-title">Название</h2>
                 <p class="details-author" id="details-author">Автор</p>
                 
-                <!-- Контейнер для плашек серии и номера (выстраивает их в ряд) -->
                 <div class="details-series-wrapper" id="details-series-container"></div>
                 
                 <div class="details-tropes" id="details-tropes"></div>
                 
                 <div class="details-annotation" id="details-annotation">Аннотация...</div>
                 
-                <!-- Новый блок с кнопкой возврата и кнопкой скачивания -->
                 <div class="download-section">
                     <button class="round-back-btn" onclick="closeBook()">←</button>
                     <a href="#" class="download-btn" id="details-download" download>Скачать книгу (.epub)</a>
@@ -65,12 +68,12 @@
 
         <!-- НИЖНЕЕ МЕНЮ НАВИГАЦИИ -->
         <nav class="bottom-nav" id="bottom-nav">
-            <button class="bottom-pill-btn active-pill">Главная</button>
-            <button class="bottom-pill-btn">Сохраненное</button>
+            <button class="bottom-pill-btn active-pill" id="nav-home">Главная</button>
+            <button class="bottom-pill-btn" id="nav-saved">Сохраненное</button>
         </nav>
     </div>
 
-    <!-- Трюк против кэша Айфона: версия 3 -->
-    <script src="app.js?ver=3"></script>
+    <!-- Трюк против кэша Айфона: версия 4 -->
+    <script src="app.js?ver=4"></script>
 </body>
 </html>
