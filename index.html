@@ -10,8 +10,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
     
-    <!-- Трюк против кэша Айфона: версия 18 -->
-    <link rel="stylesheet" href="style.css?ver=18">
+    <!-- Трюк против кэша Айфона: версия 19 -->
+    <link rel="stylesheet" href="style.css?ver=19">
 </head>
 <body>
 
@@ -46,8 +46,12 @@
             </div>
             
             <div class="details-content">
-                <img src="" alt="" class="details-cover" id="details-cover">
-                
+                <div class="details-cover-wrapper">
+                    <img src="" alt="" class="details-cover" id="details-cover">
+                    <!-- Плашка номера серии в правом верхнем углу -->
+                    <div class="cover-series-badge" id="details-series-num-badge" style="display: none;"></div>
+                </div>
+
                 <h2 class="details-title" id="details-title">Название</h2>
                 <p class="details-author" id="details-author">Автор</p>
                 
@@ -97,7 +101,7 @@
         </div>
     </div>
 
-    <!-- Трюк против кэша Айфона: версия 18 -->
-    <script src="app.js?ver=18"></script>
+    <!-- Трюк против кэша Айфона: версия 19 -->
+    <script src="app.js?ver=19"></script>
 </body>
 </html>
