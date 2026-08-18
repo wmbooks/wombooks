@@ -6,12 +6,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let allBooks = [];
     let savedBookIds = JSON.parse(localStorage.getItem('wombooks_saved')) || [];
-    let currentOpenBookId = null; // Запоминаем, какая книга сейчас открыта
+    let currentOpenBookId = null;
 
     const booksGrid = document.querySelector('.books-grid');
     const navBtns = document.querySelectorAll('.bottom-pill-btn');
     
-    // Элементы страниц
     const pageHome = document.getElementById('page-home');
     const pageDetails = document.getElementById('page-book-details');
     const bottomNav = document.getElementById('bottom-nav');
@@ -54,7 +53,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     author: arr[i][2] ? arr[i][2].trim() : '',
                     series: arr[i][3] ? arr[i][3].trim() : '',
                     tropes: arr[i][4] ? arr[i][4].trim() : '',
-                    annotation: arr[i][5] ? arr[i][5].trim() : ''
+                    annotation: arr[i][5] ? arr[i][5].trim() : '',
+                    seriesNumber: arr[i][6] ? arr[i][6].trim() : '' // Новая 7-я колонка
                 });
             }
         }
@@ -100,28 +100,26 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('wombooks_saved', JSON.stringify(savedBookIds));
     };
 
-    // --- ЛОГИКА ОТКРЫТИЯ СТРАНИЦЫ КНИГИ ---
     window.openBook = function(id) {
-        // Находим книгу в базе
         const book = allBooks.find(b => b.id === id);
         if (!book) return;
 
         currentOpenBookId = id;
 
-        // Заполняем шаблон данными этой конкретной книги
         document.getElementById('details-cover').src = `covers/${book.id}.jpg`;
         document.getElementById('details-title').innerText = book.title;
         document.getElementById('details-author').innerText = book.author;
         
-        // Серия (если есть)
+        // Очищаем и заново создаем плашки для Серии и Номера в серии
         const seriesContainer = document.getElementById('details-series-container');
+        seriesContainer.innerHTML = '';
         if (book.series) {
-            seriesContainer.innerHTML = `<span class="details-series">${book.series}</span>`;
-        } else {
-            seriesContainer.innerHTML = '';
+            seriesContainer.innerHTML += `<span class="details-series">${book.series}</span>`;
+        }
+        if (book.seriesNumber) {
+            seriesContainer.innerHTML += `<span class="details-series">${book.seriesNumber}</span>`;
         }
 
-        // Тропы (разбиваем через запятую на отдельные плашки)
         const tropesContainer = document.getElementById('details-tropes');
         tropesContainer.innerHTML = '';
         if (book.tropes) {
@@ -137,27 +135,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         document.getElementById('details-annotation').innerText = book.annotation;
-        
-        // Кнопка скачивания ведет на файл epub
         document.getElementById('details-download').href = `books/${book.id}.epub`;
 
-        // Обновляем сердечко в шапке
         const isSaved = savedBookIds.includes(book.id);
         document.getElementById('details-fav-btn').innerText = isSaved ? '♥' : '♡';
 
-        // Прячем витрину, показываем страницу книги
         pageHome.style.display = 'none';
-        bottomNav.style.display = 'none'; // Прячем нижнее меню, чтобы не мешало читать
+        bottomNav.style.display = 'none';
         pageDetails.style.display = 'block';
-        window.scrollTo(0, 0); // Прокручиваем на самый верх
+        window.scrollTo(0, 0); 
     };
 
-    // --- ЛОГИКА ЗАКРЫТИЯ СТРАНИЦЫ КНИГИ ---
     window.closeBook = function() {
         pageDetails.style.display = 'none';
         pageHome.style.display = 'block';
         bottomNav.style.display = 'flex';
-        // Перерисовываем витрину, чтобы сердечки обновились (если мы сохранили книгу внутри)
+        
         const isSavedTab = navBtns[1].classList.contains('active-pill');
         if (isSavedTab) {
             renderBooks(allBooks.filter(b => savedBookIds.includes(b.id)));
@@ -166,14 +159,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Сохранение прямо со страницы деталей
     window.toggleSaveFromDetails = function() {
         if (!currentOpenBookId) return;
         const btn = document.getElementById('details-fav-btn');
         toggleSave(btn, currentOpenBookId);
     };
 
-    // Переключение Главная / Сохраненное
     navBtns[0].addEventListener('click', () => {
         navBtns[0].classList.add('active-pill');
         navBtns[1].classList.remove('active-pill');
