@@ -42,23 +42,52 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function fetchBooksAndRatings() {
+        // ИЗМЕНЕНО НА КРУТЯЩИЙСЯ СПИННЕР
+        if(booksGrid) {
+            booksGrid.innerHTML = '<div class="loader-container"><div class="loader"></div></div>';
+        }
+
         try {
             const response = await fetch(csvUrl);
             const data = await response.text();
             parseCSV(data);
 
-            try {
-                const ratingsResponse = await fetch(scriptUrl);
-                allRatings = await ratingsResponse.json();
-            } catch (e) {
-                console.error("Не удалось загрузить рейтинги", e);
-                allRatings = [];
-            }
+            renderCurrentView();
 
-            calculateRatings();
-            renderBooks(getRecentBooks(), true);
+            loadRatingsAsync();
+
         } catch (error) {
-            if(booksGrid) booksGrid.innerHTML = '<p style="text-align:center; font-size: 12px; margin-top:20px;">Ошибка загрузки книг. Проверьте интернет.</p>';
+            if(booksGrid) booksGrid.innerHTML = '<p style="text-align:center; font-size: 13px; margin-top:30px; color: var(--shadow-pink);">Ошибка загрузки. Проверьте интернет.</p>';
+        }
+    }
+
+    async function loadRatingsAsync() {
+        try {
+            const ratingsResponse = await fetch(scriptUrl);
+            allRatings = await ratingsResponse.json();
+            calculateRatings();
+            
+            renderCurrentView();
+            
+            if (currentOpenBookId && pageDetails && pageDetails.style.display === 'block') {
+                const book = allBooks.find(b => b.id === currentOpenBookId);
+                const ratingBox = document.getElementById('details-rating-box');
+                if (book && ratingBox) { ratingBox.innerHTML = getRatingText(book.rating); }
+            }
+        } catch (e) {
+            console.error("Оценки не загрузились, оставляем по нулям", e);
+        }
+    }
+
+    function renderCurrentView() {
+        if (authorsContainer && authorsContainer.style.display === 'block') {
+            renderAuthorsList();
+        } else if (navSaved && navSaved.classList.contains('active-pill')) {
+            renderBooks(allBooks.filter(book => savedBookIds.includes(book.id)));
+        } else if (filterRecent && filterRecent.classList.contains('active-filter')) {
+            renderBooks(getRecentBooks(), true);
+        } else {
+            renderBooks(allBooks);
         }
     }
 
@@ -187,8 +216,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function setActiveFilter(activeBtn) { [filterRecent, filterTropes, filterAuthors].forEach(btn => { if(btn) btn.classList.remove('active-filter'); }); if(activeBtn) activeBtn.classList.add('active-filter'); }
 
-    if (filterRecent) { filterRecent.addEventListener('click', () => { setActiveFilter(filterRecent); if(authorsContainer) authorsContainer.style.display = 'none'; if(booksGrid) booksGrid.style.display = 'grid'; renderBooks(getRecentBooks(), true); }); }
-    if (filterAuthors) { filterAuthors.addEventListener('click', () => { setActiveFilter(filterAuthors); if(booksGrid) booksGrid.style.display = 'none'; if(authorsContainer) authorsContainer.style.display = 'block'; renderAuthorsList(); }); }
+    if (filterRecent) { filterRecent.addEventListener('click', () => { setActiveFilter(filterRecent); if(authorsContainer) authorsContainer.style.display = 'none'; if(booksGrid) booksGrid.style.display = 'grid'; renderCurrentView(); }); }
+    if (filterAuthors) { filterAuthors.addEventListener('click', () => { setActiveFilter(filterAuthors); if(booksGrid) booksGrid.style.display = 'none'; if(authorsContainer) authorsContainer.style.display = 'block'; renderCurrentView(); }); }
     if (filterTropes) { filterTropes.addEventListener('click', () => { tg.showAlert('Фильтр по тропам настроим следующим шагом!'); }); }
 
     window.toggleSave = function(btnElement, id) {
@@ -239,6 +268,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const annEl = document.getElementById('details-annotation');
         if(annEl) annEl.innerText = book.annotation;
         
+        const dlEl = document.getElementById('details-download');
+        if(dlEl) dlEl.href = `books/${book.id}.epub`;
+
         const favBtn = document.getElementById('details-fav-btn');
         const isSaved = savedBookIds.includes(book.id); 
         if(favBtn) favBtn.innerText = isSaved ? '♥' : '♡';
@@ -253,23 +285,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if(pageDetails) pageDetails.style.display = 'none'; 
         if(pageHome) pageHome.style.display = 'block'; 
         if(bottomNav) bottomNav.style.display = 'flex';
-        
-        if (navSaved && navSaved.classList.contains('active-pill')) { renderBooks(allBooks.filter(b => savedBookIds.includes(b.id))); } 
-        else if (filterAuthors && filterAuthors.classList.contains('active-filter')) {} 
-        else if (filterRecent && filterRecent.classList.contains('active-filter')) { renderBooks(getRecentBooks(), true); } 
-        else { renderBooks(allBooks); }
+        renderCurrentView(); 
     };
 
     window.toggleSaveFromDetails = function() { if (!currentOpenBookId) return; const btn = document.getElementById('details-fav-btn'); if(btn) toggleSave(btn, currentOpenBookId); };
 
-    // --- НОВАЯ ФУНКЦИЯ СКАЧИВАНИЯ ДЛЯ АЙФОНОВ ---
     window.downloadBook = function() {
         if (!currentOpenBookId) return;
-        // Мы формируем полную ссылку на файл на основе адреса твоего сайта
         const fileUrl = new URL(`books/${currentOpenBookId}.epub`, window.location.href).href;
-        
-        // Эта команда заставляет Телеграм открыть ссылку в Safari
-        // Safari знает, что такое EPUB, и предложит сохранить его или открыть в Книгах
         tg.openLink(fileUrl);
     };
 
@@ -335,8 +358,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    if (navHome) { navHome.addEventListener('click', () => { navHome.classList.add('active-pill'); if (navSaved) navSaved.classList.remove('active-pill'); if (filterRecent) setActiveFilter(filterRecent); if(authorsContainer) authorsContainer.style.display = 'none'; if(booksGrid) booksGrid.style.display = 'grid'; renderBooks(getRecentBooks(), true); }); }
-    if (navSaved) { navSaved.addEventListener('click', () => { navSaved.classList.add('active-pill'); if (navHome) navHome.classList.remove('active-pill'); if(authorsContainer) authorsContainer.style.display = 'none'; if(booksGrid) booksGrid.style.display = 'grid'; renderBooks(allBooks.filter(book => savedBookIds.includes(book.id))); }); }
+    if (navHome) { navHome.addEventListener('click', () => { navHome.classList.add('active-pill'); if (navSaved) navSaved.classList.remove('active-pill'); if (filterRecent) setActiveFilter(filterRecent); if(authorsContainer) authorsContainer.style.display = 'none'; if(booksGrid) booksGrid.style.display = 'grid'; renderCurrentView(); }); }
+    if (navSaved) { navSaved.addEventListener('click', () => { navSaved.classList.add('active-pill'); if (navHome) navHome.classList.remove('active-pill'); if(authorsContainer) authorsContainer.style.display = 'none'; if(booksGrid) booksGrid.style.display = 'grid'; renderCurrentView(); }); }
 
     fetchBooksAndRatings();
 });
