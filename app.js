@@ -20,8 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const navHome = document.getElementById('nav-home');
     const navSaved = document.getElementById('nav-saved');
 
-    // Функция: забираем 3 последние книги из базы и переворачиваем порядок
-    // Теперь самая новая книга будет стоять ПЕРВОЙ (слева)
     function getRecentBooks() {
         return allBooks.slice(-3).reverse();
     }
@@ -31,7 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(csvUrl);
             const data = await response.text();
             parseCSV(data);
-            // true включает подсветку для первой (самой левой) книги
             renderBooks(getRecentBooks(), true);
         } catch (error) {
             booksGrid.innerHTML = '<p style="text-align:center; font-size: 12px; margin-top:20px;">Ошибка загрузки книг. Проверьте интернет.</p>';
@@ -73,8 +70,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function createBookCardHTML(book) {
         const isSaved = savedBookIds.includes(book.id);
         const heartIcon = isSaved ? '♥' : '♡';
+        // Заменили .jpg на .png
         return `
-            <img src="covers/${book.id}.jpg" alt="${book.title}" class="book-cover" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\'><rect width=\\'100%\\' height=\\'100%\\' fill=\\'%23F8EBF0\\'/></svg>'">
+            <img src="covers/${book.id}.png" alt="${book.title}" class="book-cover" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\'><rect width=\\'100%\\' height=\\'100%\\' fill=\\'%23F8EBF0\\'/></svg>'">
             <div class="card-info">
                 <h4 class="book-title">${book.title}</h4>
                 <p class="book-author">${book.author || 'Неизвестный автор'}</p>
@@ -86,7 +84,6 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
     }
 
-    // Добавлен флаг highlightFirst (включает свечение для левой книги)
     function renderBooks(books, highlightFirst = false) {
         booksGrid.innerHTML = ''; 
         if (books.length === 0) {
@@ -95,7 +92,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         books.forEach((book, index) => {
             const card = document.createElement('div');
-            // Применяем класс highlight-newest только к 0-му элементу (крайнему левому) и только если флаг включен
             if (highlightFirst && index === 0) {
                 card.className = 'book-card highlight-newest';
             } else {
@@ -201,7 +197,6 @@ document.addEventListener('DOMContentLoaded', () => {
             setActiveFilter(filterRecent);
             authorsContainer.style.display = 'none';
             booksGrid.style.display = 'grid';
-            // true включает подсветку левой книги
             renderBooks(getRecentBooks(), true); 
         });
     }
@@ -236,7 +231,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!book) return;
         currentOpenBookId = id;
         
-        document.getElementById('details-cover').src = `covers/${book.id}.jpg`;
+        // Заменили .jpg на .png
+        document.getElementById('details-cover').src = `covers/${book.id}.png`;
         document.getElementById('details-title').innerText = book.title;
         document.getElementById('details-author').innerText = book.author;
         
@@ -271,12 +267,10 @@ document.addEventListener('DOMContentLoaded', () => {
         pageDetails.style.display = 'none'; pageHome.style.display = 'block'; bottomNav.style.display = 'flex';
         
         if (navSaved && navSaved.classList.contains('active-pill')) {
-            // Без свечения в Сохраненном
             renderBooks(allBooks.filter(b => savedBookIds.includes(b.id)));
         } else if (filterAuthors && filterAuthors.classList.contains('active-filter')) {
             // Оставляем открытым список авторов
         } else if (filterRecent && filterRecent.classList.contains('active-filter')) {
-            // Включаем свечение для новинки при возврате на главную
             renderBooks(getRecentBooks(), true);
         } else {
             renderBooks(allBooks);
@@ -296,7 +290,6 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (filterRecent) setActiveFilter(filterRecent); 
             authorsContainer.style.display = 'none'; booksGrid.style.display = 'grid';
-            // true включает подсветку левой книги
             renderBooks(getRecentBooks(), true);
         });
     }
@@ -307,7 +300,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (navHome) navHome.classList.remove('active-pill');
             
             authorsContainer.style.display = 'none'; booksGrid.style.display = 'grid';
-            // В Сохраненном свечение не нужно (флага true нет)
             renderBooks(allBooks.filter(book => savedBookIds.includes(book.id)));
         });
     }
