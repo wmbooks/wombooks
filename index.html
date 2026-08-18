@@ -9,7 +9,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    
+    <!-- Трюк против кэша Айфона: добавили ?ver=2 -->
+    <link rel="stylesheet" href="style.css?ver=2">
 </head>
 <body>
 
@@ -46,15 +48,12 @@
                 <h2 class="details-title" id="details-title">Название</h2>
                 <p class="details-author" id="details-author">Автор</p>
                 
-                <!-- Блок для серии (появится только если серия есть) -->
                 <div id="details-series-container"></div>
                 
-                <!-- Блок для тропов (автоматически разобьется на плашки) -->
                 <div class="details-tropes" id="details-tropes"></div>
                 
                 <div class="details-annotation" id="details-annotation">Аннотация...</div>
                 
-                <!-- Кнопка скачивания EPUB -->
                 <a href="#" class="download-btn" id="details-download" download>Скачать книгу (.epub)</a>
             </div>
         </div>
@@ -66,6 +65,7 @@
         </nav>
     </div>
 
-    <script src="app.js"></script>
+    <!-- Трюк против кэша Айфона: добавили ?ver=2 -->
+    <script src="app.js?ver=2"></script>
 </body>
 </html>
