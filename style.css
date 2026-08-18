@@ -95,7 +95,7 @@ body {
 }
 .bottom-pill-btn.active-pill { background-color: var(--main-pink); color: #FFFFFF; border-color: var(--main-pink); }
 
-/* --- СТРАНИЦА ОТДЕЛЬНОЙ КНИГИ (НОВОЕ) --- */
+/* --- СТРАНИЦА ОТДЕЛЬНОЙ КНИГИ --- */
 .details-top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
 .back-btn {
     background: transparent; border: none; color: var(--shadow-pink);
@@ -111,9 +111,13 @@ body {
 }
 .details-author { font-size: 12px; color: #A0A0A0; text-align: center; margin-bottom: 15px; }
 
+/* Обновленные стили для серии и номера */
+.details-series-wrapper { 
+    display: flex; justify-content: center; gap: 8px; margin-bottom: 15px; 
+}
 .details-series {
-    display: table; margin: 0 auto 15px auto; padding: 4px 12px;
-    background-color: #F8EBF0; color: var(--shadow-pink); border-radius: 12px; font-size: 10px;
+    padding: 4px 12px; background-color: #F8EBF0; color: var(--shadow-pink); 
+    border-radius: 12px; font-size: 10px;
 }
 
 .details-tropes { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 20px; }
@@ -127,9 +131,17 @@ body {
     margin-bottom: 30px; text-align: justify; padding: 0 5px;
 }
 
+/* Обновленный блок с кнопками внизу */
+.download-section {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 30px;
+}
+.round-back-btn {
+    width: 46px; height: 46px; border: 1px solid var(--main-pink); border-radius: 50%;
+    background-color: transparent; color: var(--shadow-pink); font-size: 18px;
+    display: flex; justify-content: center; align-items: center; cursor: pointer; flex-shrink: 0;
+}
 .download-btn {
-    display: block; width: 100%; background-color: var(--main-pink); color: #FFFFFF;
-    text-align: center; padding: 14px; border-radius: 20px; font-family: 'Montserrat', sans-serif;
+    flex-grow: 1; display: block; background-color: var(--main-pink); color: #FFFFFF;
+    text-align: center; padding: 14px; border-radius: 25px; font-family: 'Montserrat', sans-serif;
     font-size: 14px; font-weight: 500; text-decoration: none; box-shadow: 0 4px 15px rgba(214, 115, 171, 0.2);
-    margin-bottom: 30px;
 }
