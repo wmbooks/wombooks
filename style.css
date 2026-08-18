@@ -59,6 +59,13 @@ body {
     background-color: #FFFFFF; border-radius: 12px; overflow: hidden;
     box-shadow: 0 4px 15px rgba(214, 115, 171, 0.1); display: flex; flex-direction: column;
 }
+
+/* СТИЛЬ ПОДСВЕТКИ ДЛЯ САМОЙ НОВОЙ КНИГИ */
+.highlight-newest {
+    border: 1px solid var(--main-pink);
+    box-shadow: 0 0 15px rgba(255, 192, 228, 0.5), 0 4px 15px rgba(214, 115, 171, 0.15);
+}
+
 .book-cover { width: 100%; aspect-ratio: 2 / 3; object-fit: cover; background-color: #F8EBF0; display: block; }
 .card-info { padding: 10px 8px; display: flex; flex-direction: column; flex-grow: 1; }
 .book-title {
@@ -119,33 +126,18 @@ body {
     transition: background-color 0.3s, color 0.3s;
 }
 
-/* Круглая стрелочка в стиле лупы */
 .round-arrow {
     width: 26px; height: 26px; border: 1px solid #E0E0E0; border-radius: 50%;
     display: flex; justify-content: center; align-items: center;
     color: #BDBDBD; font-size: 12px; transition: all 0.3s ease; flex-shrink: 0;
 }
 
-/* При открытии плашка автора становится розовой */
-.author-item.open .author-header {
-    background-color: var(--main-pink);
-    color: #FFFFFF;
-}
-.author-item.open .author-header .round-arrow {
-    border-color: #FFFFFF;
-    color: #FFFFFF;
-    transform: rotate(90deg); /* Поворот вниз */
-}
+.author-item.open .author-header { background-color: var(--main-pink); color: #FFFFFF; }
+.author-item.open .author-header .round-arrow { border-color: #FFFFFF; color: #FFFFFF; transform: rotate(90deg); }
 
-/* Список серий внутри автора */
-.author-series-list {
-    display: none; flex-direction: column; padding: 15px 20px; gap: 12px;
-}
-.author-item.open .author-series-list {
-    display: flex;
-}
+.author-series-list { display: none; flex-direction: column; padding: 15px 20px; gap: 12px; }
+.author-item.open .author-series-list { display: flex; }
 
-/* Плашка серии */
 .series-item { display: flex; flex-direction: column; }
 .series-header {
     display: flex; justify-content: space-between; align-items: center;
@@ -154,20 +146,8 @@ body {
     border-radius: 12px; border: 1px solid #F0F0F0; transition: border-color 0.3s;
 }
 
-/* При открытии серии */
-.series-item.open .series-header {
-    border-color: var(--main-pink);
-}
-.series-item.open .series-header .round-arrow {
-    transform: rotate(90deg);
-    color: var(--shadow-pink); border-color: var(--shadow-pink);
-}
+.series-item.open .series-header { border-color: var(--main-pink); }
+.series-item.open .series-header .round-arrow { transform: rotate(90deg); color: var(--shadow-pink); border-color: var(--shadow-pink); }
 
-/* Сетка книг внутри конкретной серии */
-.series-books-grid {
-    display: none; grid-template-columns: repeat(3, 1fr); gap: 10px;
-    padding: 15px 0 5px 0;
-}
-.series-item.open .series-books-grid {
-    display: grid;
-}
+.series-books-grid { display: none; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 15px 0 5px 0; }
+.series-item.open .series-books-grid { display: grid; }
