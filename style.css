@@ -60,13 +60,21 @@ body {
     box-shadow: 0 4px 15px rgba(214, 115, 171, 0.1); display: flex; flex-direction: column;
 }
 
-/* СТИЛЬ ПОДСВЕТКИ ДЛЯ САМОЙ НОВОЙ КНИГИ */
+/* СТИЛЬ ПОДСВЕТКИ ДЛЯ САМОЙ НОВОЙ КНИГИ (ОБНОВЛЕНО) */
 .highlight-newest {
-    border: 1px solid var(--main-pink);
-    box-shadow: 0 0 15px rgba(255, 192, 228, 0.5), 0 4px 15px rgba(214, 115, 171, 0.15);
+    /* Обводка убрана, свечение уменьшено наполовину (0.25 вместо 0.5) */
+    box-shadow: 0 0 15px rgba(255, 192, 228, 0.25), 0 4px 15px rgba(214, 115, 171, 0.15);
 }
 
-.book-cover { width: 100%; aspect-ratio: 2 / 3; object-fit: cover; background-color: #F8EBF0; display: block; }
+/* УВЕЛИЧЕНА ДЛИНА ОБЛОЖКИ (ОБНОВЛЕНО) */
+.book-cover { 
+    width: 100%; 
+    aspect-ratio: 1 / 1.6; /* Более вытянутые пропорции */
+    object-fit: cover; 
+    background-color: #F8EBF0; 
+    display: block; 
+}
+
 .card-info { padding: 10px 8px; display: flex; flex-direction: column; flex-grow: 1; }
 .book-title {
     font-family: 'Felidae', serif; font-size: 12px; color: var(--text-dark); margin-bottom: 4px;
