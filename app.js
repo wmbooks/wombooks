@@ -32,6 +32,18 @@ document.addEventListener('DOMContentLoaded', () => {
         return `<span style="color: var(--shadow-pink); font-weight: 600;">${parseFloat(rating).toFixed(2)}</span>`;
     }
 
+    // НОВАЯ ЛОГИКА ДЛЯ НОМЕРА СЕРИИ (#1 или Приквел)
+    function formatSeriesNumber(numStr) {
+        if (!numStr) return '';
+        const trimmed = numStr.trim();
+        // Если это просто число (например 1, 2, 3), добавляем решетку
+        if (/^\d+$/.test(trimmed)) {
+            return `#${trimmed}`;
+        }
+        // Если это текст ("Приквел", "Том 1"), возвращаем как есть
+        return trimmed;
+    }
+
     async function fetchBooksAndRatings() {
         try {
             const response = await fetch(csvUrl);
@@ -103,10 +115,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const isSaved = savedBookIds.includes(book.id);
         const heartIcon = isSaved ? '♥' : '♡';
         
-        // Добавляем плашку с номером серии (если она есть) на обложку в сетке
+        // Встраиваем плашку с номером прямо в обложку
         let seriesBadgeHtml = '';
         if (book.seriesNumber) {
-            seriesBadgeHtml = `<div class="cover-series-badge">${book.seriesNumber}</div>`;
+            seriesBadgeHtml = `<div class="cover-series-badge">${formatSeriesNumber(book.seriesNumber)}</div>`;
         }
 
         return `
@@ -209,15 +221,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if(seriesContainer) {
             seriesContainer.innerHTML = '';
             if (book.series) { seriesContainer.innerHTML += `<div class="details-series">${book.series}</div>`; }
-            // Номер серии убран отсюда!
             if (book.pages) { seriesContainer.innerHTML += `<div class="gray-badge">${book.pages}</div>`; }
         }
 
-        // Показываем плашку с номером серии на обложке
+        // Показываем плашку с номером серии на обложке внутри страницы книги
         const seriesNumBadge = document.getElementById('details-series-num-badge');
         if(seriesNumBadge) {
             if (book.seriesNumber) {
-                seriesNumBadge.innerText = book.seriesNumber;
+                seriesNumBadge.innerText = formatSeriesNumber(book.seriesNumber);
                 seriesNumBadge.style.display = 'block';
             } else {
                 seriesNumBadge.style.display = 'none';
