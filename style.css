@@ -26,21 +26,23 @@ body {
     font-family: 'Montserrat', sans-serif; -webkit-tap-highlight-color: transparent;
 }
 
-/* --- ЗАКРЕПЛЕННАЯ ШАПКА --- */
+/* --- ЗАКРЕПЛЕННАЯ ШАПКА (ИСПРАВЛЕНО ДЛЯ АЙФОНА) --- */
 .top-header {
-    position: fixed; top: 0; left: 0; width: 100%; height: 50px;
+    position: fixed; top: 0; left: 0; width: 100%; height: 75px; /* Увеличил высоту */
+    padding-top: 25px; /* Сдвинул текст вниз из-под челки Айфона */
     background-color: var(--bg-color); display: flex; justify-content: center; align-items: center;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.03); z-index: 100;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.03); z-index: 1000;
 }
 .header-logo {
-    font-family: 'Felidae', serif; /* Шрифт как у книг */
-    font-size: 18px; 
+    font-family: 'Felidae', serif; 
+    font-size: 20px; 
     font-weight: normal;
-    color: var(--shadow-pink); /* Розовый цвет */
+    color: var(--shadow-pink); 
     letter-spacing: 1px;
 }
 
-#app { padding: 75px 20px 0 20px; max-width: 600px; margin: 0 auto; }
+/* Увеличен отступ, чтобы контент не наезжал на большую шапку */
+#app { padding: 90px 20px 0 20px; max-width: 600px; margin: 0 auto; }
 
 /* --- СТРОКА ПОИСКА --- */
 .search-container { position: relative; margin-bottom: 20px; }
@@ -56,10 +58,17 @@ body {
 
 /* --- СЕТКА КНИГ --- */
 .books-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding-bottom: 100px; }
-.book-card { background-color: #FFFFFF; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(214, 115, 171, 0.1); display: flex; flex-direction: column; }
+.book-card { background-color: #FFFFFF; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(214, 115, 171, 0.1); display: flex; flex-direction: column; position: relative; }
 .highlight-newest { box-shadow: 0 0 15px rgba(255, 192, 228, 0.25), 0 4px 15px rgba(214, 115, 171, 0.15); }
 
-.grid-cover-wrapper { position: relative; display: block; }
+/* ИСПРАВЛЕННАЯ ПЛАШКА СЕРИИ НА ОБЛОЖКЕ (ВНУТРИ РАМКИ) */
+.grid-cover-wrapper { position: relative; display: block; overflow: hidden; border-radius: 12px 12px 0 0; }
+.cover-series-badge {
+    position: absolute; top: 6px; right: 6px; /* Строго внутри обложки */
+    padding: 3px 8px; background-color: rgba(245, 245, 245, 0.95); color: #888888; 
+    border-radius: 10px; font-size: 9px; font-weight: 600; white-space: nowrap;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 10;
+}
 
 .book-cover { width: 100%; aspect-ratio: 1 / 1.6; object-fit: cover; background-color: #F8EBF0; display: block; }
 .card-info { padding: 10px 8px; display: flex; flex-direction: column; flex-grow: 1; }
@@ -82,16 +91,9 @@ body {
 .details-top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
 .back-btn { background: transparent; border: none; color: var(--shadow-pink); font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; }
 
-.details-cover-wrapper { position: relative; width: 140px; margin: 0 auto 20px auto; }
-.details-cover { width: 100%; display: block; border-radius: 8px; box-shadow: 0 4px 20px rgba(214, 115, 171, 0.2); }
-
-/* ПЛАШКА НОМЕРА СЕРИИ ПОВЕРХ ОБЛОЖКИ (И ДЛЯ ВИТРИНЫ, И ДЛЯ ДЕТАЛЕЙ) */
-.cover-series-badge {
-    position: absolute; top: -8px; right: -8px; /* Немного сдвинул, чтобы смотрелось компактнее */
-    padding: 3px 8px; background-color: #F5F5F5; color: #888888; 
-    border-radius: 8px; font-size: 9px; font-weight: 500; white-space: nowrap;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08); z-index: 2;
-}
+.details-cover-wrapper { position: relative; width: 140px; margin: 0 auto 20px auto; overflow: hidden; border-radius: 8px; box-shadow: 0 4px 20px rgba(214, 115, 171, 0.2); }
+.details-cover { width: 100%; display: block; }
+.details-cover-wrapper .cover-series-badge { top: 8px; right: 8px; font-size: 10px; padding: 4px 10px; border-radius: 12px; }
 
 .details-title { font-family: 'Felidae', serif; font-size: 22px; color: var(--text-dark); text-align: center; margin-bottom: 6px; }
 .details-author { font-size: 12px; color: #A0A0A0; text-align: center; margin-bottom: 15px; }
