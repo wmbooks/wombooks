@@ -28,7 +28,7 @@ body {
 
 #app { padding: 65px 20px 0 20px; max-width: 600px; margin: 0 auto; }
 
-/* --- ГЛАВНАЯ СТРАНИЦА --- */
+/* --- СТРОКА ПОИСКА --- */
 .search-container { position: relative; margin-bottom: 20px; }
 .search-input {
     width: 100%; padding: 12px 40px 12px 20px;
@@ -42,6 +42,7 @@ body {
     color: #BDBDBD; font-size: 18px;
 }
 
+/* --- ФИЛЬТРЫ --- */
 .category-filters-container { display: flex; flex-direction: column; gap: 10px; margin-bottom: 25px; }
 .category-filters-row { display: flex; gap: 10px; }
 .filter-btn {
@@ -51,6 +52,7 @@ body {
 }
 .active-filter { background-color: var(--main-pink); color: #FFFFFF; border-color: var(--main-pink); }
 
+/* --- СЕТКА КНИГ --- */
 .books-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding-bottom: 100px; }
 
 .book-card {
@@ -87,18 +89,9 @@ body {
 
 /* --- СТРАНИЦА ОТДЕЛЬНОЙ КНИГИ --- */
 .details-top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-.back-btn {
-    background: transparent; border: none; color: var(--shadow-pink);
-    font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer;
-}
-.details-cover {
-    width: 140px; display: block; margin: 0 auto 20px auto; border-radius: 8px;
-    box-shadow: 0 4px 20px rgba(214, 115, 171, 0.2);
-}
-.details-title {
-    font-family: 'Felidae', serif; font-size: 22px; color: var(--text-dark);
-    text-align: center; margin-bottom: 6px;
-}
+.back-btn { background: transparent; border: none; color: var(--shadow-pink); font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; }
+.details-cover { width: 140px; display: block; margin: 0 auto 20px auto; border-radius: 8px; box-shadow: 0 4px 20px rgba(214, 115, 171, 0.2); }
+.details-title { font-family: 'Felidae', serif; font-size: 22px; color: var(--text-dark); text-align: center; margin-bottom: 6px; }
 .details-author { font-size: 12px; color: #A0A0A0; text-align: center; margin-bottom: 15px; }
 
 .details-series-wrapper { display: flex; justify-content: center; gap: 8px; margin-bottom: 15px; }
@@ -110,35 +103,71 @@ body {
 .details-annotation { font-size: 12px; line-height: 1.6; color: var(--text-dark); margin-bottom: 30px; text-align: justify; padding: 0 5px; }
 
 .download-section { display: flex; align-items: center; gap: 12px; margin-bottom: 30px; }
-.round-back-btn {
-    width: 46px; height: 46px; border: 1px solid var(--main-pink); border-radius: 50%;
-    background-color: transparent; color: var(--shadow-pink); font-size: 18px;
-    display: flex; justify-content: center; align-items: center; cursor: pointer; flex-shrink: 0;
-}
-.download-btn {
-    flex-grow: 1; display: block; background-color: var(--main-pink); color: #FFFFFF;
-    text-align: center; padding: 14px; border-radius: 25px; font-family: 'Montserrat', sans-serif;
-    font-size: 14px; font-weight: 500; text-decoration: none; box-shadow: 0 4px 15px rgba(214, 115, 171, 0.2);
-}
+.round-back-btn { width: 46px; height: 46px; border: 1px solid var(--main-pink); border-radius: 50%; background-color: transparent; color: var(--shadow-pink); font-size: 18px; display: flex; justify-content: center; align-items: center; cursor: pointer; flex-shrink: 0; }
+.download-btn { flex-grow: 1; display: block; background-color: var(--main-pink); color: #FFFFFF; text-align: center; padding: 14px; border-radius: 25px; font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 500; text-decoration: none; box-shadow: 0 4px 15px rgba(214, 115, 171, 0.2); }
 
-/* --- ЭКРАН: СПИСОК АВТОРОВ (НОВОЕ) --- */
+/* --- ЭКРАН: СПИСОК АВТОРОВ С РАСКРЫТИЕМ --- */
 .authors-list-container { padding-bottom: 100px; }
+
 .author-item {
     background: #FFFFFF; border-radius: 12px; box-shadow: 0 4px 15px rgba(214, 115, 171, 0.1);
-    margin-bottom: 10px; overflow: hidden;
+    margin-bottom: 10px; overflow: hidden; transition: all 0.3s ease;
 }
 .author-header {
     display: flex; justify-content: space-between; align-items: center; padding: 16px 20px;
     font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 600; color: var(--text-dark); cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
 }
-.author-arrow { transition: transform 0.3s ease; color: var(--shadow-pink); font-size: 12px; }
-.author-arrow.open { transform: rotate(90deg); }
 
-.author-series-list {
-    display: none; /* скрыто по умолчанию */
-    flex-direction: column; padding: 0 20px 16px 20px; gap: 12px;
+/* Круглая стрелочка в стиле лупы */
+.round-arrow {
+    width: 26px; height: 26px; border: 1px solid #E0E0E0; border-radius: 50%;
+    display: flex; justify-content: center; align-items: center;
+    color: #BDBDBD; font-size: 12px; transition: all 0.3s ease; flex-shrink: 0;
 }
-.series-item {
-    font-family: 'Montserrat', sans-serif; font-size: 13px; color: var(--text-dark);
-    cursor: pointer; padding-left: 12px; border-left: 2px solid var(--main-pink);
+
+/* При открытии плашка автора становится розовой */
+.author-item.open .author-header {
+    background-color: var(--main-pink);
+    color: #FFFFFF;
+}
+.author-item.open .author-header .round-arrow {
+    border-color: #FFFFFF;
+    color: #FFFFFF;
+    transform: rotate(90deg); /* Поворот вниз */
+}
+
+/* Список серий внутри автора */
+.author-series-list {
+    display: none; flex-direction: column; padding: 15px 20px; gap: 12px;
+}
+.author-item.open .author-series-list {
+    display: flex;
+}
+
+/* Плашка серии */
+.series-item { display: flex; flex-direction: column; }
+.series-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 16px; font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 500;
+    color: var(--text-dark); cursor: pointer; background-color: #FDFDFD; 
+    border-radius: 12px; border: 1px solid #F0F0F0; transition: border-color 0.3s;
+}
+
+/* При открытии серии */
+.series-item.open .series-header {
+    border-color: var(--main-pink);
+}
+.series-item.open .series-header .round-arrow {
+    transform: rotate(90deg);
+    color: var(--shadow-pink); border-color: var(--shadow-pink);
+}
+
+/* Сетка книг внутри конкретной серии */
+.series-books-grid {
+    display: none; grid-template-columns: repeat(3, 1fr); gap: 10px;
+    padding: 15px 0 5px 0;
+}
+.series-item.open .series-books-grid {
+    display: grid;
 }
