@@ -20,12 +20,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const navHome = document.getElementById('nav-home');
     const navSaved = document.getElementById('nav-saved');
 
+    // --- НОВАЯ ФУНКЦИЯ ДЛЯ ВИТРИНЫ (3 книги) ---
+    function getRecentBooks() {
+        // Берет из таблицы строго 3 самые свежие добавленные книги
+        return allBooks.slice(-3);
+    }
+
     async function fetchBooks() {
         try {
             const response = await fetch(csvUrl);
             const data = await response.text();
             parseCSV(data);
-            renderBooks(allBooks);
+            // При первом запуске показываем только 3 недавние
+            renderBooks(getRecentBooks());
         } catch (error) {
             booksGrid.innerHTML = '<p style="text-align:center; font-size: 12px; margin-top:20px;">Ошибка загрузки книг. Проверьте интернет.</p>';
         }
@@ -188,7 +195,8 @@ document.addEventListener('DOMContentLoaded', () => {
             setActiveFilter(filterRecent);
             authorsContainer.style.display = 'none';
             booksGrid.style.display = 'grid';
-            renderBooks(allBooks); 
+            // Выводим только 3 новинки
+            renderBooks(getRecentBooks()); 
         });
     }
 
@@ -259,7 +267,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (navSaved && navSaved.classList.contains('active-pill')) {
             renderBooks(allBooks.filter(b => savedBookIds.includes(b.id)));
         } else if (filterAuthors && filterAuthors.classList.contains('active-filter')) {
-            // Возвращаемся в авторов, ничего не перерисовывая
+            // Оставляем открытым список авторов
+        } else if (filterRecent && filterRecent.classList.contains('active-filter')) {
+            // Возвращаем 3 последние книги
+            renderBooks(getRecentBooks());
         } else {
             renderBooks(allBooks);
         }
@@ -278,7 +289,8 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (filterRecent) setActiveFilter(filterRecent); 
             authorsContainer.style.display = 'none'; booksGrid.style.display = 'grid';
-            renderBooks(allBooks);
+            // На "Главной" всегда выводим витрину из 3-х новинок
+            renderBooks(getRecentBooks());
         });
     }
 
