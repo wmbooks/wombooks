@@ -32,15 +32,13 @@ document.addEventListener('DOMContentLoaded', () => {
         return `<span style="color: var(--shadow-pink); font-weight: 600;">${parseFloat(rating).toFixed(2)}</span>`;
     }
 
-    // НОВАЯ ЛОГИКА ДЛЯ НОМЕРА СЕРИИ (#1 или Приквел)
+    // ТЕПЕРЬ ПРОПУСКАЕТ ЦЕЛЫЕ (1) И ДРОБНЫЕ (1,5 или 2.5) ЧИСЛА
     function formatSeriesNumber(numStr) {
         if (!numStr) return '';
         const trimmed = numStr.trim();
-        // Если это просто число (например 1, 2, 3), добавляем решетку
-        if (/^\d+$/.test(trimmed)) {
+        if (/^[\d.,]+$/.test(trimmed)) {
             return `#${trimmed}`;
         }
-        // Если это текст ("Приквел", "Том 1"), возвращаем как есть
         return trimmed;
     }
 
@@ -115,7 +113,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const isSaved = savedBookIds.includes(book.id);
         const heartIcon = isSaved ? '♥' : '♡';
         
-        // Встраиваем плашку с номером прямо в обложку
         let seriesBadgeHtml = '';
         if (book.seriesNumber) {
             seriesBadgeHtml = `<div class="cover-series-badge">${formatSeriesNumber(book.seriesNumber)}</div>`;
@@ -224,7 +221,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (book.pages) { seriesContainer.innerHTML += `<div class="gray-badge">${book.pages}</div>`; }
         }
 
-        // Показываем плашку с номером серии на обложке внутри страницы книги
         const seriesNumBadge = document.getElementById('details-series-num-badge');
         if(seriesNumBadge) {
             if (book.seriesNumber) {
