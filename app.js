@@ -70,7 +70,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function createBookCardHTML(book) {
         const isSaved = savedBookIds.includes(book.id);
         const heartIcon = isSaved ? '♥' : '♡';
-        // Заменили .jpg на .png
         return `
             <img src="covers/${book.id}.png" alt="${book.title}" class="book-cover" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\'><rect width=\\'100%\\' height=\\'100%\\' fill=\\'%23F8EBF0\\'/></svg>'">
             <div class="card-info">
@@ -231,7 +230,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!book) return;
         currentOpenBookId = id;
         
-        // Заменили .jpg на .png
         document.getElementById('details-cover').src = `covers/${book.id}.png`;
         document.getElementById('details-title').innerText = book.title;
         document.getElementById('details-author').innerText = book.author;
