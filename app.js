@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let allBooks = [];
     let savedBookIds = JSON.parse(localStorage.getItem('wombooks_saved')) || [];
     let currentOpenBookId = null;
-    let currentRating = 0; // Переменная для хранения выбранных звезд
+    let currentRating = 0; 
 
     const booksGrid = document.getElementById('books-grid');
     const authorsContainer = document.getElementById('authors-container');
@@ -22,6 +22,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const navSaved = document.getElementById('nav-saved');
 
     function getRecentBooks() { return allBooks.slice(-3).reverse(); }
+
+    // Вспомогательная функция для текста рейтинга
+    function getRatingText(rating) {
+        if (!rating || rating === 0 || rating === "0") {
+            return 'Отзывы отсутствуют';
+        }
+        return `★ ${parseFloat(rating).toFixed(2)}`;
+    }
 
     async function fetchBooks() {
         try {
@@ -55,7 +63,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     id: arr[i][0].trim(), title: arr[i][1] ? arr[i][1].trim() : 'Без названия',
                     author: arr[i][2] ? arr[i][2].trim() : '', series: arr[i][3] ? arr[i][3].trim() : '',
                     tropes: arr[i][4] ? arr[i][4].trim() : '', annotation: arr[i][5] ? arr[i][5].trim() : '',
-                    seriesNumber: arr[i][6] ? arr[i][6].trim() : '' 
+                    seriesNumber: arr[i][6] ? arr[i][6].trim() : '',
+                    rating: 0 // Пока у нас нет подключенной базы отзывов, рейтинг 0
                 });
             }
         }
@@ -64,8 +73,13 @@ document.addEventListener('DOMContentLoaded', () => {
     function createBookCardHTML(book) {
         const isSaved = savedBookIds.includes(book.id);
         const heartIcon = isSaved ? '♥' : '♡';
+        const ratingText = getRatingText(book.rating);
+        
         return `
-            <img src="covers/${book.id}.PNG" alt="${book.title}" class="book-cover" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\'><rect width=\\'100%\\' height=\\'100%\\' fill=\\'%23F8EBF0\\'/></svg>'">
+            <div class="grid-cover-wrapper">
+                <img src="covers/${book.id}.PNG" alt="${book.title}" class="book-cover" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\'><rect width=\\'100%\\' height=\\'100%\\' fill=\\'%23F8EBF0\\'/></svg>'">
+                <div class="grid-rating-badge">${ratingText}</div>
+            </div>
             <div class="card-info">
                 <h4 class="book-title">${book.title}</h4>
                 <p class="book-author">${book.author || 'Неизвестный автор'}</p>
@@ -146,8 +160,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('details-title').innerText = book.title;
         document.getElementById('details-author').innerText = book.author;
         
-        // Пока мы не подключили базу, ставим временную оценку 0.0
-        document.getElementById('details-rating').innerText = '★ 0.0';
+        // Оценка на странице книги
+        document.getElementById('details-rating').innerText = getRatingText(book.rating);
 
         const seriesContainer = document.getElementById('details-series-container'); seriesContainer.innerHTML = '';
         if (book.series) { seriesContainer.innerHTML += `<span class="details-series">${book.series}</span>`; }
@@ -196,8 +210,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.submitReview = function() {
         if (currentRating === 0) { tg.showAlert('Пожалуйста, поставьте хотя бы одну звездочку!'); return; }
-        
-        // Показываем уведомление (в следующем шаге заменим на реальную отправку)
         tg.showAlert('Супер! Звезды и отзыв готовы к отправке. В следующем шаге мы подключим Google Таблицу для сохранения!');
         closeReviewModal();
     };
