@@ -25,7 +25,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function getRecentBooks() { return allBooks.slice(-3).reverse(); }
 
-    // Звездочка убрана! 
     function getRatingText(rating) {
         if (!rating || rating === 0 || rating === "0") {
             return `<span style="color: #A0A0A0; font-weight: 500;">0.00</span>`;
@@ -203,8 +202,18 @@ document.addEventListener('DOMContentLoaded', () => {
         if(seriesContainer) {
             seriesContainer.innerHTML = '';
             if (book.series) { seriesContainer.innerHTML += `<div class="details-series">${book.series}</div>`; }
-            if (book.seriesNumber) { seriesContainer.innerHTML += `<div class="gray-badge">${book.seriesNumber}</div>`; }
             if (book.pages) { seriesContainer.innerHTML += `<div class="gray-badge">${book.pages}</div>`; }
+        }
+
+        // Показываем плашку с номером серии на обложке, если номер указан
+        const seriesNumBadge = document.getElementById('details-series-num-badge');
+        if(seriesNumBadge) {
+            if (book.seriesNumber) {
+                seriesNumBadge.innerText = book.seriesNumber;
+                seriesNumBadge.style.display = 'block';
+            } else {
+                seriesNumBadge.style.display = 'none';
+            }
         }
 
         const tropesContainer = document.getElementById('details-tropes'); 
