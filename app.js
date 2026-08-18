@@ -103,9 +103,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const isSaved = savedBookIds.includes(book.id);
         const heartIcon = isSaved ? '♥' : '♡';
         
+        // Добавляем плашку с номером серии (если она есть) на обложку в сетке
+        let seriesBadgeHtml = '';
+        if (book.seriesNumber) {
+            seriesBadgeHtml = `<div class="cover-series-badge">${book.seriesNumber}</div>`;
+        }
+
         return `
             <div class="grid-cover-wrapper">
                 <img src="covers/${book.id}.PNG" alt="${book.title}" class="book-cover" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\'><rect width=\\'100%\\' height=\\'100%\\' fill=\\'%23F8EBF0\\'/></svg>'">
+                ${seriesBadgeHtml}
             </div>
             <div class="card-info">
                 <h4 class="book-title">${book.title}</h4>
@@ -202,10 +209,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if(seriesContainer) {
             seriesContainer.innerHTML = '';
             if (book.series) { seriesContainer.innerHTML += `<div class="details-series">${book.series}</div>`; }
+            // Номер серии убран отсюда!
             if (book.pages) { seriesContainer.innerHTML += `<div class="gray-badge">${book.pages}</div>`; }
         }
 
-        // Показываем плашку с номером серии на обложке, если номер указан
+        // Показываем плашку с номером серии на обложке
         const seriesNumBadge = document.getElementById('details-series-num-badge');
         if(seriesNumBadge) {
             if (book.seriesNumber) {
