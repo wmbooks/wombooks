@@ -8,12 +8,19 @@ document.addEventListener('DOMContentLoaded', () => {
     let savedBookIds = JSON.parse(localStorage.getItem('wombooks_saved')) || [];
     let currentOpenBookId = null;
 
-    const booksGrid = document.querySelector('.books-grid');
-    const navBtns = document.querySelectorAll('.bottom-pill-btn');
-    
+    // Контейнеры
+    const booksGrid = document.getElementById('books-grid');
+    const authorsContainer = document.getElementById('authors-container');
     const pageHome = document.getElementById('page-home');
     const pageDetails = document.getElementById('page-book-details');
     const bottomNav = document.getElementById('bottom-nav');
+
+    // Кнопки фильтров и меню
+    const filterRecent = document.getElementById('filter-recent');
+    const filterTropes = document.getElementById('filter-tropes');
+    const filterAuthors = document.getElementById('filter-authors');
+    const navHome = document.getElementById('nav-home');
+    const navSaved = document.getElementById('nav-saved');
 
     async function fetchBooks() {
         try {
@@ -33,14 +40,12 @@ document.addEventListener('DOMContentLoaded', () => {
             let cc = str[c], nc = str[c+1];
             arr[row] = arr[row] || [];
             arr[row][col] = arr[row][col] || '';
-            
             if (cc == '"' && quote && nc == '"') { arr[row][col] += cc; ++c; continue; }
             if (cc == '"') { quote = !quote; continue; }
             if (cc == ',' && !quote) { ++col; continue; }
             if (cc == '\r' && nc == '\n' && !quote) { ++row; col = 0; ++c; continue; }
             if (cc == '\n' && !quote) { ++row; col = 0; continue; }
             if (cc == '\r' && !quote) { ++row; col = 0; continue; }
-            
             arr[row][col] += cc;
         }
         
@@ -54,23 +59,22 @@ document.addEventListener('DOMContentLoaded', () => {
                     series: arr[i][3] ? arr[i][3].trim() : '',
                     tropes: arr[i][4] ? arr[i][4].trim() : '',
                     annotation: arr[i][5] ? arr[i][5].trim() : '',
-                    seriesNumber: arr[i][6] ? arr[i][6].trim() : '' // Новая 7-я колонка
+                    seriesNumber: arr[i][6] ? arr[i][6].trim() : '' 
                 });
             }
         }
     }
 
+    // --- ОТРИСОВКА КНИГ (СЕТКА) ---
     function renderBooks(books) {
         booksGrid.innerHTML = ''; 
         if (books.length === 0) {
             booksGrid.innerHTML = '<p style="text-align:center; width: 300%; margin-top: 20px; font-size: 12px; color: #A0A0A0;">Здесь пока пусто.</p>';
             return;
         }
-
         books.forEach(book => {
             const isSaved = savedBookIds.includes(book.id);
             const heartIcon = isSaved ? '♥' : '♡';
-
             const card = document.createElement('div');
             card.className = 'book-card';
             card.innerHTML = `
@@ -88,14 +92,105 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // --- ОТРИСОВКА АВТОРОВ (АККОРДЕОН) ---
+    function renderAuthorsList() {
+        authorsContainer.innerHTML = '';
+        const authorsMap = {};
+        
+        // Собираем всех авторов и их серии
+        allBooks.forEach(book => {
+            const author = book.author || 'Неизвестный автор';
+            if (!authorsMap[author]) authorsMap[author] = new Set();
+            const series = book.series ? book.series : 'Одиночные книги';
+            authorsMap[author].add(series);
+        });
+
+        const sortedAuthors = Object.keys(authorsMap).sort();
+        if (sortedAuthors.length === 0) {
+            authorsContainer.innerHTML = '<p style="text-align:center; margin-top: 20px; font-size: 12px; color: #A0A0A0;">Авторов пока нет.</p>';
+            return;
+        }
+
+        sortedAuthors.forEach(author => {
+            const seriesList = Array.from(authorsMap[author]).sort();
+            const authorItem = document.createElement('div');
+            authorItem.className = 'author-item';
+            
+            let seriesHTML = '';
+            seriesList.forEach(series => {
+                seriesHTML += `<div class="series-item" onclick="filterByAuthorAndSeries('${author}', '${series}')">${series}</div>`;
+            });
+
+            authorItem.innerHTML = `
+                <div class="author-header" onclick="toggleAuthor(this)">
+                    <span>${author}</span>
+                    <span class="author-arrow">➔</span>
+                </div>
+                <div class="author-series-list">
+                    ${seriesHTML}
+                </div>
+            `;
+            authorsContainer.appendChild(authorItem);
+        });
+    }
+
+    // Раскрытие списка серий автора с поворотом стрелочки
+    window.toggleAuthor = function(headerElement) {
+        const arrow = headerElement.querySelector('.author-arrow');
+        const seriesList = headerElement.nextElementSibling;
+        if (seriesList.style.display === 'flex') {
+            seriesList.style.display = 'none';
+            arrow.classList.remove('open');
+        } else {
+            seriesList.style.display = 'flex';
+            arrow.classList.add('open');
+        }
+    };
+
+    // Фильтрация книг по выбранной серии автора
+    window.filterByAuthorAndSeries = function(author, series) {
+        authorsContainer.style.display = 'none';
+        booksGrid.style.display = 'grid';
+        let filtered;
+        if (series === 'Одиночные книги') {
+            filtered = allBooks.filter(b => b.author === author && !b.series);
+        } else {
+            filtered = allBooks.filter(b => b.author === author && b.series === series);
+        }
+        renderBooks(filtered);
+    };
+
+    // --- ЛОГИКА ФИЛЬТРОВ ---
+    function setActiveFilter(activeBtn) {
+        [filterRecent, filterTropes, filterAuthors].forEach(btn => btn.classList.remove('active-filter'));
+        activeBtn.classList.add('active-filter');
+    }
+
+    filterRecent.addEventListener('click', () => {
+        setActiveFilter(filterRecent);
+        authorsContainer.style.display = 'none';
+        booksGrid.style.display = 'grid';
+        renderBooks(allBooks); // Пока выводим все книги
+    });
+
+    filterAuthors.addEventListener('click', () => {
+        setActiveFilter(filterAuthors);
+        booksGrid.style.display = 'none';
+        authorsContainer.style.display = 'block';
+        renderAuthorsList();
+    });
+
+    filterTropes.addEventListener('click', () => {
+        tg.showAlert('Фильтр по тропам настроим следующим шагом!');
+    });
+
+    // --- ОСТАЛЬНАЯ ЛОГИКА (ИЗБРАННОЕ И ПЕРЕКЛЮЧЕНИЯ) ---
     window.toggleSave = function(btnElement, id) {
         const index = savedBookIds.indexOf(id);
         if (index > -1) {
-            savedBookIds.splice(index, 1);
-            btnElement.innerText = '♡';
+            savedBookIds.splice(index, 1); btnElement.innerText = '♡';
         } else {
-            savedBookIds.push(id);
-            btnElement.innerText = '♥';
+            savedBookIds.push(id); btnElement.innerText = '♥';
         }
         localStorage.setItem('wombooks_saved', JSON.stringify(savedBookIds));
     };
@@ -103,28 +198,20 @@ document.addEventListener('DOMContentLoaded', () => {
     window.openBook = function(id) {
         const book = allBooks.find(b => b.id === id);
         if (!book) return;
-
         currentOpenBookId = id;
-
         document.getElementById('details-cover').src = `covers/${book.id}.jpg`;
         document.getElementById('details-title').innerText = book.title;
         document.getElementById('details-author').innerText = book.author;
         
-        // Очищаем и заново создаем плашки для Серии и Номера в серии
         const seriesContainer = document.getElementById('details-series-container');
         seriesContainer.innerHTML = '';
-        if (book.series) {
-            seriesContainer.innerHTML += `<span class="details-series">${book.series}</span>`;
-        }
-        if (book.seriesNumber) {
-            seriesContainer.innerHTML += `<span class="details-series">${book.seriesNumber}</span>`;
-        }
+        if (book.series) { seriesContainer.innerHTML += `<span class="details-series">${book.series}</span>`; }
+        if (book.seriesNumber) { seriesContainer.innerHTML += `<span class="details-series">${book.seriesNumber}</span>`; }
 
         const tropesContainer = document.getElementById('details-tropes');
         tropesContainer.innerHTML = '';
         if (book.tropes) {
-            const tropesArray = book.tropes.split(',');
-            tropesArray.forEach(trope => {
+            book.tropes.split(',').forEach(trope => {
                 if (trope.trim()) {
                     const span = document.createElement('span');
                     span.className = 'trope-tag';
@@ -133,29 +220,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         }
-
         document.getElementById('details-annotation').innerText = book.annotation;
         document.getElementById('details-download').href = `books/${book.id}.epub`;
 
         const isSaved = savedBookIds.includes(book.id);
         document.getElementById('details-fav-btn').innerText = isSaved ? '♥' : '♡';
 
-        pageHome.style.display = 'none';
-        bottomNav.style.display = 'none';
-        pageDetails.style.display = 'block';
-        window.scrollTo(0, 0); 
+        pageHome.style.display = 'none'; bottomNav.style.display = 'none';
+        pageDetails.style.display = 'block'; window.scrollTo(0, 0); 
     };
 
     window.closeBook = function() {
-        pageDetails.style.display = 'none';
-        pageHome.style.display = 'block';
-        bottomNav.style.display = 'flex';
-        
-        const isSavedTab = navBtns[1].classList.contains('active-pill');
+        pageDetails.style.display = 'none'; pageHome.style.display = 'block'; bottomNav.style.display = 'flex';
+        const isSavedTab = navSaved.classList.contains('active-pill');
         if (isSavedTab) {
             renderBooks(allBooks.filter(b => savedBookIds.includes(b.id)));
         } else {
-            renderBooks(allBooks);
+            // Если включен фильтр Авторов, возвращаемся к нему
+            if (filterAuthors.classList.contains('active-filter')) {
+                booksGrid.style.display = 'none';
+                authorsContainer.style.display = 'block';
+            } else {
+                renderBooks(allBooks);
+            }
         }
     };
 
@@ -165,17 +252,17 @@ document.addEventListener('DOMContentLoaded', () => {
         toggleSave(btn, currentOpenBookId);
     };
 
-    navBtns[0].addEventListener('click', () => {
-        navBtns[0].classList.add('active-pill');
-        navBtns[1].classList.remove('active-pill');
+    navHome.addEventListener('click', () => {
+        navHome.classList.add('active-pill'); navSaved.classList.remove('active-pill');
+        setActiveFilter(filterRecent); // Сброс на Главную
+        authorsContainer.style.display = 'none'; booksGrid.style.display = 'grid';
         renderBooks(allBooks);
     });
 
-    navBtns[1].addEventListener('click', () => {
-        navBtns[1].classList.add('active-pill');
-        navBtns[0].classList.remove('active-pill');
-        const savedBooks = allBooks.filter(book => savedBookIds.includes(book.id));
-        renderBooks(savedBooks);
+    navSaved.addEventListener('click', () => {
+        navSaved.classList.add('active-pill'); navHome.classList.remove('active-pill');
+        authorsContainer.style.display = 'none'; booksGrid.style.display = 'grid';
+        renderBooks(allBooks.filter(book => savedBookIds.includes(book.id)));
     });
 
     fetchBooks();
