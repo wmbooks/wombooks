@@ -1,19 +1,21 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Подключаем Telegram
     const tg = window.Telegram.WebApp;
     tg.expand();
 
-    // Твоя новая рабочая ссылка на базу данных
     const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQofE7L59iFriQgwIJ-P0MclqfZ2QhBHR-zbk6FgaaZ7VSJ_dmtv823zjZkXBRWDodnCJ11B_Pa1oPc/pub?output=csv';
 
     let allBooks = [];
-    // Загружаем список сохраненных книг из памяти телефона
     let savedBookIds = JSON.parse(localStorage.getItem('wombooks_saved')) || [];
+    let currentOpenBookId = null; // Запоминаем, какая книга сейчас открыта
 
     const booksGrid = document.querySelector('.books-grid');
     const navBtns = document.querySelectorAll('.bottom-pill-btn');
+    
+    // Элементы страниц
+    const pageHome = document.getElementById('page-home');
+    const pageDetails = document.getElementById('page-book-details');
+    const bottomNav = document.getElementById('bottom-nav');
 
-    // Функция загрузки книг из Google Таблицы
     async function fetchBooks() {
         try {
             const response = await fetch(csvUrl);
@@ -21,11 +23,10 @@ document.addEventListener('DOMContentLoaded', () => {
             parseCSV(data);
             renderBooks(allBooks);
         } catch (error) {
-            booksGrid.innerHTML = '<p style="text-align:center; margin-top: 20px; font-size: 12px;">Ошибка загрузки книг. Проверьте интернет.</p>';
+            booksGrid.innerHTML = '<p style="text-align:center; font-size: 12px;">Ошибка загрузки книг. Проверьте интернет.</p>';
         }
     }
 
-    // Системный парсер для чтения таблицы
     function parseCSV(str) {
         const arr = [];
         let quote = false;
@@ -45,7 +46,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         allBooks = [];
-        // Пропускаем первую строку с заголовками
         for (let i = 1; i < arr.length; i++) {
             if (arr[i].length >= 2 && arr[i][0]) {
                 allBooks.push({
@@ -60,10 +60,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Функция отрисовки карточек
     function renderBooks(books) {
-        booksGrid.innerHTML = ''; // Очищаем экран перед отрисовкой
-        
+        booksGrid.innerHTML = ''; 
         if (books.length === 0) {
             booksGrid.innerHTML = '<p style="text-align:center; width: 300%; margin-top: 20px; font-size: 12px; color: #A0A0A0;">Здесь пока пусто.</p>';
             return;
@@ -71,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         books.forEach(book => {
             const isSaved = savedBookIds.includes(book.id);
-            const heartIcon = isSaved ? '♥' : '♡'; // Закрашиваем, если книга сохранена
+            const heartIcon = isSaved ? '♥' : '♡';
 
             const card = document.createElement('div');
             card.className = 'book-card';
@@ -90,38 +88,104 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Временная заглушка для стрелочки
-    window.openBook = function(id) {
-        tg.showAlert('Скоро здесь будет открываться информация о книге!');
-    };
-
-    // Логика кнопки "В избранное" (Сердечко)
     window.toggleSave = function(btnElement, id) {
         const index = savedBookIds.indexOf(id);
         if (index > -1) {
-            savedBookIds.splice(index, 1); // Удаляем
+            savedBookIds.splice(index, 1);
             btnElement.innerText = '♡';
         } else {
-            savedBookIds.push(id); // Добавляем
+            savedBookIds.push(id);
             btnElement.innerText = '♥';
         }
         localStorage.setItem('wombooks_saved', JSON.stringify(savedBookIds));
     };
 
-    // Логика нижних плашек (переключение экранов)
+    // --- ЛОГИКА ОТКРЫТИЯ СТРАНИЦЫ КНИГИ ---
+    window.openBook = function(id) {
+        // Находим книгу в базе
+        const book = allBooks.find(b => b.id === id);
+        if (!book) return;
+
+        currentOpenBookId = id;
+
+        // Заполняем шаблон данными этой конкретной книги
+        document.getElementById('details-cover').src = `covers/${book.id}.jpg`;
+        document.getElementById('details-title').innerText = book.title;
+        document.getElementById('details-author').innerText = book.author;
+        
+        // Серия (если есть)
+        const seriesContainer = document.getElementById('details-series-container');
+        if (book.series) {
+            seriesContainer.innerHTML = `<span class="details-series">${book.series}</span>`;
+        } else {
+            seriesContainer.innerHTML = '';
+        }
+
+        // Тропы (разбиваем через запятую на отдельные плашки)
+        const tropesContainer = document.getElementById('details-tropes');
+        tropesContainer.innerHTML = '';
+        if (book.tropes) {
+            const tropesArray = book.tropes.split(',');
+            tropesArray.forEach(trope => {
+                if (trope.trim()) {
+                    const span = document.createElement('span');
+                    span.className = 'trope-tag';
+                    span.innerText = trope.trim();
+                    tropesContainer.appendChild(span);
+                }
+            });
+        }
+
+        document.getElementById('details-annotation').innerText = book.annotation;
+        
+        // Кнопка скачивания ведет на файл epub
+        document.getElementById('details-download').href = `books/${book.id}.epub`;
+
+        // Обновляем сердечко в шапке
+        const isSaved = savedBookIds.includes(book.id);
+        document.getElementById('details-fav-btn').innerText = isSaved ? '♥' : '♡';
+
+        // Прячем витрину, показываем страницу книги
+        pageHome.style.display = 'none';
+        bottomNav.style.display = 'none'; // Прячем нижнее меню, чтобы не мешало читать
+        pageDetails.style.display = 'block';
+        window.scrollTo(0, 0); // Прокручиваем на самый верх
+    };
+
+    // --- ЛОГИКА ЗАКРЫТИЯ СТРАНИЦЫ КНИГИ ---
+    window.closeBook = function() {
+        pageDetails.style.display = 'none';
+        pageHome.style.display = 'block';
+        bottomNav.style.display = 'flex';
+        // Перерисовываем витрину, чтобы сердечки обновились (если мы сохранили книгу внутри)
+        const isSavedTab = navBtns[1].classList.contains('active-pill');
+        if (isSavedTab) {
+            renderBooks(allBooks.filter(b => savedBookIds.includes(b.id)));
+        } else {
+            renderBooks(allBooks);
+        }
+    };
+
+    // Сохранение прямо со страницы деталей
+    window.toggleSaveFromDetails = function() {
+        if (!currentOpenBookId) return;
+        const btn = document.getElementById('details-fav-btn');
+        toggleSave(btn, currentOpenBookId);
+    };
+
+    // Переключение Главная / Сохраненное
     navBtns[0].addEventListener('click', () => {
         navBtns[0].classList.add('active-pill');
         navBtns[1].classList.remove('active-pill');
-        renderBooks(allBooks); // Показываем все
+        renderBooks(allBooks);
     });
 
     navBtns[1].addEventListener('click', () => {
         navBtns[1].classList.add('active-pill');
         navBtns[0].classList.remove('active-pill');
         const savedBooks = allBooks.filter(book => savedBookIds.includes(book.id));
-        renderBooks(savedBooks); // Показываем только сохраненные
+        renderBooks(savedBooks);
     });
 
-    // Запускаем загрузку
     fetchBooks();
 });
