@@ -10,8 +10,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
     
-    <!-- Трюк против кэша Айфона: версия 11 -->
-    <link rel="stylesheet" href="style.css?ver=11">
+    <!-- Трюк против кэша Айфона: версия 12 -->
+    <link rel="stylesheet" href="style.css?ver=12">
 </head>
 <body>
 
@@ -35,11 +35,10 @@
 
             <div class="books-grid" id="books-grid"></div>
 
-            <!-- Экран Авторов (скрыт по умолчанию) -->
             <div class="authors-list-container" id="authors-container" style="display: none;"></div>
         </div>
 
-        <!-- СТРАНИЦА 2: ДЕТАЛИ КНИГИ (ШАБЛОН) -->
+        <!-- СТРАНИЦА 2: ДЕТАЛИ КНИГИ -->
         <div id="page-book-details" style="display: none;">
             <div class="details-top-bar">
                 <button class="back-btn" onclick="closeBook()">← Назад</button>
@@ -47,20 +46,27 @@
             </div>
             
             <div class="details-content">
-                <img src="" alt="" class="details-cover" id="details-cover">
+                <!-- Обертка для обложки, чтобы кружок оценки висел на углу -->
+                <div class="details-cover-wrapper">
+                    <img src="" alt="" class="details-cover" id="details-cover">
+                    <!-- Кружок с оценкой -->
+                    <div class="rating-badge" id="details-rating">★ 0.0</div>
+                </div>
+
                 <h2 class="details-title" id="details-title">Название</h2>
                 <p class="details-author" id="details-author">Автор</p>
                 
                 <div class="details-series-wrapper" id="details-series-container"></div>
-                
                 <div class="details-tropes" id="details-tropes"></div>
-                
                 <div class="details-annotation" id="details-annotation">Аннотация...</div>
                 
                 <div class="download-section">
                     <button class="round-back-btn" onclick="closeBook()">←</button>
                     <a href="#" class="download-btn" id="details-download" download>Скачать книгу (.epub)</a>
                 </div>
+
+                <!-- Новая кнопка для отзывов -->
+                <button class="review-btn" onclick="openReviewModal()">Оценить и оставить отзыв</button>
             </div>
         </div>
 
@@ -71,7 +77,26 @@
         </nav>
     </div>
 
-    <!-- Трюк против кэша Айфона: версия 11 -->
-    <script src="app.js?ver=11"></script>
+    <!-- МОДАЛЬНОЕ ОКНО ДЛЯ ОТЗЫВА (Скрыто) -->
+    <div id="review-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <h3 class="modal-title">Оценить книгу</h3>
+            <div class="stars-container" id="stars-container">
+                <span class="star" data-val="1">★</span>
+                <span class="star" data-val="2">★</span>
+                <span class="star" data-val="3">★</span>
+                <span class="star" data-val="4">★</span>
+                <span class="star" data-val="5">★</span>
+            </div>
+            <textarea id="review-text" class="review-textarea" placeholder="Напишите пару слов о книге... (необязательно)"></textarea>
+            <div class="modal-actions">
+                <button class="modal-btn cancel-btn" onclick="closeReviewModal()">Отмена</button>
+                <button class="modal-btn submit-btn" onclick="submitReview()">Отправить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Трюк против кэша Айфона: версия 12 -->
+    <script src="app.js?ver=12"></script>
 </body>
 </html>
