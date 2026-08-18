@@ -14,9 +14,8 @@
 <body>
 
     <div id="app">
-        <!-- СТРАНИЦА 1: ГЛАВНАЯ -->
-        <div id="page-home" class="page active">
-            
+        <!-- СТРАНИЦА 1: ГЛАВНАЯ (ВИТРИНА) -->
+        <div id="page-home">
             <div class="search-container">
                 <input type="text" class="search-input" placeholder="Найти книгу или автора">
                 <span class="search-icon">⚲</span>
@@ -32,21 +31,41 @@
                 </div>
             </div>
 
-            <!-- Сетка книг (ТЕПЕРЬ ОНА ПУСТАЯ, ТАК КАК КАРТОЧКИ ГРУЗЯТСЯ ИЗ ТАБЛИЦЫ) -->
-            <div class="books-grid">
+            <div class="books-grid"></div>
+        </div>
+
+        <!-- СТРАНИЦА 2: ДЕТАЛИ КНИГИ (ШАБЛОН) -->
+        <div id="page-book-details" style="display: none;">
+            <div class="details-top-bar">
+                <button class="back-btn" onclick="closeBook()">← Назад</button>
+                <button class="action-btn fav-btn" id="details-fav-btn" onclick="toggleSaveFromDetails()">♡</button>
             </div>
             
+            <div class="details-content">
+                <img src="" alt="" class="details-cover" id="details-cover">
+                <h2 class="details-title" id="details-title">Название</h2>
+                <p class="details-author" id="details-author">Автор</p>
+                
+                <!-- Блок для серии (появится только если серия есть) -->
+                <div id="details-series-container"></div>
+                
+                <!-- Блок для тропов (автоматически разобьется на плашки) -->
+                <div class="details-tropes" id="details-tropes"></div>
+                
+                <div class="details-annotation" id="details-annotation">Аннотация...</div>
+                
+                <!-- Кнопка скачивания EPUB -->
+                <a href="#" class="download-btn" id="details-download" download>Скачать книгу (.epub)</a>
+            </div>
         </div>
 
         <!-- НИЖНЕЕ МЕНЮ НАВИГАЦИИ -->
-        <nav class="bottom-nav">
+        <nav class="bottom-nav" id="bottom-nav">
             <button class="bottom-pill-btn active-pill">Главная</button>
             <button class="bottom-pill-btn">Сохраненное</button>
         </nav>
-
     </div>
 
-    <!-- ПОДКЛЮЧАЕМ НАШ ФАЙЛ ЛОГИКИ -->
     <script src="app.js"></script>
 </body>
 </html>
