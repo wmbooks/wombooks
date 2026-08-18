@@ -3,8 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const tg = window.Telegram.WebApp;
     tg.expand();
 
-    // Системная ссылка на твою базу данных (я переделал её для кода)
-    const csvUrl = 'https://docs.google.com/spreadsheets/d/114rRidA5kuYGYFrH8266t1mQtvTeWoTPeoIlishnhrg/pub?output=csv';
+    // Твоя новая рабочая ссылка на базу данных
+    const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQofE7L59iFriQgwIJ-P0MclqfZ2QhBHR-zbk6FgaaZ7VSJ_dmtv823zjZkXBRWDodnCJ11B_Pa1oPc/pub?output=csv';
 
     let allBooks = [];
     // Загружаем список сохраненных книг из памяти телефона
@@ -64,6 +64,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderBooks(books) {
         booksGrid.innerHTML = ''; // Очищаем экран перед отрисовкой
         
+        if (books.length === 0) {
+            booksGrid.innerHTML = '<p style="text-align:center; width: 300%; margin-top: 20px; font-size: 12px; color: #A0A0A0;">Здесь пока пусто.</p>';
+            return;
+        }
+
         books.forEach(book => {
             const isSaved = savedBookIds.includes(book.id);
             const heartIcon = isSaved ? '♥' : '♡'; // Закрашиваем, если книга сохранена
@@ -85,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Временная заглушка для стрелочки (позже сделаем переход на страницу книги)
+    // Временная заглушка для стрелочки
     window.openBook = function(id) {
         tg.showAlert('Скоро здесь будет открываться информация о книге!');
     };
@@ -117,6 +122,6 @@ document.addEventListener('DOMContentLoaded', () => {
         renderBooks(savedBooks); // Показываем только сохраненные
     });
 
-    // Запускаем магию!
+    // Запускаем загрузку
     fetchBooks();
 });
