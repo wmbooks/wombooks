@@ -26,10 +26,10 @@ body {
     font-family: 'Montserrat', sans-serif; -webkit-tap-highlight-color: transparent;
 }
 
-/* --- ЗАКРЕПЛЕННАЯ ШАПКА (ИСПРАВЛЕНО ДЛЯ АЙФОНА) --- */
+/* --- ПУСТАЯ ЗАКРЕПЛЕННАЯ ШАПКА (СДВИНУТА ЕЩЕ НИЖЕ) --- */
 .top-header {
-    position: fixed; top: 0; left: 0; width: 100%; height: 75px; /* Увеличил высоту */
-    padding-top: 25px; /* Сдвинул текст вниз из-под челки Айфона */
+    position: fixed; top: 0; left: 0; width: 100%; height: 90px; 
+    padding-top: 40px; 
     background-color: var(--bg-color); display: flex; justify-content: center; align-items: center;
     box-shadow: 0 2px 10px rgba(0,0,0,0.03); z-index: 1000;
 }
@@ -41,8 +41,8 @@ body {
     letter-spacing: 1px;
 }
 
-/* Увеличен отступ, чтобы контент не наезжал на большую шапку */
-#app { padding: 90px 20px 0 20px; max-width: 600px; margin: 0 auto; }
+/* Увеличен отступ, чтобы контент не прятался под большой пустой шапкой */
+#app { padding: 105px 20px 0 20px; max-width: 600px; margin: 0 auto; }
 
 /* --- СТРОКА ПОИСКА --- */
 .search-container { position: relative; margin-bottom: 20px; }
@@ -61,10 +61,9 @@ body {
 .book-card { background-color: #FFFFFF; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(214, 115, 171, 0.1); display: flex; flex-direction: column; position: relative; }
 .highlight-newest { box-shadow: 0 0 15px rgba(255, 192, 228, 0.25), 0 4px 15px rgba(214, 115, 171, 0.15); }
 
-/* ИСПРАВЛЕННАЯ ПЛАШКА СЕРИИ НА ОБЛОЖКЕ (ВНУТРИ РАМКИ) */
 .grid-cover-wrapper { position: relative; display: block; overflow: hidden; border-radius: 12px 12px 0 0; }
 .cover-series-badge {
-    position: absolute; top: 6px; right: 6px; /* Строго внутри обложки */
+    position: absolute; top: 6px; right: 6px; 
     padding: 3px 8px; background-color: rgba(245, 245, 245, 0.95); color: #888888; 
     border-radius: 10px; font-size: 9px; font-weight: 600; white-space: nowrap;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 10;
