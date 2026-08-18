@@ -17,13 +17,11 @@
         <!-- СТРАНИЦА 1: ГЛАВНАЯ -->
         <div id="page-home" class="page active">
             
-            <!-- Поисковая строка -->
             <div class="search-container">
                 <input type="text" class="search-input" placeholder="Найти книгу или автора">
                 <span class="search-icon">⚲</span>
             </div>
 
-            <!-- Фильтры категорий -->
             <div class="category-filters-container">
                 <div class="category-filters-row">
                     <button class="filter-btn active-filter">Недавно добавленное</button>
@@ -34,49 +32,10 @@
                 </div>
             </div>
 
-            <!-- Сетка книг -->
+            <!-- Сетка книг (ТЕПЕРЬ ОНА ПУСТАЯ, ТАК КАК КАРТОЧКИ ГРУЗЯТСЯ ИЗ ТАБЛИЦЫ) -->
             <div class="books-grid">
-                
-                <!-- Карточка 1 -->
-                <div class="book-card">
-                    <div class="cover-placeholder"></div>
-                    <div class="card-info">
-                        <h4 class="book-title">Наследник</h4>
-                        <p class="book-author">Софи Траверс</p>
-                        <div class="card-actions">
-                            <button class="action-btn arrow-btn">➔</button>
-                            <button class="action-btn fav-btn">♡</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Карточка 2 -->
-                <div class="book-card">
-                    <div class="cover-placeholder"></div>
-                    <div class="card-info">
-                        <h4 class="book-title">Забег не по правилам</h4>
-                        <p class="book-author">Элси Сильвер</p>
-                        <div class="card-actions">
-                            <button class="action-btn arrow-btn">➔</button>
-                            <button class="action-btn fav-btn">♡</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Карточка 3 -->
-                <div class="book-card">
-                    <div class="cover-placeholder"></div>
-                    <div class="card-info">
-                        <h4 class="book-title">Место для любви</h4>
-                        <p class="book-author">Крис Эндрюс</p>
-                        <div class="card-actions">
-                            <button class="action-btn arrow-btn">➔</button>
-                            <button class="action-btn fav-btn">♡</button>
-                        </div>
-                    </div>
-                </div>
-
             </div>
+            
         </div>
 
         <!-- НИЖНЕЕ МЕНЮ НАВИГАЦИИ -->
@@ -87,5 +46,7 @@
 
     </div>
 
+    <!-- ПОДКЛЮЧАЕМ НАШ ФАЙЛ ЛОГИКИ -->
+    <script src="app.js"></script>
 </body>
 </html>
