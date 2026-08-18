@@ -20,10 +20,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const navHome = document.getElementById('nav-home');
     const navSaved = document.getElementById('nav-saved');
 
-    // --- НОВАЯ ФУНКЦИЯ ДЛЯ ВИТРИНЫ (3 книги) ---
+    // Функция: забираем 3 последние книги из базы и переворачиваем порядок
+    // Теперь самая новая книга будет стоять ПЕРВОЙ (слева)
     function getRecentBooks() {
-        // Берет из таблицы строго 3 самые свежие добавленные книги
-        return allBooks.slice(-3);
+        return allBooks.slice(-3).reverse();
     }
 
     async function fetchBooks() {
@@ -31,8 +31,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(csvUrl);
             const data = await response.text();
             parseCSV(data);
-            // При первом запуске показываем только 3 недавние
-            renderBooks(getRecentBooks());
+            // true включает подсветку для первой (самой левой) книги
+            renderBooks(getRecentBooks(), true);
         } catch (error) {
             booksGrid.innerHTML = '<p style="text-align:center; font-size: 12px; margin-top:20px;">Ошибка загрузки книг. Проверьте интернет.</p>';
         }
@@ -86,15 +86,21 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
     }
 
-    function renderBooks(books) {
+    // Добавлен флаг highlightFirst (включает свечение для левой книги)
+    function renderBooks(books, highlightFirst = false) {
         booksGrid.innerHTML = ''; 
         if (books.length === 0) {
             booksGrid.innerHTML = '<p style="text-align:center; width: 300%; margin-top: 20px; font-size: 12px; color: #A0A0A0;">Здесь пока пусто.</p>';
             return;
         }
-        books.forEach(book => {
+        books.forEach((book, index) => {
             const card = document.createElement('div');
-            card.className = 'book-card';
+            // Применяем класс highlight-newest только к 0-му элементу (крайнему левому) и только если флаг включен
+            if (highlightFirst && index === 0) {
+                card.className = 'book-card highlight-newest';
+            } else {
+                card.className = 'book-card';
+            }
             card.innerHTML = createBookCardHTML(book);
             booksGrid.appendChild(card);
         });
@@ -195,8 +201,8 @@ document.addEventListener('DOMContentLoaded', () => {
             setActiveFilter(filterRecent);
             authorsContainer.style.display = 'none';
             booksGrid.style.display = 'grid';
-            // Выводим только 3 новинки
-            renderBooks(getRecentBooks()); 
+            // true включает подсветку левой книги
+            renderBooks(getRecentBooks(), true); 
         });
     }
 
@@ -265,12 +271,13 @@ document.addEventListener('DOMContentLoaded', () => {
         pageDetails.style.display = 'none'; pageHome.style.display = 'block'; bottomNav.style.display = 'flex';
         
         if (navSaved && navSaved.classList.contains('active-pill')) {
+            // Без свечения в Сохраненном
             renderBooks(allBooks.filter(b => savedBookIds.includes(b.id)));
         } else if (filterAuthors && filterAuthors.classList.contains('active-filter')) {
             // Оставляем открытым список авторов
         } else if (filterRecent && filterRecent.classList.contains('active-filter')) {
-            // Возвращаем 3 последние книги
-            renderBooks(getRecentBooks());
+            // Включаем свечение для новинки при возврате на главную
+            renderBooks(getRecentBooks(), true);
         } else {
             renderBooks(allBooks);
         }
@@ -289,8 +296,8 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (filterRecent) setActiveFilter(filterRecent); 
             authorsContainer.style.display = 'none'; booksGrid.style.display = 'grid';
-            // На "Главной" всегда выводим витрину из 3-х новинок
-            renderBooks(getRecentBooks());
+            // true включает подсветку левой книги
+            renderBooks(getRecentBooks(), true);
         });
     }
 
@@ -300,6 +307,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (navHome) navHome.classList.remove('active-pill');
             
             authorsContainer.style.display = 'none'; booksGrid.style.display = 'grid';
+            // В Сохраненном свечение не нужно (флага true нет)
             renderBooks(allBooks.filter(book => savedBookIds.includes(book.id)));
         });
     }
