@@ -25,7 +25,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function getRecentBooks() { return allBooks.slice(-3).reverse(); }
 
-    // Логика текста: 0.00 (серый) или ★ 5.00 (розовый)
     function getRatingText(rating) {
         if (!rating || rating === 0) {
             return `<span style="color: #A0A0A0;">0.00</span>`;
@@ -93,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     author: arr[i][2] ? arr[i][2].trim() : '', series: arr[i][3] ? arr[i][3].trim() : '',
                     tropes: arr[i][4] ? arr[i][4].trim() : '', annotation: arr[i][5] ? arr[i][5].trim() : '',
                     seriesNumber: arr[i][6] ? arr[i][6].trim() : '', 
-                    pages: arr[i][7] ? arr[i][7].trim() : '', // Новая колонка (H) для страниц
+                    pages: arr[i][7] ? arr[i][7].trim() : '', 
                     rating: 0 
                 });
             }
@@ -105,7 +104,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const heartIcon = isSaved ? '♥' : '♡';
         
         return `
-            <img src="covers/${book.id}.PNG" alt="${book.title}" class="book-cover" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\'><rect width=\\'100%\\' height=\\'100%\\' fill=\\'%23F8EBF0\\'/></svg>'">
+            <div class="grid-cover-wrapper">
+                <img src="covers/${book.id}.PNG" alt="${book.title}" class="book-cover" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\'><rect width=\\'100%\\' height=\\'100%\\' fill=\\'%23F8EBF0\\'/></svg>'">
+                <div class="grid-rating-badge">${getRatingText(book.rating)}</div>
+            </div>
             <div class="card-info">
                 <h4 class="book-title">${book.title}</h4>
                 <p class="book-author">${book.author || 'Неизвестный автор'}</p>
@@ -187,23 +189,23 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('details-title').innerText = book.title;
         document.getElementById('details-author').innerText = book.author;
         
-        document.getElementById('details-rating').innerHTML = getRatingText(book.rating);
+        // Рейтинг в прямоугольной обводке под серией
+        document.getElementById('details-rating-box').innerHTML = getRatingText(book.rating);
 
         const seriesContainer = document.getElementById('details-series-container'); 
         seriesContainer.innerHTML = '';
         
-        // Создаем плашку Серии с кружком номера внутри
+        // 1. Розовая плашка с названием серии
         if (book.series) { 
-            let seriesHtml = book.series;
-            if (book.seriesNumber) {
-                seriesHtml += `<span class="series-num-circle">${book.seriesNumber}</span>`;
-            }
-            seriesContainer.innerHTML += `<div class="details-series">${seriesHtml}</div>`; 
+            seriesContainer.innerHTML += `<div class="details-series">${book.series}</div>`; 
         }
-        
-        // Создаем плашку Количества страниц
+        // 2. Серая плашка с номером серии (или словом "Приквел")
+        if (book.seriesNumber) {
+            seriesContainer.innerHTML += `<div class="gray-badge">${book.seriesNumber}</div>`;
+        }
+        // 3. Серая плашка с количеством страниц
         if (book.pages) {
-            seriesContainer.innerHTML += `<div class="details-pages">${book.pages}</div>`;
+            seriesContainer.innerHTML += `<div class="gray-badge">${book.pages}</div>`;
         }
 
         const tropesContainer = document.getElementById('details-tropes'); tropesContainer.innerHTML = '';
@@ -275,7 +277,7 @@ document.addEventListener('DOMContentLoaded', () => {
             calculateRatings();
             
             const book = allBooks.find(b => b.id === currentOpenBookId);
-            if (book) { document.getElementById('details-rating').innerHTML = getRatingText(book.rating); }
+            if (book) { document.getElementById('details-rating-box').innerHTML = getRatingText(book.rating); }
 
         } catch (error) {
             tg.showAlert('Ошибка отправки. Проверьте интернет.');
