@@ -25,11 +25,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function getRecentBooks() { return allBooks.slice(-3).reverse(); }
 
+    // Звездочка убрана! 
     function getRatingText(rating) {
-        if (!rating || rating === 0) {
-            return `<span style="color: #A0A0A0;">0.00</span>`;
+        if (!rating || rating === 0 || rating === "0") {
+            return `<span style="color: #A0A0A0; font-weight: 500;">0.00</span>`;
         }
-        return `<span style="color: var(--shadow-pink); font-weight: 600;">★ ${parseFloat(rating).toFixed(2)}</span>`;
+        return `<span style="color: var(--shadow-pink); font-weight: 600;">${parseFloat(rating).toFixed(2)}</span>`;
     }
 
     async function fetchBooksAndRatings() {
@@ -49,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
             calculateRatings();
             renderBooks(getRecentBooks(), true);
         } catch (error) {
-            booksGrid.innerHTML = '<p style="text-align:center; font-size: 12px; margin-top:20px;">Ошибка загрузки книг. Проверьте интернет.</p>';
+            if(booksGrid) booksGrid.innerHTML = '<p style="text-align:center; font-size: 12px; margin-top:20px;">Ошибка загрузки книг. Проверьте интернет.</p>';
         }
     }
 
@@ -106,7 +107,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return `
             <div class="grid-cover-wrapper">
                 <img src="covers/${book.id}.PNG" alt="${book.title}" class="book-cover" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\'><rect width=\\'100%\\' height=\\'100%\\' fill=\\'%23F8EBF0\\'/></svg>'">
-                <div class="grid-rating-badge">${getRatingText(book.rating)}</div>
             </div>
             <div class="card-info">
                 <h4 class="book-title">${book.title}</h4>
@@ -121,6 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderBooks(books, highlightFirst = false) {
+        if(!booksGrid) return;
         booksGrid.innerHTML = ''; 
         if (books.length === 0) { booksGrid.innerHTML = '<p style="text-align:center; width: 300%; margin-top: 20px; font-size: 12px; color: #A0A0A0;">Здесь пока пусто.</p>'; return; }
         books.forEach((book, index) => {
@@ -131,6 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderAuthorsList() {
+        if(!authorsContainer) return;
         authorsContainer.innerHTML = ''; const authorsMap = {};
         allBooks.forEach(book => {
             const author = book.author || 'Неизвестный автор';
@@ -169,10 +171,10 @@ document.addEventListener('DOMContentLoaded', () => {
     window.toggleAuthor = function(headerElement) { const authorItem = headerElement.parentElement; authorItem.classList.toggle('open'); };
     window.toggleSeries = function(headerElement) { const seriesItem = headerElement.parentElement; seriesItem.classList.toggle('open'); };
 
-    function setActiveFilter(activeBtn) { [filterRecent, filterTropes, filterAuthors].forEach(btn => btn.classList.remove('active-filter')); activeBtn.classList.add('active-filter'); }
+    function setActiveFilter(activeBtn) { [filterRecent, filterTropes, filterAuthors].forEach(btn => { if(btn) btn.classList.remove('active-filter'); }); if(activeBtn) activeBtn.classList.add('active-filter'); }
 
-    if (filterRecent) { filterRecent.addEventListener('click', () => { setActiveFilter(filterRecent); authorsContainer.style.display = 'none'; booksGrid.style.display = 'grid'; renderBooks(getRecentBooks(), true); }); }
-    if (filterAuthors) { filterAuthors.addEventListener('click', () => { setActiveFilter(filterAuthors); booksGrid.style.display = 'none'; authorsContainer.style.display = 'block'; renderAuthorsList(); }); }
+    if (filterRecent) { filterRecent.addEventListener('click', () => { setActiveFilter(filterRecent); if(authorsContainer) authorsContainer.style.display = 'none'; if(booksGrid) booksGrid.style.display = 'grid'; renderBooks(getRecentBooks(), true); }); }
+    if (filterAuthors) { filterAuthors.addEventListener('click', () => { setActiveFilter(filterAuthors); if(booksGrid) booksGrid.style.display = 'none'; if(authorsContainer) authorsContainer.style.display = 'block'; renderAuthorsList(); }); }
     if (filterTropes) { filterTropes.addEventListener('click', () => { tg.showAlert('Фильтр по тропам настроим следующим шагом!'); }); }
 
     window.toggleSave = function(btnElement, id) {
@@ -185,57 +187,73 @@ document.addEventListener('DOMContentLoaded', () => {
     window.openBook = function(id) {
         const book = allBooks.find(b => b.id === id); if (!book) return; currentOpenBookId = id;
         
-        document.getElementById('details-cover').src = `covers/${book.id}.PNG`;
-        document.getElementById('details-title').innerText = book.title;
-        document.getElementById('details-author').innerText = book.author;
+        const coverEl = document.getElementById('details-cover');
+        if(coverEl) coverEl.src = `covers/${book.id}.PNG`;
         
-        // Рейтинг в прямоугольной обводке под серией
-        document.getElementById('details-rating-box').innerHTML = getRatingText(book.rating);
+        const titleEl = document.getElementById('details-title');
+        if(titleEl) titleEl.innerText = book.title;
+        
+        const authorEl = document.getElementById('details-author');
+        if(authorEl) authorEl.innerText = book.author;
+        
+        const ratingBox = document.getElementById('details-rating-box');
+        if(ratingBox) ratingBox.innerHTML = getRatingText(book.rating);
 
         const seriesContainer = document.getElementById('details-series-container'); 
-        seriesContainer.innerHTML = '';
+        if(seriesContainer) {
+            seriesContainer.innerHTML = '';
+            if (book.series) { seriesContainer.innerHTML += `<div class="details-series">${book.series}</div>`; }
+            if (book.seriesNumber) { seriesContainer.innerHTML += `<div class="gray-badge">${book.seriesNumber}</div>`; }
+            if (book.pages) { seriesContainer.innerHTML += `<div class="gray-badge">${book.pages}</div>`; }
+        }
+
+        const tropesContainer = document.getElementById('details-tropes'); 
+        if(tropesContainer) {
+            tropesContainer.innerHTML = '';
+            if (book.tropes) { book.tropes.split(',').forEach(trope => { if (trope.trim()) { const span = document.createElement('span'); span.className = 'trope-tag'; span.innerText = trope.trim(); tropesContainer.appendChild(span); } }); }
+        }
         
-        // 1. Розовая плашка с названием серии
-        if (book.series) { 
-            seriesContainer.innerHTML += `<div class="details-series">${book.series}</div>`; 
-        }
-        // 2. Серая плашка с номером серии (или словом "Приквел")
-        if (book.seriesNumber) {
-            seriesContainer.innerHTML += `<div class="gray-badge">${book.seriesNumber}</div>`;
-        }
-        // 3. Серая плашка с количеством страниц
-        if (book.pages) {
-            seriesContainer.innerHTML += `<div class="gray-badge">${book.pages}</div>`;
-        }
+        const annEl = document.getElementById('details-annotation');
+        if(annEl) annEl.innerText = book.annotation;
+        
+        const dlEl = document.getElementById('details-download');
+        if(dlEl) dlEl.href = `books/${book.id}.epub`;
 
-        const tropesContainer = document.getElementById('details-tropes'); tropesContainer.innerHTML = '';
-        if (book.tropes) { book.tropes.split(',').forEach(trope => { if (trope.trim()) { const span = document.createElement('span'); span.className = 'trope-tag'; span.innerText = trope.trim(); tropesContainer.appendChild(span); } }); }
-        document.getElementById('details-annotation').innerText = book.annotation;
-        document.getElementById('details-download').href = `books/${book.id}.epub`;
+        const favBtn = document.getElementById('details-fav-btn');
+        const isSaved = savedBookIds.includes(book.id); 
+        if(favBtn) favBtn.innerText = isSaved ? '♥' : '♡';
 
-        const isSaved = savedBookIds.includes(book.id); document.getElementById('details-fav-btn').innerText = isSaved ? '♥' : '♡';
-        pageHome.style.display = 'none'; bottomNav.style.display = 'none'; pageDetails.style.display = 'block'; window.scrollTo(0, 0); 
+        if(pageHome) pageHome.style.display = 'none'; 
+        if(bottomNav) bottomNav.style.display = 'none'; 
+        if(pageDetails) pageDetails.style.display = 'block'; 
+        window.scrollTo(0, 0); 
     };
 
     window.closeBook = function() {
-        pageDetails.style.display = 'none'; pageHome.style.display = 'block'; bottomNav.style.display = 'flex';
+        if(pageDetails) pageDetails.style.display = 'none'; 
+        if(pageHome) pageHome.style.display = 'block'; 
+        if(bottomNav) bottomNav.style.display = 'flex';
+        
         if (navSaved && navSaved.classList.contains('active-pill')) { renderBooks(allBooks.filter(b => savedBookIds.includes(b.id))); } 
         else if (filterAuthors && filterAuthors.classList.contains('active-filter')) {} 
         else if (filterRecent && filterRecent.classList.contains('active-filter')) { renderBooks(getRecentBooks(), true); } 
         else { renderBooks(allBooks); }
     };
 
-    window.toggleSaveFromDetails = function() { if (!currentOpenBookId) return; const btn = document.getElementById('details-fav-btn'); toggleSave(btn, currentOpenBookId); };
+    window.toggleSaveFromDetails = function() { if (!currentOpenBookId) return; const btn = document.getElementById('details-fav-btn'); if(btn) toggleSave(btn, currentOpenBookId); };
 
     window.openReviewModal = function() {
-        document.getElementById('review-modal').style.display = 'flex';
+        const modal = document.getElementById('review-modal');
+        if(modal) modal.style.display = 'flex';
         currentRating = 0;
         document.querySelectorAll('.star').forEach(s => s.classList.remove('selected'));
-        document.getElementById('review-text').value = '';
+        const revText = document.getElementById('review-text');
+        if(revText) revText.value = '';
     };
 
     window.closeReviewModal = function() {
-        document.getElementById('review-modal').style.display = 'none';
+        const modal = document.getElementById('review-modal');
+        if(modal) modal.style.display = 'none';
     };
 
     document.querySelectorAll('.star').forEach(star => {
@@ -251,7 +269,8 @@ document.addEventListener('DOMContentLoaded', () => {
     window.submitReview = async function() {
         if (currentRating === 0) { tg.showAlert('Пожалуйста, поставьте хотя бы одну звездочку!'); return; }
         
-        const reviewText = document.getElementById('review-text').value;
+        const reviewTextEl = document.getElementById('review-text');
+        const reviewText = reviewTextEl ? reviewTextEl.value : '';
         const userId = tg.initDataUnsafe?.user?.id || 'Аноним'; 
 
         const payload = {
@@ -277,15 +296,16 @@ document.addEventListener('DOMContentLoaded', () => {
             calculateRatings();
             
             const book = allBooks.find(b => b.id === currentOpenBookId);
-            if (book) { document.getElementById('details-rating-box').innerHTML = getRatingText(book.rating); }
+            const ratingBox = document.getElementById('details-rating-box');
+            if (book && ratingBox) { ratingBox.innerHTML = getRatingText(book.rating); }
 
         } catch (error) {
             tg.showAlert('Ошибка отправки. Проверьте интернет.');
         }
     };
 
-    if (navHome) { navHome.addEventListener('click', () => { navHome.classList.add('active-pill'); if (navSaved) navSaved.classList.remove('active-pill'); if (filterRecent) setActiveFilter(filterRecent); authorsContainer.style.display = 'none'; booksGrid.style.display = 'grid'; renderBooks(getRecentBooks(), true); }); }
-    if (navSaved) { navSaved.addEventListener('click', () => { navSaved.classList.add('active-pill'); if (navHome) navHome.classList.remove('active-pill'); authorsContainer.style.display = 'none'; booksGrid.style.display = 'grid'; renderBooks(allBooks.filter(book => savedBookIds.includes(book.id))); }); }
+    if (navHome) { navHome.addEventListener('click', () => { navHome.classList.add('active-pill'); if (navSaved) navSaved.classList.remove('active-pill'); if (filterRecent) setActiveFilter(filterRecent); if(authorsContainer) authorsContainer.style.display = 'none'; if(booksGrid) booksGrid.style.display = 'grid'; renderBooks(getRecentBooks(), true); }); }
+    if (navSaved) { navSaved.addEventListener('click', () => { navSaved.classList.add('active-pill'); if (navHome) navHome.classList.remove('active-pill'); if(authorsContainer) authorsContainer.style.display = 'none'; if(booksGrid) booksGrid.style.display = 'grid'; renderBooks(allBooks.filter(book => savedBookIds.includes(book.id))); }); }
 
     fetchBooksAndRatings();
 });
