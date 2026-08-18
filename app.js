@@ -70,8 +70,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function createBookCardHTML(book) {
         const isSaved = savedBookIds.includes(book.id);
         const heartIcon = isSaved ? '♥' : '♡';
+        // Заменили .png на заглавное .PNG
         return `
-            <img src="covers/${book.id}.png" alt="${book.title}" class="book-cover" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\'><rect width=\\'100%\\' height=\\'100%\\' fill=\\'%23F8EBF0\\'/></svg>'">
+            <img src="covers/${book.id}.PNG" alt="${book.title}" class="book-cover" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\'><rect width=\\'100%\\' height=\\'100%\\' fill=\\'%23F8EBF0\\'/></svg>'">
             <div class="card-info">
                 <h4 class="book-title">${book.title}</h4>
                 <p class="book-author">${book.author || 'Неизвестный автор'}</p>
@@ -230,7 +231,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!book) return;
         currentOpenBookId = id;
         
-        document.getElementById('details-cover').src = `covers/${book.id}.png`;
+        // Заменили .png на заглавное .PNG
+        document.getElementById('details-cover').src = `covers/${book.id}.PNG`;
         document.getElementById('details-title').innerText = book.title;
         document.getElementById('details-author').innerText = book.author;
         
