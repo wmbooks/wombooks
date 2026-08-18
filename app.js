@@ -3,8 +3,11 @@ document.addEventListener('DOMContentLoaded', () => {
     tg.expand();
 
     const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQofE7L59iFriQgwIJ-P0MclqfZ2QhBHR-zbk6FgaaZ7VSJ_dmtv823zjZkXBRWDodnCJ11B_Pa1oPc/pub?output=csv';
+    // Твоя ссылка на сервер-мост для отзывов
+    const scriptUrl = 'https://script.google.com/macros/s/AKfycbxF_KGJfmq8npELJDMecB1QxRl0zew1W6K8S18vRQ9CP4lf_DWc_RIdstdCqk_v1auX/exec';
 
     let allBooks = [];
+    let allRatings = []; // Сюда загружаются все оценки
     let savedBookIds = JSON.parse(localStorage.getItem('wombooks_saved')) || [];
     let currentOpenBookId = null;
     let currentRating = 0; 
@@ -23,23 +26,49 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function getRecentBooks() { return allBooks.slice(-3).reverse(); }
 
-    // Вспомогательная функция для текста рейтинга
     function getRatingText(rating) {
-        if (!rating || rating === 0 || rating === "0") {
-            return 'Отзывы отсутствуют';
-        }
-        return `★ ${parseFloat(rating).toFixed(2)}`;
+        if (!rating || rating === 0) return 'Отзывы отсутствуют';
+        return `★ ${parseFloat(rating).toFixed(2)}`; // Формат 5.00
     }
 
-    async function fetchBooks() {
+    // Скачиваем книги и оценки одновременно
+    async function fetchBooksAndRatings() {
         try {
             const response = await fetch(csvUrl);
             const data = await response.text();
             parseCSV(data);
+
+            try {
+                const ratingsResponse = await fetch(scriptUrl);
+                allRatings = await ratingsResponse.json();
+            } catch (e) {
+                console.error("Не удалось загрузить рейтинги", e);
+                allRatings = [];
+            }
+
+            calculateRatings(); // Считаем средний балл
             renderBooks(getRecentBooks(), true);
         } catch (error) {
             booksGrid.innerHTML = '<p style="text-align:center; font-size: 12px; margin-top:20px;">Ошибка загрузки книг. Проверьте интернет.</p>';
         }
+    }
+
+    // Высчитываем средний рейтинг для каждой книги
+    function calculateRatings() {
+        const ratingsByBook = {};
+        allRatings.forEach(r => {
+            if (!ratingsByBook[r.bookId]) ratingsByBook[r.bookId] = [];
+            ratingsByBook[r.bookId].push(r.rating);
+        });
+
+        allBooks.forEach(book => {
+            if (ratingsByBook[book.id]) {
+                const sum = ratingsByBook[book.id].reduce((a, b) => a + b, 0);
+                book.rating = sum / ratingsByBook[book.id].length;
+            } else {
+                book.rating = 0;
+            }
+        });
     }
 
     function parseCSV(str) {
@@ -63,8 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     id: arr[i][0].trim(), title: arr[i][1] ? arr[i][1].trim() : 'Без названия',
                     author: arr[i][2] ? arr[i][2].trim() : '', series: arr[i][3] ? arr[i][3].trim() : '',
                     tropes: arr[i][4] ? arr[i][4].trim() : '', annotation: arr[i][5] ? arr[i][5].trim() : '',
-                    seriesNumber: arr[i][6] ? arr[i][6].trim() : '',
-                    rating: 0 // Пока у нас нет подключенной базы отзывов, рейтинг 0
+                    seriesNumber: arr[i][6] ? arr[i][6].trim() : '', rating: 0 
                 });
             }
         }
@@ -160,7 +188,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('details-title').innerText = book.title;
         document.getElementById('details-author').innerText = book.author;
         
-        // Оценка на странице книги
         document.getElementById('details-rating').innerText = getRatingText(book.rating);
 
         const seriesContainer = document.getElementById('details-series-container'); seriesContainer.innerHTML = '';
@@ -186,7 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.toggleSaveFromDetails = function() { if (!currentOpenBookId) return; const btn = document.getElementById('details-fav-btn'); toggleSave(btn, currentOpenBookId); };
 
-    // --- ЛОГИКА ОЦЕНОК И ОТЗЫВОВ ---
+    // --- ЛОГИКА ОТПРАВКИ ОТЗЫВОВ НА GOOGLE СЕРВЕР ---
     window.openReviewModal = function() {
         document.getElementById('review-modal').style.display = 'flex';
         currentRating = 0;
@@ -208,14 +235,47 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    window.submitReview = function() {
+    window.submitReview = async function() {
         if (currentRating === 0) { tg.showAlert('Пожалуйста, поставьте хотя бы одну звездочку!'); return; }
-        tg.showAlert('Супер! Звезды и отзыв готовы к отправке. В следующем шаге мы подключим Google Таблицу для сохранения!');
+        
+        const reviewText = document.getElementById('review-text').value;
+        // Забираем невидимый ID пользователя из Telegram
+        const userId = tg.initDataUnsafe?.user?.id || 'Аноним'; 
+
+        const payload = {
+            bookId: currentOpenBookId,
+            userId: userId,
+            rating: currentRating,
+            reviewText: reviewText
+        };
+
+        // Сразу закрываем окно, чтобы не заставлять человека ждать
         closeReviewModal();
+        tg.showAlert('Отправляем ваш отзыв...');
+
+        try {
+            await fetch(scriptUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(payload)
+            });
+
+            tg.showAlert('Спасибо! Оценка учтена.');
+            
+            // Сразу "визуально" обновляем рейтинг, не дожидаясь перезагрузки приложения
+            allRatings.push(payload);
+            calculateRatings();
+            
+            const book = allBooks.find(b => b.id === currentOpenBookId);
+            if (book) { document.getElementById('details-rating').innerText = getRatingText(book.rating); }
+
+        } catch (error) {
+            tg.showAlert('Ошибка отправки. Проверьте интернет.');
+        }
     };
 
     if (navHome) { navHome.addEventListener('click', () => { navHome.classList.add('active-pill'); if (navSaved) navSaved.classList.remove('active-pill'); if (filterRecent) setActiveFilter(filterRecent); authorsContainer.style.display = 'none'; booksGrid.style.display = 'grid'; renderBooks(getRecentBooks(), true); }); }
     if (navSaved) { navSaved.addEventListener('click', () => { navSaved.classList.add('active-pill'); if (navHome) navHome.classList.remove('active-pill'); authorsContainer.style.display = 'none'; booksGrid.style.display = 'grid'; renderBooks(allBooks.filter(book => savedBookIds.includes(book.id))); }); }
 
-    fetchBooks();
+    fetchBooksAndRatings(); // Запускаем главную функцию
 });
