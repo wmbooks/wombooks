@@ -63,7 +63,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Создание HTML для карточки книги (чтобы использовать его и на главной, и внутри серий)
     function createBookCardHTML(book) {
         const isSaved = savedBookIds.includes(book.id);
         const heartIcon = isSaved ? '♥' : '♡';
@@ -94,7 +93,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Отрисовка авторов с вложенными сериями и книгами
     function renderAuthorsList() {
         authorsContainer.innerHTML = '';
         const authorsMap = {};
@@ -141,7 +139,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     <span class="round-arrow series-arrow">➔</span>
                 `;
 
-                // Сетка книг для этой серии
                 const seriesGrid = document.createElement('div');
                 seriesGrid.className = 'series-books-grid';
 
@@ -163,7 +160,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Раскрытие автора
     window.toggleAuthor = function(headerElement) {
         const authorItem = headerElement.parentElement;
         if (authorItem.classList.contains('open')) {
@@ -173,7 +169,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Раскрытие серии
     window.toggleSeries = function(headerElement) {
         const seriesItem = headerElement.parentElement;
         if (seriesItem.classList.contains('open')) {
@@ -264,7 +259,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (navSaved && navSaved.classList.contains('active-pill')) {
             renderBooks(allBooks.filter(b => savedBookIds.includes(b.id)));
         } else if (filterAuthors && filterAuthors.classList.contains('active-filter')) {
-            // Если мы находимся во вкладке Авторов, ничего не перерисовываем, просто возвращаемся к списку
+            // Возвращаемся в авторов, ничего не перерисовывая
         } else {
             renderBooks(allBooks);
         }
