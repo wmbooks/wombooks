@@ -19,24 +19,14 @@
     font-style: normal;
 }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-    background-color: var(--bg-color);
-    color: var(--text-dark);
-    font-family: 'Montserrat', sans-serif;
-    -webkit-tap-highlight-color: transparent;
+    background-color: var(--bg-color); color: var(--text-dark);
+    font-family: 'Montserrat', sans-serif; -webkit-tap-highlight-color: transparent;
 }
 
-#app {
-    padding: 65px 20px 0 20px;
-    max-width: 600px;
-    margin: 0 auto;
-}
+#app { padding: 65px 20px 0 20px; max-width: 600px; margin: 0 auto; }
 
 /* --- ГЛАВНАЯ СТРАНИЦА --- */
 .search-container { position: relative; margin-bottom: 20px; }
@@ -111,30 +101,15 @@ body {
 }
 .details-author { font-size: 12px; color: #A0A0A0; text-align: center; margin-bottom: 15px; }
 
-/* Обновленные стили для серии и номера */
-.details-series-wrapper { 
-    display: flex; justify-content: center; gap: 8px; margin-bottom: 15px; 
-}
-.details-series {
-    padding: 4px 12px; background-color: #F8EBF0; color: var(--shadow-pink); 
-    border-radius: 12px; font-size: 10px;
-}
+.details-series-wrapper { display: flex; justify-content: center; gap: 8px; margin-bottom: 15px; }
+.details-series { padding: 4px 12px; background-color: #F8EBF0; color: var(--shadow-pink); border-radius: 12px; font-size: 10px; }
 
 .details-tropes { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 20px; }
-.trope-tag {
-    border: 1px solid var(--main-pink); color: var(--shadow-pink);
-    padding: 4px 10px; border-radius: 15px; font-size: 10px;
-}
+.trope-tag { border: 1px solid var(--main-pink); color: var(--shadow-pink); padding: 4px 10px; border-radius: 15px; font-size: 10px; }
 
-.details-annotation {
-    font-size: 12px; line-height: 1.6; color: var(--text-dark);
-    margin-bottom: 30px; text-align: justify; padding: 0 5px;
-}
+.details-annotation { font-size: 12px; line-height: 1.6; color: var(--text-dark); margin-bottom: 30px; text-align: justify; padding: 0 5px; }
 
-/* Обновленный блок с кнопками внизу */
-.download-section {
-    display: flex; align-items: center; gap: 12px; margin-bottom: 30px;
-}
+.download-section { display: flex; align-items: center; gap: 12px; margin-bottom: 30px; }
 .round-back-btn {
     width: 46px; height: 46px; border: 1px solid var(--main-pink); border-radius: 50%;
     background-color: transparent; color: var(--shadow-pink); font-size: 18px;
@@ -144,4 +119,26 @@ body {
     flex-grow: 1; display: block; background-color: var(--main-pink); color: #FFFFFF;
     text-align: center; padding: 14px; border-radius: 25px; font-family: 'Montserrat', sans-serif;
     font-size: 14px; font-weight: 500; text-decoration: none; box-shadow: 0 4px 15px rgba(214, 115, 171, 0.2);
+}
+
+/* --- ЭКРАН: СПИСОК АВТОРОВ (НОВОЕ) --- */
+.authors-list-container { padding-bottom: 100px; }
+.author-item {
+    background: #FFFFFF; border-radius: 12px; box-shadow: 0 4px 15px rgba(214, 115, 171, 0.1);
+    margin-bottom: 10px; overflow: hidden;
+}
+.author-header {
+    display: flex; justify-content: space-between; align-items: center; padding: 16px 20px;
+    font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 600; color: var(--text-dark); cursor: pointer;
+}
+.author-arrow { transition: transform 0.3s ease; color: var(--shadow-pink); font-size: 12px; }
+.author-arrow.open { transform: rotate(90deg); }
+
+.author-series-list {
+    display: none; /* скрыто по умолчанию */
+    flex-direction: column; padding: 0 20px 16px 20px; gap: 12px;
+}
+.series-item {
+    font-family: 'Montserrat', sans-serif; font-size: 13px; color: var(--text-dark);
+    cursor: pointer; padding-left: 12px; border-left: 2px solid var(--main-pink);
 }
