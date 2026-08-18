@@ -13,7 +13,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const booksGrid = document.getElementById('books-grid');
     const authorsContainer = document.getElementById('authors-container');
-    const standalonesContainer = document.getElementById('standalones-container'); // Новая вкладка Одиночных
+    const standalonesContainer = document.getElementById('standalones-container'); 
+    const filtersContainer = document.querySelector('.category-filters-container'); // Блок фильтров
     const pageHome = document.getElementById('page-home');
     const pageDetails = document.getElementById('page-book-details');
     const bottomNav = document.getElementById('bottom-nav');
@@ -21,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const filterRecent = document.getElementById('filter-recent');
     const filterTropes = document.getElementById('filter-tropes');
     const filterAuthors = document.getElementById('filter-authors');
-    const filterStandalones = document.getElementById('filter-standalones'); // Новая кнопка
+    const filterStandalones = document.getElementById('filter-standalones');
     const navHome = document.getElementById('nav-home');
     const navSaved = document.getElementById('nav-saved');
 
@@ -213,12 +214,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // НОВАЯ ФУНКЦИЯ ДЛЯ ОТРИСОВКИ ОДИНОЧНЫХ КНИГ
     function renderStandalonesList() {
         if(!standalonesContainer) return;
         standalonesContainer.innerHTML = '';
         
-        // Фильтруем книги: берем только те, где в Серии написано "Одиночная" или "Одиночные"
         const standalones = allBooks.filter(b => {
             if (!b.series) return false;
             const s = b.series.trim().toLowerCase();
@@ -247,7 +246,6 @@ document.addEventListener('DOMContentLoaded', () => {
             authorHeader.onclick = function() { toggleAuthor(this); };
             authorHeader.innerHTML = `<span>${author}</span><span class="round-arrow author-arrow">➔</span>`;
             
-            // Сразу создаем сетку книг (без заголовка серии)
             const booksGrid = document.createElement('div'); 
             booksGrid.className = 'standalones-grid';
             
@@ -272,6 +270,37 @@ document.addEventListener('DOMContentLoaded', () => {
             if(btn) btn.classList.remove('active-filter'); 
         }); 
         if(activeBtn) activeBtn.classList.add('active-filter'); 
+    }
+
+    // --- ЛОГИКА НАВИГАЦИИ (Добавлено скрытие/показ фильтров) ---
+    if (navHome) { 
+        navHome.addEventListener('click', () => { 
+            navHome.classList.add('active-pill'); 
+            if (navSaved) navSaved.classList.remove('active-pill'); 
+            
+            // ВОЗВРАЩАЕМ ФИЛЬТРЫ
+            if (filtersContainer) filtersContainer.style.display = 'flex';
+
+            if (filterRecent) setActiveFilter(filterRecent); 
+            if(authorsContainer) authorsContainer.style.display = 'none'; 
+            if(standalonesContainer) standalonesContainer.style.display = 'none'; 
+            if(booksGrid) booksGrid.style.display = 'grid'; 
+            renderCurrentView(); 
+        }); 
+    }
+    if (navSaved) { 
+        navSaved.addEventListener('click', () => { 
+            navSaved.classList.add('active-pill'); 
+            if (navHome) navHome.classList.remove('active-pill'); 
+            
+            // СКРЫВАЕМ ФИЛЬТРЫ
+            if (filtersContainer) filtersContainer.style.display = 'none';
+
+            if(authorsContainer) authorsContainer.style.display = 'none'; 
+            if(standalonesContainer) standalonesContainer.style.display = 'none'; 
+            if(booksGrid) booksGrid.style.display = 'grid'; 
+            renderCurrentView(); 
+        }); 
     }
 
     if (filterRecent) { 
@@ -437,28 +466,6 @@ document.addEventListener('DOMContentLoaded', () => {
             tg.showAlert('Ошибка отправки. Проверьте интернет.');
         }
     };
-
-    if (navHome) { 
-        navHome.addEventListener('click', () => { 
-            navHome.classList.add('active-pill'); 
-            if (navSaved) navSaved.classList.remove('active-pill'); 
-            if (filterRecent) setActiveFilter(filterRecent); 
-            if(authorsContainer) authorsContainer.style.display = 'none'; 
-            if(standalonesContainer) standalonesContainer.style.display = 'none'; 
-            if(booksGrid) booksGrid.style.display = 'grid'; 
-            renderCurrentView(); 
-        }); 
-    }
-    if (navSaved) { 
-        navSaved.addEventListener('click', () => { 
-            navSaved.classList.add('active-pill'); 
-            if (navHome) navHome.classList.remove('active-pill'); 
-            if(authorsContainer) authorsContainer.style.display = 'none'; 
-            if(standalonesContainer) standalonesContainer.style.display = 'none'; 
-            if(booksGrid) booksGrid.style.display = 'grid'; 
-            renderCurrentView(); 
-        }); 
-    }
 
     fetchBooksAndRatings();
 });
