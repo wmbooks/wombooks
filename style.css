@@ -26,7 +26,7 @@ body {
     font-family: 'Montserrat', sans-serif; -webkit-tap-highlight-color: transparent;
 }
 
-/* --- ПУСТАЯ ЗАКРЕПЛЕННАЯ ШАПКА (СДВИНУТА ЕЩЕ НИЖЕ) --- */
+/* --- ПУСТАЯ ЗАКРЕПЛЕННАЯ ШАПКА --- */
 .top-header {
     position: fixed; top: 0; left: 0; width: 100%; height: 90px; 
     padding-top: 40px; 
@@ -41,7 +41,6 @@ body {
     letter-spacing: 1px;
 }
 
-/* Увеличен отступ, чтобы контент не прятался под большой пустой шапкой */
 #app { padding: 105px 20px 0 20px; max-width: 600px; margin: 0 auto; }
 
 /* --- СТРОКА ПОИСКА --- */
@@ -111,7 +110,9 @@ body {
 .details-annotation { font-size: 12px; line-height: 1.6; color: var(--text-dark); margin-bottom: 30px; text-align: justify; padding: 0 5px; }
 .download-section { display: flex; align-items: center; gap: 12px; margin-bottom: 15px; }
 .round-back-btn { width: 46px; height: 46px; border: 1px solid var(--main-pink); border-radius: 50%; background-color: transparent; color: var(--shadow-pink); font-size: 18px; display: flex; justify-content: center; align-items: center; cursor: pointer; flex-shrink: 0; }
-.download-btn { flex-grow: 1; display: block; background-color: var(--main-pink); color: #FFFFFF; text-align: center; padding: 14px; border-radius: 25px; font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 500; text-decoration: none; box-shadow: 0 4px 15px rgba(214, 115, 171, 0.2); }
+
+/* ИЗМЕНЕНО: Добавил border:none и cursor:pointer для корректной работы <button> */
+.download-btn { flex-grow: 1; display: block; background-color: var(--main-pink); color: #FFFFFF; text-align: center; padding: 14px; border-radius: 25px; font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 500; text-decoration: none; box-shadow: 0 4px 15px rgba(214, 115, 171, 0.2); border: none; cursor: pointer; }
 
 .review-btn { display: block; width: 100%; background-color: transparent; color: var(--shadow-pink); text-align: center; padding: 14px; border-radius: 25px; border: 1px solid var(--main-pink); font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; margin-bottom: 30px; }
 
