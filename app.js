@@ -30,8 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const tropesBooksGrid = document.getElementById('tropes-books-grid');
     
     const filtersContainer = document.querySelector('.category-filters-container'); 
-    
-    // БЛОК ДИСКЛЕЙМЕРА
     const disclaimerBox = document.getElementById('disclaimer-box');
 
     const pageHome = document.getElementById('page-home');
@@ -99,9 +97,11 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (tropesContainer && tropesContainer.style.display === 'block') {
             renderTropesMenu();
         } else if (navSaved && navSaved.classList.contains('active-pill')) {
+            // ИЗМЕНЕНО: Просто передаем список книг
             renderBooksToGrid(allBooks.filter(book => savedBookIds.includes(book.id)), booksGrid);
         } else if (filterRecent && filterRecent.classList.contains('active-filter')) {
-            renderBooksToGrid(getRecentBooks(), booksGrid, true);
+            // ИЗМЕНЕНО: Больше не передаем параметр "true" для подсветки
+            renderBooksToGrid(getRecentBooks(), booksGrid);
         } else {
             renderBooksToGrid(allBooks, booksGrid);
         }
@@ -174,14 +174,17 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
     }
 
-    function renderBooksToGrid(books, gridElement, highlightFirst = false) {
+    // ИЗМЕНЕНО: Функция отрисовки без подсветки первой книги
+    function renderBooksToGrid(books, gridElement) {
         if(!gridElement) return;
         gridElement.innerHTML = ''; 
         if (books.length === 0) { gridElement.innerHTML = '<p style="text-align:center; width: 300%; margin-top: 20px; font-size: 12px; color: #A0A0A0;">Здесь пока пусто.</p>'; return; }
         books.forEach((book, index) => {
             const card = document.createElement('div');
-            if (highlightFirst && index === 0) { card.className = 'book-card highlight-newest'; } else { card.className = 'book-card'; }
-            card.innerHTML = createBookCardHTML(book); gridElement.appendChild(card);
+            // Убрана логика добавления класса highlight-newest
+            card.className = 'book-card';
+            card.innerHTML = createBookCardHTML(book); 
+            gridElement.appendChild(card);
         });
     }
 
