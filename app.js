@@ -10,11 +10,26 @@ document.addEventListener('DOMContentLoaded', () => {
     let savedBookIds = JSON.parse(localStorage.getItem('wombooks_saved')) || [];
     let currentOpenBookId = null;
     let currentRating = 0; 
+    let activeTropeName = null; 
+
+    // НОВЫЙ СЛОВАРЬ ТРОПОВ (ТВОЙ СПИСОК)
+    const tropesMapping = {
+        "От ненависти до любви": ["от ненависти до любви", "от неприязни до любви", "враги любовники"],
+        "Спортивные романы": ["хоккей", "спорт", "спортивный роман", "спортсмены", "баскетбол", "бейсбол"],
+        "Миллиардеры": ["он – миллиардер", "миллиардеры", "богатый парень"],
+        "Мафия": ["мафия", "криминал", "бандиты", "босс мафии"],
+        "Фиктивные отношения": ["вынужденный брак", "фиктивный брак", "фейковые отношения"]
+    };
 
     const booksGrid = document.getElementById('books-grid');
     const authorsContainer = document.getElementById('authors-container');
     const standalonesContainer = document.getElementById('standalones-container'); 
-    const filtersContainer = document.querySelector('.category-filters-container'); // Блок фильтров
+    
+    const tropesContainer = document.getElementById('tropes-container');
+    const tropesMenu = document.getElementById('tropes-menu');
+    const tropesBooksGrid = document.getElementById('tropes-books-grid');
+    
+    const filtersContainer = document.querySelector('.category-filters-container'); 
     const pageHome = document.getElementById('page-home');
     const pageDetails = document.getElementById('page-book-details');
     const bottomNav = document.getElementById('bottom-nav');
@@ -45,18 +60,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function fetchBooksAndRatings() {
-        if(booksGrid) {
-            booksGrid.innerHTML = '<div class="loader-container"><div class="loader"></div></div>';
-        }
-
+        if(booksGrid) { booksGrid.innerHTML = '<div class="loader-container"><div class="loader"></div></div>'; }
         try {
             const response = await fetch(csvUrl);
             const data = await response.text();
             parseCSV(data);
-
             renderCurrentView();
             loadRatingsAsync();
-
         } catch (error) {
             if(booksGrid) booksGrid.innerHTML = '<p style="text-align:center; font-size: 13px; margin-top:30px; color: var(--shadow-pink);">Ошибка загрузки. Проверьте интернет.</p>';
         }
@@ -67,7 +77,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const ratingsResponse = await fetch(scriptUrl);
             allRatings = await ratingsResponse.json();
             calculateRatings();
-            
             renderCurrentView();
             
             if (currentOpenBookId && pageDetails && pageDetails.style.display === 'block') {
@@ -75,9 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const ratingBox = document.getElementById('details-rating-box');
                 if (book && ratingBox) { ratingBox.innerHTML = getRatingText(book.rating); }
             }
-        } catch (e) {
-            console.error("Оценки не загрузились, оставляем по нулям", e);
-        }
+        } catch (e) { console.error("Оценки не загрузились", e); }
     }
 
     function renderCurrentView() {
@@ -85,12 +92,14 @@ document.addEventListener('DOMContentLoaded', () => {
             renderAuthorsList();
         } else if (standalonesContainer && standalonesContainer.style.display === 'block') {
             renderStandalonesList();
+        } else if (tropesContainer && tropesContainer.style.display === 'block') {
+            renderTropesMenu();
         } else if (navSaved && navSaved.classList.contains('active-pill')) {
-            renderBooks(allBooks.filter(book => savedBookIds.includes(book.id)));
+            renderBooksToGrid(allBooks.filter(book => savedBookIds.includes(book.id)), booksGrid);
         } else if (filterRecent && filterRecent.classList.contains('active-filter')) {
-            renderBooks(getRecentBooks(), true);
+            renderBooksToGrid(getRecentBooks(), booksGrid, true);
         } else {
-            renderBooks(allBooks);
+            renderBooksToGrid(allBooks, booksGrid);
         }
     }
 
@@ -132,9 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     id: arr[i][0].trim(), title: arr[i][1] ? arr[i][1].trim() : 'Без названия',
                     author: arr[i][2] ? arr[i][2].trim() : '', series: arr[i][3] ? arr[i][3].trim() : '',
                     tropes: arr[i][4] ? arr[i][4].trim() : '', annotation: arr[i][5] ? arr[i][5].trim() : '',
-                    seriesNumber: arr[i][6] ? arr[i][6].trim() : '', 
-                    pages: arr[i][7] ? arr[i][7].trim() : '', 
-                    rating: 0 
+                    seriesNumber: arr[i][6] ? arr[i][6].trim() : '', pages: arr[i][7] ? arr[i][7].trim() : '', rating: 0 
                 });
             }
         }
@@ -143,11 +150,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function createBookCardHTML(book) {
         const isSaved = savedBookIds.includes(book.id);
         const heartIcon = isSaved ? '♥' : '♡';
-        
         let seriesBadgeHtml = '';
-        if (book.seriesNumber) {
-            seriesBadgeHtml = `<div class="cover-series-badge">${formatSeriesNumber(book.seriesNumber)}</div>`;
-        }
+        if (book.seriesNumber) { seriesBadgeHtml = `<div class="cover-series-badge">${formatSeriesNumber(book.seriesNumber)}</div>`; }
 
         return `
             <div class="grid-cover-wrapper">
@@ -166,15 +170,52 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
     }
 
-    function renderBooks(books, highlightFirst = false) {
-        if(!booksGrid) return;
-        booksGrid.innerHTML = ''; 
-        if (books.length === 0) { booksGrid.innerHTML = '<p style="text-align:center; width: 300%; margin-top: 20px; font-size: 12px; color: #A0A0A0;">Здесь пока пусто.</p>'; return; }
+    function renderBooksToGrid(books, gridElement, highlightFirst = false) {
+        if(!gridElement) return;
+        gridElement.innerHTML = ''; 
+        if (books.length === 0) { gridElement.innerHTML = '<p style="text-align:center; width: 300%; margin-top: 20px; font-size: 12px; color: #A0A0A0;">Здесь пока пусто.</p>'; return; }
         books.forEach((book, index) => {
             const card = document.createElement('div');
             if (highlightFirst && index === 0) { card.className = 'book-card highlight-newest'; } else { card.className = 'book-card'; }
-            card.innerHTML = createBookCardHTML(book); booksGrid.appendChild(card);
+            card.innerHTML = createBookCardHTML(book); gridElement.appendChild(card);
         });
+    }
+
+    function renderTropesMenu() {
+        if(!tropesMenu) return;
+        
+        if(tropesMenu.innerHTML === '') {
+            Object.keys(tropesMapping).forEach(tropeName => {
+                const btn = document.createElement('button');
+                btn.className = 'trope-menu-btn';
+                btn.innerText = tropeName;
+                btn.onclick = () => {
+                    document.querySelectorAll('.trope-menu-btn').forEach(b => b.classList.remove('active-trope-btn'));
+                    btn.classList.add('active-trope-btn');
+                    activeTropeName = tropeName;
+                    filterBooksByTrope(tropeName);
+                };
+                tropesMenu.appendChild(btn);
+            });
+        }
+
+        if (activeTropeName) {
+            filterBooksByTrope(activeTropeName);
+        } else {
+            tropesBooksGrid.style.display = 'none';
+        }
+    }
+
+    function filterBooksByTrope(tropeName) {
+        const synonyms = tropesMapping[tropeName];
+        const filteredBooks = allBooks.filter(book => {
+            if (!book.tropes) return false;
+            const bookTropes = book.tropes.split(',').map(t => t.trim().toLowerCase());
+            return bookTropes.some(t => synonyms.includes(t));
+        });
+
+        renderBooksToGrid(filteredBooks, tropesBooksGrid);
+        tropesBooksGrid.style.display = 'grid';
     }
 
     function renderAuthorsList() {
@@ -272,18 +313,15 @@ document.addEventListener('DOMContentLoaded', () => {
         if(activeBtn) activeBtn.classList.add('active-filter'); 
     }
 
-    // --- ЛОГИКА НАВИГАЦИИ (Добавлено скрытие/показ фильтров) ---
     if (navHome) { 
         navHome.addEventListener('click', () => { 
             navHome.classList.add('active-pill'); 
             if (navSaved) navSaved.classList.remove('active-pill'); 
-            
-            // ВОЗВРАЩАЕМ ФИЛЬТРЫ
             if (filtersContainer) filtersContainer.style.display = 'flex';
-
             if (filterRecent) setActiveFilter(filterRecent); 
             if(authorsContainer) authorsContainer.style.display = 'none'; 
             if(standalonesContainer) standalonesContainer.style.display = 'none'; 
+            if(tropesContainer) tropesContainer.style.display = 'none'; 
             if(booksGrid) booksGrid.style.display = 'grid'; 
             renderCurrentView(); 
         }); 
@@ -292,12 +330,10 @@ document.addEventListener('DOMContentLoaded', () => {
         navSaved.addEventListener('click', () => { 
             navSaved.classList.add('active-pill'); 
             if (navHome) navHome.classList.remove('active-pill'); 
-            
-            // СКРЫВАЕМ ФИЛЬТРЫ
             if (filtersContainer) filtersContainer.style.display = 'none';
-
             if(authorsContainer) authorsContainer.style.display = 'none'; 
             if(standalonesContainer) standalonesContainer.style.display = 'none'; 
+            if(tropesContainer) tropesContainer.style.display = 'none'; 
             if(booksGrid) booksGrid.style.display = 'grid'; 
             renderCurrentView(); 
         }); 
@@ -308,6 +344,7 @@ document.addEventListener('DOMContentLoaded', () => {
             setActiveFilter(filterRecent); 
             if(authorsContainer) authorsContainer.style.display = 'none'; 
             if(standalonesContainer) standalonesContainer.style.display = 'none'; 
+            if(tropesContainer) tropesContainer.style.display = 'none'; 
             if(booksGrid) booksGrid.style.display = 'grid'; 
             renderCurrentView(); 
         }); 
@@ -317,6 +354,7 @@ document.addEventListener('DOMContentLoaded', () => {
             setActiveFilter(filterAuthors); 
             if(booksGrid) booksGrid.style.display = 'none'; 
             if(standalonesContainer) standalonesContainer.style.display = 'none'; 
+            if(tropesContainer) tropesContainer.style.display = 'none'; 
             if(authorsContainer) authorsContainer.style.display = 'block'; 
             renderCurrentView(); 
         }); 
@@ -326,11 +364,21 @@ document.addEventListener('DOMContentLoaded', () => {
             setActiveFilter(filterStandalones); 
             if(booksGrid) booksGrid.style.display = 'none'; 
             if(authorsContainer) authorsContainer.style.display = 'none'; 
+            if(tropesContainer) tropesContainer.style.display = 'none'; 
             if(standalonesContainer) standalonesContainer.style.display = 'block'; 
             renderCurrentView(); 
         }); 
     }
-    if (filterTropes) { filterTropes.addEventListener('click', () => { tg.showAlert('Фильтр по тропам настроим следующим шагом!'); }); }
+    if (filterTropes) { 
+        filterTropes.addEventListener('click', () => { 
+            setActiveFilter(filterTropes); 
+            if(booksGrid) booksGrid.style.display = 'none'; 
+            if(authorsContainer) authorsContainer.style.display = 'none'; 
+            if(standalonesContainer) standalonesContainer.style.display = 'none'; 
+            if(tropesContainer) tropesContainer.style.display = 'block'; 
+            renderCurrentView(); 
+        }); 
+    }
 
     window.toggleSave = function(btnElement, id) {
         const index = savedBookIds.indexOf(id);
@@ -371,10 +419,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        const tropesContainer = document.getElementById('details-tropes'); 
-        if(tropesContainer) {
-            tropesContainer.innerHTML = '';
-            if (book.tropes) { book.tropes.split(',').forEach(trope => { if (trope.trim()) { const span = document.createElement('span'); span.className = 'trope-tag'; span.innerText = trope.trim(); tropesContainer.appendChild(span); } }); }
+        const tropesContainerEl = document.getElementById('details-tropes'); 
+        if(tropesContainerEl) {
+            tropesContainerEl.innerHTML = '';
+            if (book.tropes) { book.tropes.split(',').forEach(trope => { if (trope.trim()) { const span = document.createElement('span'); span.className = 'trope-tag'; span.innerText = trope.trim(); tropesContainerEl.appendChild(span); } }); }
         }
         
         const annEl = document.getElementById('details-annotation');
