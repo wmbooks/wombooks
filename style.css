@@ -85,17 +85,8 @@ body {
 .details-rating-wrapper { display: flex; justify-content: center; margin-bottom: 20px; }
 .details-rating-box { padding: 8px 24px; border: 1px solid #D0D0D0; border-radius: 25px; font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 500; color: var(--text-dark); display: flex; align-items: center; justify-content: center; background-color: transparent; }
 
-/* ИСПРАВЛЕННЫЕ ТЕГИ ВНУТРИ КАРТОЧКИ: Маленький шрифт, светло-серый цвет текста */
 .details-tropes { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 20px; }
-.trope-tag { 
-    border: 1px solid #F0F0F0; 
-    background-color: #FFFFFF; 
-    color: #A0A0A0; /* Светло-серый цвет, как в поиске */
-    padding: 4px 10px; 
-    border-radius: 15px; 
-    font-size: 10px; /* Маленький размер */
-    box-shadow: 0 2px 10px rgba(0,0,0,0.02); 
-}
+.trope-tag { border: 1px solid #F0F0F0; background-color: #FFFFFF; color: #A0A0A0; padding: 4px 10px; border-radius: 15px; font-size: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
 
 .details-annotation { font-size: 12px; line-height: 1.6; color: var(--text-dark); margin-bottom: 30px; text-align: justify; padding: 0 5px; }
 .download-section { display: flex; align-items: center; gap: 12px; margin-bottom: 15px; }
@@ -124,25 +115,17 @@ body {
 .standalones-grid { display: none; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 15px 20px; }
 .author-item.open .standalones-grid { display: grid; }
 
-/* ИСПРАВЛЕННОЕ МЕНЮ ТРОПОВ: Маленький шрифт, светло-серый цвет текста */
+/* НОВОЕ: Разделительная линия между Топ-5 и Остальными */
+.authors-divider {
+    height: 1px;
+    background-color: #F0F0F0;
+    margin: 5px 0 15px 0;
+    width: 100%;
+}
+
 .tropes-menu { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 20px; }
-.trope-menu-btn { 
-    padding: 4px 10px; 
-    border: 1px solid #F0F0F0; 
-    border-radius: 15px; 
-    background-color: #FFFFFF; 
-    color: #A0A0A0; /* Светло-серый цвет, как в поиске */
-    font-family: 'Montserrat', sans-serif; 
-    font-size: 10px; /* Маленький размер */
-    cursor: pointer; 
-    transition: all 0.3s ease; 
-    box-shadow: 0 2px 10px rgba(0,0,0,0.02); 
-}
-.trope-menu-btn.active-trope-btn { 
-    background-color: var(--main-pink); 
-    border-color: var(--main-pink);
-    color: #FFFFFF; 
-}
+.trope-menu-btn { padding: 4px 10px; border: 1px solid #F0F0F0; border-radius: 15px; background-color: #FFFFFF; color: #A0A0A0; font-family: 'Montserrat', sans-serif; font-size: 10px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+.trope-menu-btn.active-trope-btn { background-color: var(--main-pink); border-color: var(--main-pink); color: #FFFFFF; }
 
 .loader-container { grid-column: 1 / -1; display: flex; justify-content: center; align-items: center; padding-top: 40px; }
 .loader { width: 36px; height: 36px; border: 3px solid #F8EBF0; border-top: 3px solid var(--shadow-pink); border-radius: 50%; animation: spin 1s linear infinite; }
