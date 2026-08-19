@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentRating = 0; 
     let activeTropeName = null; 
 
+    // СЛОВАРЬ ТРОПОВ
     const tropesMapping = {
         "От ненависти до любви": ["от ненависти до любви", "от неприязни до любви", "враги любовники"],
         "Спортивные романы": ["хоккей", "спорт", "спортивный роман", "спортсмены", "баскетбол", "бейсбол"],
@@ -23,9 +24,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const booksGrid = document.getElementById('books-grid');
     const authorsContainer = document.getElementById('authors-container');
     const standalonesContainer = document.getElementById('standalones-container'); 
+    
     const tropesContainer = document.getElementById('tropes-container');
     const tropesMenu = document.getElementById('tropes-menu');
     const tropesBooksGrid = document.getElementById('tropes-books-grid');
+    
     const filtersContainer = document.querySelector('.category-filters-container'); 
     
     // БЛОК ДИСКЛЕЙМЕРА
@@ -372,7 +375,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (navSaved) navSaved.classList.remove('active-pill'); 
             if (filtersContainer) filtersContainer.style.display = 'flex';
             
-            if (disclaimerBox) disclaimerBox.style.display = 'flex'; // Показываем дисклеймер
+            if (disclaimerBox) disclaimerBox.style.display = 'flex'; 
 
             if (filterRecent) setActiveFilter(filterRecent); 
             if(authorsContainer) authorsContainer.style.display = 'none'; 
@@ -388,7 +391,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (navHome) navHome.classList.remove('active-pill'); 
             if (filtersContainer) filtersContainer.style.display = 'none';
             
-            if (disclaimerBox) disclaimerBox.style.display = 'none'; // Скрываем дисклеймер
+            if (disclaimerBox) disclaimerBox.style.display = 'none'; 
 
             if(authorsContainer) authorsContainer.style.display = 'none'; 
             if(standalonesContainer) standalonesContainer.style.display = 'none'; 
@@ -401,7 +404,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (filterRecent) { 
         filterRecent.addEventListener('click', () => { 
             setActiveFilter(filterRecent); 
-            if (disclaimerBox) disclaimerBox.style.display = 'flex'; // Показываем дисклеймер
+            if (disclaimerBox) disclaimerBox.style.display = 'flex'; 
             if(authorsContainer) authorsContainer.style.display = 'none'; 
             if(standalonesContainer) standalonesContainer.style.display = 'none'; 
             if(tropesContainer) tropesContainer.style.display = 'none'; 
@@ -412,7 +415,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (filterAuthors) { 
         filterAuthors.addEventListener('click', () => { 
             setActiveFilter(filterAuthors); 
-            if (disclaimerBox) disclaimerBox.style.display = 'none'; // Скрываем дисклеймер
+            if (disclaimerBox) disclaimerBox.style.display = 'none'; 
             if(booksGrid) booksGrid.style.display = 'none'; 
             if(standalonesContainer) standalonesContainer.style.display = 'none'; 
             if(tropesContainer) tropesContainer.style.display = 'none'; 
@@ -423,7 +426,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (filterStandalones) { 
         filterStandalones.addEventListener('click', () => { 
             setActiveFilter(filterStandalones); 
-            if (disclaimerBox) disclaimerBox.style.display = 'none'; // Скрываем дисклеймер
+            if (disclaimerBox) disclaimerBox.style.display = 'none'; 
             if(booksGrid) booksGrid.style.display = 'none'; 
             if(authorsContainer) authorsContainer.style.display = 'none'; 
             if(tropesContainer) tropesContainer.style.display = 'none'; 
@@ -434,7 +437,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (filterTropes) { 
         filterTropes.addEventListener('click', () => { 
             setActiveFilter(filterTropes); 
-            if (disclaimerBox) disclaimerBox.style.display = 'none'; // Скрываем дисклеймер
+            if (disclaimerBox) disclaimerBox.style.display = 'none'; 
             if(booksGrid) booksGrid.style.display = 'none'; 
             if(authorsContainer) authorsContainer.style.display = 'none'; 
             if(standalonesContainer) standalonesContainer.style.display = 'none'; 
