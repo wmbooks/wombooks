@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentRating = 0; 
     let activeTropeName = null; 
 
-    // СЛОВАРЬ ТРОПОВ
     const tropesMapping = {
         "От ненависти до любви": ["от ненависти до любви", "от неприязни до любви", "враги любовники"],
         "Спортивные романы": ["хоккей", "спорт", "спортивный роман", "спортсмены", "баскетбол", "бейсбол"],
@@ -518,6 +517,45 @@ document.addEventListener('DOMContentLoaded', () => {
         tg.openLink(fileUrl);
     };
 
+    // --- НОВОЕ: ЛОГИКА ДЛЯ ПРОСМОТРА ОТЗЫВОВ ---
+    window.openReviewsListModal = function() {
+        if (!currentOpenBookId) return;
+        
+        const container = document.getElementById('reviews-list-container');
+        container.innerHTML = '';
+        
+        const bookReviews = allRatings.filter(r => r.bookId === currentOpenBookId && r.reviewText && r.reviewText.trim() !== "");
+        
+        if (bookReviews.length === 0) {
+            container.innerHTML = '<p class="no-reviews-msg">Пока нет отзывов с текстом.</p>';
+        } else {
+            // Показываем от новых к старым
+            [...bookReviews].reverse().forEach(r => {
+                const item = document.createElement('div');
+                item.className = 'review-item';
+                
+                const ratingDiv = document.createElement('div');
+                ratingDiv.className = 'review-item-rating';
+                ratingDiv.innerText = parseFloat(r.rating).toFixed(2);
+                
+                const textDiv = document.createElement('div');
+                textDiv.className = 'review-item-text';
+                textDiv.innerText = r.reviewText;
+                
+                item.appendChild(ratingDiv);
+                item.appendChild(textDiv);
+                container.appendChild(item);
+            });
+        }
+        
+        document.getElementById('reviews-list-modal').style.display = 'flex';
+    };
+
+    window.closeReviewsListModal = function() {
+        document.getElementById('reviews-list-modal').style.display = 'none';
+    };
+
+    // --- ЛОГИКА ДЛЯ ОТПРАВКИ ОТЗЫВА ---
     window.openReviewModal = function() {
         const modal = document.getElementById('review-modal');
         if(modal) modal.style.display = 'flex';
