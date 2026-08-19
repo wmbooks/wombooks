@@ -27,6 +27,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const tropesMenu = document.getElementById('tropes-menu');
     const tropesBooksGrid = document.getElementById('tropes-books-grid');
     const filtersContainer = document.querySelector('.category-filters-container'); 
+    
+    // БЛОК ДИСКЛЕЙМЕРА
+    const disclaimerBox = document.getElementById('disclaimer-box');
+
     const pageHome = document.getElementById('page-home');
     const pageDetails = document.getElementById('page-book-details');
     const bottomNav = document.getElementById('bottom-nav');
@@ -215,7 +219,6 @@ document.addEventListener('DOMContentLoaded', () => {
         tropesBooksGrid.style.display = 'grid';
     }
 
-    // НОВАЯ ЛОГИКА СОРТИРОВКИ ДЛЯ АВТОРОВ
     function renderAuthorsList() {
         if(!authorsContainer) return;
         authorsContainer.innerHTML = ''; 
@@ -230,7 +233,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!authorsMap[author][series]) authorsMap[author][series] = [];
             authorsMap[author][series].push(book);
             
-            // Сохраняем самый большой индекс (самую новую книгу)
             authorMaxIndex[author] = index;
         });
         
@@ -240,21 +242,12 @@ document.addEventListener('DOMContentLoaded', () => {
             return; 
         }
 
-        // Фиксированный ТОП-5
-        const topAuthorsOrder = [
-            "Эмили Рат",
-            "Лили Голд",
-            "К.Р. Джейн",
-            "Оливия Хейл",
-            "Э. Сальвадор"
-        ];
-
+        const topAuthorsOrder = ["Эмили Рат", "Лили Голд", "К.Р. Джейн", "Оливия Хейл", "Э. Сальвадор"];
         const fixedAuthors = [];
         topAuthorsOrder.forEach(author => {
             if (authorsMap[author]) fixedAuthors.push(author);
         });
 
-        // Остальные авторы, сортируем по новизне (чем больше индекс, тем выше)
         const otherAuthors = allAuthors.filter(a => !topAuthorsOrder.includes(a));
         otherAuthors.sort((a, b) => authorMaxIndex[b] - authorMaxIndex[a]);
 
@@ -282,21 +275,15 @@ document.addEventListener('DOMContentLoaded', () => {
             authorItem.appendChild(authorHeader); authorItem.appendChild(seriesList); authorsContainer.appendChild(authorItem);
         };
 
-        // Рисуем ТОП-5
         fixedAuthors.forEach(renderAuthorItem);
-
-        // Рисуем разделительную линию, если есть ТОП-5 и есть Остальные
         if (fixedAuthors.length > 0 && otherAuthors.length > 0) {
             const divider = document.createElement('div');
             divider.className = 'authors-divider';
             authorsContainer.appendChild(divider);
         }
-
-        // Рисуем остальных
         otherAuthors.forEach(renderAuthorItem);
     }
 
-    // НОВАЯ ЛОГИКА СОРТИРОВКИ ДЛЯ ОДИНОЧНЫХ КНИГ
     function renderStandalonesList() {
         if(!standalonesContainer) return;
         standalonesContainer.innerHTML = '';
@@ -361,13 +348,11 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         fixedAuthors.forEach(renderAuthorItem);
-
         if (fixedAuthors.length > 0 && otherAuthors.length > 0) {
             const divider = document.createElement('div');
             divider.className = 'authors-divider';
             standalonesContainer.appendChild(divider);
         }
-
         otherAuthors.forEach(renderAuthorItem);
     }
 
@@ -386,6 +371,9 @@ document.addEventListener('DOMContentLoaded', () => {
             navHome.classList.add('active-pill'); 
             if (navSaved) navSaved.classList.remove('active-pill'); 
             if (filtersContainer) filtersContainer.style.display = 'flex';
+            
+            if (disclaimerBox) disclaimerBox.style.display = 'flex'; // Показываем дисклеймер
+
             if (filterRecent) setActiveFilter(filterRecent); 
             if(authorsContainer) authorsContainer.style.display = 'none'; 
             if(standalonesContainer) standalonesContainer.style.display = 'none'; 
@@ -399,6 +387,9 @@ document.addEventListener('DOMContentLoaded', () => {
             navSaved.classList.add('active-pill'); 
             if (navHome) navHome.classList.remove('active-pill'); 
             if (filtersContainer) filtersContainer.style.display = 'none';
+            
+            if (disclaimerBox) disclaimerBox.style.display = 'none'; // Скрываем дисклеймер
+
             if(authorsContainer) authorsContainer.style.display = 'none'; 
             if(standalonesContainer) standalonesContainer.style.display = 'none'; 
             if(tropesContainer) tropesContainer.style.display = 'none'; 
@@ -410,6 +401,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (filterRecent) { 
         filterRecent.addEventListener('click', () => { 
             setActiveFilter(filterRecent); 
+            if (disclaimerBox) disclaimerBox.style.display = 'flex'; // Показываем дисклеймер
             if(authorsContainer) authorsContainer.style.display = 'none'; 
             if(standalonesContainer) standalonesContainer.style.display = 'none'; 
             if(tropesContainer) tropesContainer.style.display = 'none'; 
@@ -420,6 +412,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (filterAuthors) { 
         filterAuthors.addEventListener('click', () => { 
             setActiveFilter(filterAuthors); 
+            if (disclaimerBox) disclaimerBox.style.display = 'none'; // Скрываем дисклеймер
             if(booksGrid) booksGrid.style.display = 'none'; 
             if(standalonesContainer) standalonesContainer.style.display = 'none'; 
             if(tropesContainer) tropesContainer.style.display = 'none'; 
@@ -430,6 +423,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (filterStandalones) { 
         filterStandalones.addEventListener('click', () => { 
             setActiveFilter(filterStandalones); 
+            if (disclaimerBox) disclaimerBox.style.display = 'none'; // Скрываем дисклеймер
             if(booksGrid) booksGrid.style.display = 'none'; 
             if(authorsContainer) authorsContainer.style.display = 'none'; 
             if(tropesContainer) tropesContainer.style.display = 'none'; 
@@ -437,11 +431,10 @@ document.addEventListener('DOMContentLoaded', () => {
             renderCurrentView(); 
         }); 
     }
-    
-    // Вкладка ТРОПЫ
     if (filterTropes) { 
         filterTropes.addEventListener('click', () => { 
             setActiveFilter(filterTropes); 
+            if (disclaimerBox) disclaimerBox.style.display = 'none'; // Скрываем дисклеймер
             if(booksGrid) booksGrid.style.display = 'none'; 
             if(authorsContainer) authorsContainer.style.display = 'none'; 
             if(standalonesContainer) standalonesContainer.style.display = 'none'; 
