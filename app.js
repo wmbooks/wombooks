@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentRating = 0; 
     let activeTropeName = null; 
 
-    // НОВЫЙ СЛОВАРЬ ТРОПОВ (ТВОЙ СПИСОК)
+    // СЛОВАРЬ ТРОПОВ
     const tropesMapping = {
         "От ненависти до любви": ["от ненависти до любви", "от неприязни до любви", "враги любовники"],
         "Спортивные романы": ["хоккей", "спорт", "спортивный роман", "спортсмены", "баскетбол", "бейсбол"],
@@ -369,6 +369,8 @@ document.addEventListener('DOMContentLoaded', () => {
             renderCurrentView(); 
         }); 
     }
+    
+    // Вкладка ТРОПЫ
     if (filterTropes) { 
         filterTropes.addEventListener('click', () => { 
             setActiveFilter(filterTropes); 
