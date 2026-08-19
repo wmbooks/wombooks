@@ -85,15 +85,15 @@ body {
 .details-rating-wrapper { display: flex; justify-content: center; margin-bottom: 20px; }
 .details-rating-box { padding: 8px 24px; border: 1px solid #D0D0D0; border-radius: 25px; font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 500; color: var(--text-dark); display: flex; align-items: center; justify-content: center; background-color: transparent; }
 
-/* ИЗМЕНЕНО: Теги внутри карточки в стиле строки поиска */
+/* ИСПРАВЛЕННЫЕ ТЕГИ ВНУТРИ КАРТОЧКИ: Маленький шрифт, светло-серый цвет текста */
 .details-tropes { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 20px; }
 .trope-tag { 
     border: 1px solid #F0F0F0; 
     background-color: #FFFFFF; 
-    color: var(--text-dark); 
-    padding: 6px 12px; 
+    color: #A0A0A0; /* Светло-серый цвет, как в поиске */
+    padding: 4px 10px; 
     border-radius: 15px; 
-    font-size: 11px; 
+    font-size: 10px; /* Маленький размер */
     box-shadow: 0 2px 10px rgba(0,0,0,0.02); 
 }
 
@@ -124,16 +124,16 @@ body {
 .standalones-grid { display: none; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 15px 20px; }
 .author-item.open .standalones-grid { display: grid; }
 
-/* ИЗМЕНЕНО: Кнопки фильтрации тропов в стиле строки поиска */
+/* ИСПРАВЛЕННОЕ МЕНЮ ТРОПОВ: Маленький шрифт, светло-серый цвет текста */
 .tropes-menu { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 20px; }
 .trope-menu-btn { 
-    padding: 8px 16px; 
+    padding: 4px 10px; 
     border: 1px solid #F0F0F0; 
-    border-radius: 20px; 
+    border-radius: 15px; 
     background-color: #FFFFFF; 
-    color: var(--text-dark); 
+    color: #A0A0A0; /* Светло-серый цвет, как в поиске */
     font-family: 'Montserrat', sans-serif; 
-    font-size: 12px; 
+    font-size: 10px; /* Маленький размер */
     cursor: pointer; 
     transition: all 0.3s ease; 
     box-shadow: 0 2px 10px rgba(0,0,0,0.02); 
