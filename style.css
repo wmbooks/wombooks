@@ -46,18 +46,7 @@ body {
 .filter-btn { padding: 6px 16px; border: 1px solid var(--main-pink); border-radius: 20px; background: transparent; color: var(--shadow-pink); font-family: 'Montserrat', sans-serif; font-size: 12px; white-space: nowrap; cursor: pointer; }
 .active-filter { background-color: var(--main-pink); color: #FFFFFF; border-color: var(--main-pink); }
 
-.disclaimer-container {
-    display: flex;
-    gap: 12px;
-    padding: 15px;
-    margin-top: 20px; 
-    margin-bottom: 20px; 
-    border: 1px solid #F0F0F0; 
-    border-radius: 20px;
-    background-color: #FFFFFF;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-    align-items: flex-start;
-}
+.disclaimer-container { display: flex; gap: 12px; padding: 15px; margin-top: 20px; margin-bottom: 20px; border: 1px solid #F0F0F0; border-radius: 20px; background-color: #FFFFFF; box-shadow: 0 2px 10px rgba(0,0,0,0.02); align-items: flex-start; }
 .disclaimer-icon { color: var(--shadow-pink); font-size: 18px; font-weight: 500; flex-shrink: 0; font-family: 'Montserrat', sans-serif; margin-top: -2px; }
 .disclaimer-text { font-size: 11px; color: #A0A0A0; line-height: 1.4; text-align: justify; }
 
@@ -97,7 +86,8 @@ body {
 .gray-badge { padding: 4px 12px; background-color: #F5F5F5; color: #888888; border-radius: 12px; font-size: 10px; font-weight: 500; white-space: nowrap; }
 
 .details-rating-wrapper { display: flex; justify-content: center; margin-bottom: 20px; }
-.details-rating-box { padding: 8px 24px; border: 1px solid #D0D0D0; border-radius: 25px; font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 500; color: var(--text-dark); display: flex; align-items: center; justify-content: center; background-color: transparent; }
+/* ИЗМЕНЕНО: Добавлен cursor: pointer */
+.details-rating-box { padding: 8px 24px; border: 1px solid #D0D0D0; border-radius: 25px; font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 500; color: var(--text-dark); display: flex; align-items: center; justify-content: center; background-color: transparent; cursor: pointer; }
 
 .details-tropes { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 20px; }
 .trope-tag { border: 1px solid var(--main-pink); color: var(--shadow-pink); padding: 4px 10px; border-radius: 15px; font-size: 10px; background-color: transparent; }
@@ -115,10 +105,8 @@ body {
 .round-arrow { width: 26px; height: 26px; border: 1px solid #E0E0E0; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #BDBDBD; font-size: 12px; transition: all 0.3s ease; flex-shrink: 0; }
 .author-item.open .author-header { background-color: var(--main-pink); color: #FFFFFF; }
 .author-item.open .author-header .round-arrow { border-color: #FFFFFF; color: #FFFFFF; transform: rotate(90deg); }
-
 .author-series-list { display: none; flex-direction: column; padding: 15px 20px; gap: 12px; }
 .author-item.open .author-series-list { display: flex; }
-
 .series-item { display: flex; flex-direction: column; }
 .series-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 500; color: var(--text-dark); cursor: pointer; background-color: #FDFDFD; border-radius: 12px; border: 1px solid #F0F0F0; transition: border-color 0.3s; }
 .series-item.open .series-header { border-color: var(--main-pink); }
@@ -149,3 +137,11 @@ body {
 .modal-btn { flex: 1; padding: 12px; border-radius: 20px; font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; border: none; }
 .cancel-btn { background-color: #F8EBF0; color: var(--shadow-pink); }
 .submit-btn { background-color: var(--main-pink); color: #FFFFFF; }
+
+/* НОВОЕ: СТИЛИ ДЛЯ СПИСКА ОТЗЫВОВ */
+.reviews-list-content { max-height: 80vh; display: flex; flex-direction: column; }
+#reviews-list-container { overflow-y: auto; padding-right: 5px; margin-bottom: 15px; }
+.review-item { background: #FDFDFD; border: 1px solid #F0F0F0; border-radius: 15px; padding: 15px; margin-bottom: 10px; position: relative; }
+.review-item-rating { position: absolute; top: 15px; right: 15px; color: var(--shadow-pink); font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 600; }
+.review-item-text { font-size: 12px; color: var(--text-dark); line-height: 1.5; text-align: left; white-space: pre-wrap; word-wrap: break-word; padding-top: 20px; }
+.no-reviews-msg { text-align: center; color: #A0A0A0; font-size: 12px; padding: 20px 0; }
