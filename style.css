@@ -32,13 +32,7 @@ body {
     background-color: var(--bg-color); display: flex; justify-content: center; align-items: center;
     box-shadow: 0 2px 10px rgba(0,0,0,0.03); z-index: 1000;
 }
-.header-logo {
-    font-family: 'Felidae', serif; 
-    font-size: 20px; 
-    font-weight: normal;
-    color: var(--shadow-pink); 
-    letter-spacing: 1px;
-}
+.header-logo { font-family: 'Felidae', serif; font-size: 20px; font-weight: normal; color: var(--shadow-pink); letter-spacing: 1px; }
 
 #app { padding: 105px 20px 0 20px; max-width: 600px; margin: 0 auto; }
 
@@ -47,7 +41,6 @@ body {
 .search-input::placeholder { color: #BDBDBD; }
 .search-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%) rotate(-45deg); color: #BDBDBD; font-size: 18px; }
 
-/* ФИЛЬТРЫ: ДОБАВЛЕН flex-wrap ДЛЯ ПЕРЕНОСА КНОПОК, ЕСЛИ ИХ МНОГО */
 .category-filters-container { display: flex; flex-direction: column; gap: 10px; margin-bottom: 25px; }
 .category-filters-row { display: flex; gap: 10px; flex-wrap: wrap; }
 .filter-btn { padding: 6px 16px; border: 1px solid var(--main-pink); border-radius: 20px; background: transparent; color: var(--shadow-pink); font-family: 'Montserrat', sans-serif; font-size: 12px; white-space: nowrap; cursor: pointer; }
@@ -58,12 +51,7 @@ body {
 .highlight-newest { box-shadow: 0 0 15px rgba(255, 192, 228, 0.25), 0 4px 15px rgba(214, 115, 171, 0.15); }
 
 .grid-cover-wrapper { position: relative; display: block; overflow: hidden; border-radius: 12px 12px 0 0; }
-.cover-series-badge {
-    position: absolute; top: 6px; right: 6px; 
-    padding: 3px 8px; background-color: rgba(245, 245, 245, 0.95); color: #888888; 
-    border-radius: 10px; font-size: 9px; font-weight: 600; white-space: nowrap;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 10;
-}
+.cover-series-badge { position: absolute; top: 6px; right: 6px; padding: 3px 8px; background-color: rgba(245, 245, 245, 0.95); color: #888888; border-radius: 10px; font-size: 9px; font-weight: 600; white-space: nowrap; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 10; }
 
 .book-cover { width: 100%; aspect-ratio: 1 / 1.6; object-fit: cover; background-color: #F8EBF0; display: block; }
 .card-info { padding: 10px 8px; display: flex; flex-direction: column; flex-grow: 1; }
@@ -92,12 +80,12 @@ body {
 
 .details-series-wrapper { display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
 .details-series { display: flex; align-items: center; padding: 4px 12px; background-color: #F8EBF0; color: var(--shadow-pink); border-radius: 12px; font-size: 10px; }
-
 .gray-badge { padding: 4px 12px; background-color: #F5F5F5; color: #888888; border-radius: 12px; font-size: 10px; font-weight: 500; white-space: nowrap; }
 
 .details-rating-wrapper { display: flex; justify-content: center; margin-bottom: 20px; }
 .details-rating-box { padding: 8px 24px; border: 1px solid #D0D0D0; border-radius: 25px; font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 500; color: var(--text-dark); display: flex; align-items: center; justify-content: center; background-color: transparent; }
 
+/* Теги внутри карточки книги */
 .details-tropes { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 20px; }
 .trope-tag { border: 1px solid var(--main-pink); color: var(--shadow-pink); padding: 4px 10px; border-radius: 15px; font-size: 10px; }
 .details-annotation { font-size: 12px; line-height: 1.6; color: var(--text-dark); margin-bottom: 30px; text-align: justify; padding: 0 5px; }
@@ -124,10 +112,13 @@ body {
 .series-item.open .series-header .round-arrow { transform: rotate(90deg); color: var(--shadow-pink); border-color: var(--shadow-pink); }
 .series-books-grid { display: none; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 15px 0 5px 0; }
 .series-item.open .series-books-grid { display: grid; }
-
-/* НОВОЕ: Сетка для Одиночных книг (раскрывается сразу под автором) */
 .standalones-grid { display: none; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 15px 20px; }
 .author-item.open .standalones-grid { display: grid; }
+
+/* ИЗМЕНЕНО: СТИЛИ ДЛЯ ВЫБОРА ТРОПОВ В ТОЧНОСТИ КАК ТЕГИ В КАРТОЧКЕ */
+.tropes-menu { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-bottom: 20px; }
+.trope-menu-btn { padding: 4px 10px; border: 1px solid var(--main-pink); border-radius: 15px; background: transparent; color: var(--shadow-pink); font-family: 'Montserrat', sans-serif; font-size: 10px; cursor: pointer; transition: all 0.3s ease; }
+.trope-menu-btn.active-trope-btn { background: var(--main-pink); color: #FFFFFF; }
 
 .loader-container { grid-column: 1 / -1; display: flex; justify-content: center; align-items: center; padding-top: 40px; }
 .loader { width: 36px; height: 36px; border: 3px solid #F8EBF0; border-top: 3px solid var(--shadow-pink); border-radius: 50%; animation: spin 1s linear infinite; }
