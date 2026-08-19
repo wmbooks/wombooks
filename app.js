@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentRating = 0; 
     let activeTropeName = null; 
 
-    // СЛОВАРЬ ТРОПОВ
     const tropesMapping = {
         "От ненависти до любви": ["от ненависти до любви", "от неприязни до любви", "враги любовники"],
         "Спортивные романы": ["хоккей", "спорт", "спортивный роман", "спортсмены", "баскетбол", "бейсбол"],
@@ -24,11 +23,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const booksGrid = document.getElementById('books-grid');
     const authorsContainer = document.getElementById('authors-container');
     const standalonesContainer = document.getElementById('standalones-container'); 
-    
     const tropesContainer = document.getElementById('tropes-container');
     const tropesMenu = document.getElementById('tropes-menu');
     const tropesBooksGrid = document.getElementById('tropes-books-grid');
-    
     const filtersContainer = document.querySelector('.category-filters-container'); 
     const pageHome = document.getElementById('page-home');
     const pageDetails = document.getElementById('page-book-details');
@@ -218,24 +215,55 @@ document.addEventListener('DOMContentLoaded', () => {
         tropesBooksGrid.style.display = 'grid';
     }
 
+    // НОВАЯ ЛОГИКА СОРТИРОВКИ ДЛЯ АВТОРОВ
     function renderAuthorsList() {
         if(!authorsContainer) return;
-        authorsContainer.innerHTML = ''; const authorsMap = {};
-        allBooks.forEach(book => {
+        authorsContainer.innerHTML = ''; 
+        
+        const authorsMap = {};
+        const authorMaxIndex = {};
+        
+        allBooks.forEach((book, index) => {
             const author = book.author || 'Неизвестный автор';
             if (!authorsMap[author]) authorsMap[author] = {};
             const series = book.series ? book.series : 'Одиночные книги';
             if (!authorsMap[author][series]) authorsMap[author][series] = [];
             authorsMap[author][series].push(book);
+            
+            // Сохраняем самый большой индекс (самую новую книгу)
+            authorMaxIndex[author] = index;
         });
-        const sortedAuthors = Object.keys(authorsMap).sort();
-        if (sortedAuthors.length === 0) { authorsContainer.innerHTML = '<p style="text-align:center; margin-top: 20px; font-size: 12px; color: #A0A0A0;">Авторов пока нет.</p>'; return; }
+        
+        const allAuthors = Object.keys(authorsMap);
+        if (allAuthors.length === 0) { 
+            authorsContainer.innerHTML = '<p style="text-align:center; margin-top: 20px; font-size: 12px; color: #A0A0A0;">Авторов пока нет.</p>'; 
+            return; 
+        }
 
-        sortedAuthors.forEach(author => {
+        // Фиксированный ТОП-5
+        const topAuthorsOrder = [
+            "Эмили Рат",
+            "Лили Голд",
+            "К.Р. Джейн",
+            "Оливия Хейл",
+            "Э. Сальвадор"
+        ];
+
+        const fixedAuthors = [];
+        topAuthorsOrder.forEach(author => {
+            if (authorsMap[author]) fixedAuthors.push(author);
+        });
+
+        // Остальные авторы, сортируем по новизне (чем больше индекс, тем выше)
+        const otherAuthors = allAuthors.filter(a => !topAuthorsOrder.includes(a));
+        otherAuthors.sort((a, b) => authorMaxIndex[b] - authorMaxIndex[a]);
+
+        const renderAuthorItem = (author) => {
             const authorItem = document.createElement('div'); authorItem.className = 'author-item';
             const authorHeader = document.createElement('div'); authorHeader.className = 'author-header';
             authorHeader.onclick = function() { toggleAuthor(this); };
             authorHeader.innerHTML = `<span>${author}</span><span class="round-arrow author-arrow">➔</span>`;
+            
             const seriesList = document.createElement('div'); seriesList.className = 'author-series-list';
             
             const sortedSeries = Object.keys(authorsMap[author]).sort();
@@ -252,9 +280,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 seriesItem.appendChild(seriesHeader); seriesItem.appendChild(seriesGrid); seriesList.appendChild(seriesItem);
             });
             authorItem.appendChild(authorHeader); authorItem.appendChild(seriesList); authorsContainer.appendChild(authorItem);
-        });
+        };
+
+        // Рисуем ТОП-5
+        fixedAuthors.forEach(renderAuthorItem);
+
+        // Рисуем разделительную линию, если есть ТОП-5 и есть Остальные
+        if (fixedAuthors.length > 0 && otherAuthors.length > 0) {
+            const divider = document.createElement('div');
+            divider.className = 'authors-divider';
+            authorsContainer.appendChild(divider);
+        }
+
+        // Рисуем остальных
+        otherAuthors.forEach(renderAuthorItem);
     }
 
+    // НОВАЯ ЛОГИКА СОРТИРОВКИ ДЛЯ ОДИНОЧНЫХ КНИГ
     function renderStandalonesList() {
         if(!standalonesContainer) return;
         standalonesContainer.innerHTML = '';
@@ -266,19 +308,35 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         
         const authorsMap = {};
-        standalones.forEach(book => {
+        const authorMaxIndex = {};
+        
+        standalones.forEach((book) => {
+            const originalIndex = allBooks.indexOf(book);
             const author = book.author || 'Неизвестный автор';
             if (!authorsMap[author]) authorsMap[author] = [];
             authorsMap[author].push(book);
+            
+            if (authorMaxIndex[author] === undefined || originalIndex > authorMaxIndex[author]) {
+                authorMaxIndex[author] = originalIndex;
+            }
         });
 
-        const sortedAuthors = Object.keys(authorsMap).sort();
-        if (sortedAuthors.length === 0) { 
+        const allAuthors = Object.keys(authorsMap);
+        if (allAuthors.length === 0) { 
             standalonesContainer.innerHTML = '<p style="text-align:center; margin-top: 20px; font-size: 12px; color: #A0A0A0;">Одиночных книг пока нет.</p>'; 
             return; 
         }
 
-        sortedAuthors.forEach(author => {
+        const topAuthorsOrder = ["Эмили Рат", "Лили Голд", "К.Р. Джейн", "Оливия Хейл", "Э. Сальвадор"];
+        const fixedAuthors = [];
+        topAuthorsOrder.forEach(author => {
+            if (authorsMap[author]) fixedAuthors.push(author);
+        });
+
+        const otherAuthors = allAuthors.filter(a => !topAuthorsOrder.includes(a));
+        otherAuthors.sort((a, b) => authorMaxIndex[b] - authorMaxIndex[a]);
+
+        const renderAuthorItem = (author) => {
             const authorItem = document.createElement('div'); 
             authorItem.className = 'author-item';
             
@@ -300,7 +358,17 @@ document.addEventListener('DOMContentLoaded', () => {
             authorItem.appendChild(authorHeader); 
             authorItem.appendChild(booksGrid); 
             standalonesContainer.appendChild(authorItem);
-        });
+        };
+
+        fixedAuthors.forEach(renderAuthorItem);
+
+        if (fixedAuthors.length > 0 && otherAuthors.length > 0) {
+            const divider = document.createElement('div');
+            divider.className = 'authors-divider';
+            standalonesContainer.appendChild(divider);
+        }
+
+        otherAuthors.forEach(renderAuthorItem);
     }
 
     window.toggleAuthor = function(headerElement) { const authorItem = headerElement.parentElement; authorItem.classList.toggle('open'); };
