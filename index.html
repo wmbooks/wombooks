@@ -10,12 +10,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
     
-    <!-- Трюк против кэша Айфона: версия 28 -->
-    <link rel="stylesheet" href="style.css?ver=28">
+    <!-- Трюк против кэша Айфона: версия 30 -->
+    <link rel="stylesheet" href="style.css?ver=30">
 </head>
 <body>
 
-    <!-- ПУСТАЯ ЗАКРЕПЛЕННАЯ ШАПКА -->
     <header class="top-header">
         <h1 class="header-logo"></h1>
     </header>
@@ -35,7 +34,6 @@
                 <div class="category-filters-row">
                     <button class="filter-btn" id="filter-tropes">Тропы</button>
                     <button class="filter-btn" id="filter-authors">Авторы</button>
-                    <!-- НОВАЯ КНОПКА ОДИНОЧНЫЕ -->
                     <button class="filter-btn" id="filter-standalones">Одиночные</button>
                 </div>
             </div>
@@ -43,8 +41,13 @@
             <div class="books-grid" id="books-grid"></div>
 
             <div class="authors-list-container" id="authors-container" style="display: none;"></div>
-            <!-- КОНТЕЙНЕР ДЛЯ ОДИНОЧНЫХ КНИГ -->
             <div class="authors-list-container" id="standalones-container" style="display: none;"></div>
+            
+            <!-- КОНТЕЙНЕР ДЛЯ ТРОПОВ -->
+            <div id="tropes-container" style="display: none;">
+                <div class="tropes-menu" id="tropes-menu"></div>
+                <div class="books-grid" id="tropes-books-grid" style="display: none;"></div>
+            </div>
         </div>
 
         <!-- СТРАНИЦА 2: ДЕТАЛИ КНИГИ -->
@@ -108,7 +111,7 @@
         </div>
     </div>
 
-    <!-- Трюк против кэша Айфона: версия 28 -->
-    <script src="app.js?ver=28"></script>
+    <!-- Трюк против кэша Айфона: версия 30 -->
+    <script src="app.js?ver=30"></script>
 </body>
 </html>
