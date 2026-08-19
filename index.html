@@ -10,8 +10,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
     
-    <!-- Трюк против кэша Айфона: версия 38 -->
-    <link rel="stylesheet" href="style.css?ver=38">
+    <!-- Трюк против кэша Айфона: версия 39 -->
+    <link rel="stylesheet" href="style.css?ver=39">
 </head>
 <body>
 
@@ -40,7 +40,6 @@
 
             <div class="books-grid" id="books-grid"></div>
 
-            <!-- ПРИМЕЧАНИЕ (ДИСКЛЕЙМЕР) -->
             <div class="disclaimer-container" id="disclaimer-box">
                 <div class="disclaimer-icon">!</div>
                 <div class="disclaimer-text">
@@ -76,8 +75,9 @@
                 
                 <div class="details-series-wrapper" id="details-series-container"></div>
                 
+                <!-- ИЗМЕНЕНО: Добавлен onclick для открытия списка отзывов -->
                 <div class="details-rating-wrapper">
-                    <div class="details-rating-box" id="details-rating-box">0.00</div>
+                    <div class="details-rating-box" id="details-rating-box" onclick="openReviewsListModal()">0.00</div>
                 </div>
 
                 <div class="details-tropes" id="details-tropes"></div>
@@ -99,7 +99,7 @@
         </nav>
     </div>
 
-    <!-- МОДАЛЬНОЕ ОКНО ДЛЯ ОТЗЫВА -->
+    <!-- МОДАЛЬНОЕ ОКНО ДЛЯ ОТПРАВКИ ОТЗЫВА -->
     <div id="review-modal" class="modal-overlay" style="display: none;">
         <div class="modal-content">
             <h3 class="modal-title">Оценить книгу</h3>
@@ -118,7 +118,18 @@
         </div>
     </div>
 
-    <!-- Трюк против кэша Айфона: версия 38 -->
-    <script src="app.js?ver=38"></script>
+    <!-- НОВОЕ: МОДАЛЬНОЕ ОКНО ДЛЯ ПРОСМОТРА ОТЗЫВОВ -->
+    <div id="reviews-list-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content reviews-list-content">
+            <h3 class="modal-title">Отзывы читателей</h3>
+            <div id="reviews-list-container"></div>
+            <div class="modal-actions">
+                <button class="modal-btn cancel-btn" onclick="closeReviewsListModal()">Закрыть</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Трюк против кэша Айфона: версия 39 -->
+    <script src="app.js?ver=39"></script>
 </body>
 </html>
