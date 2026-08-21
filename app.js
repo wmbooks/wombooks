@@ -2,7 +2,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const tg = window.Telegram.WebApp;
     tg.expand();
 
-    // ВОССТАНОВЛЕНИЕ ТЕМЫ
     const savedTheme = localStorage.getItem('wombooks_theme');
     const themeBtn = document.getElementById('theme-btn');
     if (savedTheme === 'dark') {
@@ -38,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const filtersContainer = document.querySelector('.category-filters-container'); 
     const disclaimerBox = document.getElementById('disclaimer-box');
-    const searchInput = document.getElementById('main-search-input'); // Поиск
+    const searchInput = document.getElementById('main-search-input'); 
 
     const pageHome = document.getElementById('page-home');
     const pageDetails = document.getElementById('page-book-details');
@@ -51,7 +50,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const navHome = document.getElementById('nav-home');
     const navSaved = document.getElementById('nav-saved');
 
-    // ФУНКЦИЯ ПЕРЕКЛЮЧЕНИЯ ТЕМЫ
     window.toggleTheme = function() {
         document.body.classList.toggle('dark-theme');
         const isDark = document.body.classList.contains('dark-theme');
@@ -77,23 +75,20 @@ document.addEventListener('DOMContentLoaded', () => {
         return trimmed;
     }
 
-    // --- ЛОГИКА ПОИСКА ---
     if (searchInput) {
         searchInput.addEventListener('input', (e) => {
             const query = e.target.value.toLowerCase().trim();
             if (query === '') {
-                renderCurrentView(); // Если пусто, возвращаем всё как было
+                renderCurrentView(); 
                 return;
             }
             
-            // Прячем всё лишнее
             if (disclaimerBox) disclaimerBox.style.display = 'none'; 
             if (authorsContainer) authorsContainer.style.display = 'none'; 
             if (standalonesContainer) standalonesContainer.style.display = 'none'; 
             if (tropesContainer) tropesContainer.style.display = 'none'; 
             if (booksGrid) booksGrid.style.display = 'grid'; 
 
-            // Ищем совпадение в названии, авторе или серии
             const filtered = allBooks.filter(b => {
                 const t = (b.title || '').toLowerCase();
                 const a = (b.author || '').toLowerCase();
@@ -133,14 +128,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderCurrentView() {
-        // Очищаем поиск при переходе по вкладкам
         if (searchInput && searchInput.value !== '') {
             searchInput.value = '';
         }
 
         if (authorsContainer && authorsContainer.style.display === 'block') {
             renderAuthorsList();
-        } else if (standalonesContainer && standalonesContainer.style.display === 'block') {
+        } else if (standalonesContainer && standalonesContainer.style.display === 'block' || standalonesContainer.style.display === 'grid') {
             renderStandalonesList();
         } else if (tropesContainer && tropesContainer.style.display === 'block') {
             renderTropesMenu();
@@ -268,6 +262,7 @@ document.addEventListener('DOMContentLoaded', () => {
         tropesBooksGrid.style.display = 'grid';
     }
 
+    // ИЗМЕНЕНО: Исключаем книги, которые являются "Одиночными"
     function renderAuthorsList() {
         if(!authorsContainer) return;
         authorsContainer.innerHTML = ''; 
@@ -276,13 +271,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const authorMaxIndex = {};
         
         allBooks.forEach((book, index) => {
+            if (book.series) {
+                const s = book.series.trim().toLowerCase();
+                if (s === 'одиночная' || s === 'одиночные') return; // ПРОПУСКАЕМ ОДИНОЧНЫЕ
+            }
+
             const author = book.author || 'Неизвестный автор';
             if (!authorsMap[author]) authorsMap[author] = {};
-            const series = book.series ? book.series : 'Одиночные книги';
+            const series = book.series ? book.series : 'Без серии';
             if (!authorsMap[author][series]) authorsMap[author][series] = [];
             authorsMap[author][series].push(book);
             
-            authorMaxIndex[author] = index;
+            if (authorMaxIndex[author] === undefined || index > authorMaxIndex[author]) {
+                authorMaxIndex[author] = index;
+            }
         });
         
         const allAuthors = Object.keys(authorsMap);
@@ -333,7 +335,6 @@ document.addEventListener('DOMContentLoaded', () => {
         otherAuthors.forEach(renderAuthorItem);
     }
 
-    // ИЗМЕНЕНО: Одиночные теперь отображаются простой сеткой, без плашек с авторами
     function renderStandalonesList() {
         if(!standalonesContainer) return;
         standalonesContainer.innerHTML = '';
@@ -344,7 +345,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return s === 'одиночная' || s === 'одиночные';
         });
 
-        // Сортируем: новые вверху
         const sortedStandalones = standalones.slice().reverse();
         renderBooksToGrid(sortedStandalones, standalonesContainer);
     }
@@ -416,7 +416,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if(booksGrid) booksGrid.style.display = 'none'; 
             if(authorsContainer) authorsContainer.style.display = 'none'; 
             if(tropesContainer) tropesContainer.style.display = 'none'; 
-            if(standalonesContainer) standalonesContainer.style.display = 'grid'; // Показываем как сетку
+            if(standalonesContainer) standalonesContainer.style.display = 'grid';
             renderCurrentView(); 
         }); 
     }
@@ -457,7 +457,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const seriesContainer = document.getElementById('details-series-container'); 
         if(seriesContainer) {
             seriesContainer.innerHTML = '';
-            if (book.series) { seriesContainer.innerHTML += `<div class="details-series">${book.series}</div>`; }
+            if (book.series && book.series.trim().toLowerCase() !== 'одиночная' && book.series.trim().toLowerCase() !== 'одиночные') { 
+                seriesContainer.innerHTML += `<div class="details-series">${book.series}</div>`; 
+            }
             if (book.pages) { seriesContainer.innerHTML += `<div class="gray-badge">${book.pages}</div>`; }
         }
 
