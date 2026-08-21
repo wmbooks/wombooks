@@ -10,8 +10,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
     
-    <!-- Трюк против кэша Айфона: версия 41 -->
-    <link rel="stylesheet" href="style.css?ver=41">
+    <!-- Трюк против кэша Айфона: версия 42 -->
+    <link rel="stylesheet" href="style.css?ver=42">
 </head>
 <body>
 
@@ -24,7 +24,10 @@
         <div id="page-home">
             <div class="search-container">
                 <input type="text" class="search-input" id="main-search-input" placeholder="Найти книгу или автора">
-                <span class="search-icon">⚲</span>
+                <!-- SVG Лупа -->
+                <span class="search-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                </span>
             </div>
 
             <div class="category-filters-container">
@@ -40,8 +43,12 @@
 
             <div class="books-grid" id="books-grid"></div>
 
+            <!-- ПРИМЕЧАНИЕ (ДИСКЛЕЙМЕР) -->
             <div class="disclaimer-container" id="disclaimer-box">
-                <div class="disclaimer-icon">!</div>
+                <!-- SVG Восклицательный знак -->
+                <div class="disclaimer-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                </div>
                 <div class="disclaimer-text">
                     <p style="margin-bottom: 6px;">Данное сообщество, как и все материалы в нем, не преследует за собой коммерческой выгоды.</p>
                     <p>Любая публикация материалов без ссылки на телеграм-канал переводчика строго запрещена.</p>
@@ -49,7 +56,6 @@
             </div>
 
             <div class="authors-list-container" id="authors-container" style="display: none;"></div>
-            
             <div class="books-grid" id="standalones-container" style="display: none;"></div>
             
             <div id="tropes-container" style="display: none;">
@@ -61,8 +67,12 @@
         <!-- СТРАНИЦА 2: ДЕТАЛИ КНИГИ -->
         <div id="page-book-details" style="display: none;">
             <div class="details-top-bar">
-                <button class="back-btn" onclick="closeBook()">← Назад</button>
-                <button class="action-btn fav-btn" id="details-fav-btn" onclick="toggleSaveFromDetails()">♡</button>
+                <!-- SVG Стрелка назад -->
+                <button class="back-btn" onclick="closeBook()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                    Назад
+                </button>
+                <button class="action-btn fav-btn" id="details-fav-btn" onclick="toggleSaveFromDetails()"></button>
             </div>
             
             <div class="details-content">
@@ -84,7 +94,9 @@
                 <div class="details-annotation" id="details-annotation">Аннотация...</div>
                 
                 <div class="download-section">
-                    <button class="round-back-btn" onclick="closeBook()">←</button>
+                    <button class="round-back-btn" onclick="closeBook()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                    </button>
                     <button class="download-btn" id="details-download" onclick="downloadBook()">Скачать книгу</button>
                 </div>
 
@@ -96,19 +108,22 @@
         <nav class="bottom-nav" id="bottom-nav">
             <button class="bottom-pill-btn active-pill" id="nav-home">Главная</button>
             <button class="bottom-pill-btn" id="nav-saved">Сохраненное</button>
-            <button class="theme-toggle-btn" id="theme-btn" onclick="toggleTheme()">🌙</button>
+            <!-- Кнопка темы без текста, иконку подставит JS -->
+            <button class="theme-toggle-btn" id="theme-btn" onclick="toggleTheme()"></button>
         </nav>
     </div>
 
+    <!-- МОДАЛЬНОЕ ОКНО ДЛЯ ОТЗЫВА -->
     <div id="review-modal" class="modal-overlay" style="display: none;">
         <div class="modal-content">
             <h3 class="modal-title">Оценить книгу</h3>
             <div class="stars-container" id="stars-container">
-                <span class="star" data-val="1">★</span>
-                <span class="star" data-val="2">★</span>
-                <span class="star" data-val="3">★</span>
-                <span class="star" data-val="4">★</span>
-                <span class="star" data-val="5">★</span>
+                <!-- SVG Звездочки -->
+                <span class="star" data-val="1"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></span>
+                <span class="star" data-val="2"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></span>
+                <span class="star" data-val="3"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></span>
+                <span class="star" data-val="4"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></span>
+                <span class="star" data-val="5"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></span>
             </div>
             <textarea id="review-text" class="review-textarea" placeholder="Напишите пару слов о книге... (необязательно)"></textarea>
             <div class="modal-actions">
@@ -118,6 +133,7 @@
         </div>
     </div>
 
+    <!-- МОДАЛЬНОЕ ОКНО ДЛЯ ОТЗЫВОВ -->
     <div id="reviews-list-modal" class="modal-overlay" style="display: none;">
         <div class="modal-content reviews-list-content">
             <h3 class="modal-title">Отзывы читателей</h3>
@@ -128,7 +144,7 @@
         </div>
     </div>
 
-    <!-- Трюк против кэша Айфона: версия 41 -->
-    <script src="app.js?ver=41"></script>
+    <!-- Трюк против кэша Айфона: версия 42 -->
+    <script src="app.js?ver=42"></script>
 </body>
 </html>
