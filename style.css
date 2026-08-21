@@ -18,13 +18,13 @@ body.dark-theme {
     /* ТЕМНАЯ ТЕМА */
     --bg-color: #121212;
     --card-bg: #1E1E1E;
-    --main-pink: #D673AB; /* Розовый становится глубоким */
+    --main-pink: #D673AB; 
     --shadow-pink: #D673AB; 
     --text-dark: #E0E0E0;
     --border-light: #333333;
     --gray-bg: #2C2C2C;
     --gray-text: #888888;
-    --pink-light-bg: #2A1C23; /* Темно-бордовый для плашек */
+    --pink-light-bg: #2A1C23; 
     --review-bg: #1A1A1A;
     --overlay-bg: rgba(0,0,0,0.7);
     --shadow-color: rgba(0,0,0,0.4);
@@ -77,7 +77,6 @@ body { background-color: var(--bg-color); color: var(--text-dark); font-family: 
 .bottom-pill-btn { padding: 8px 24px; border: 1px solid var(--main-pink); border-radius: 20px; background: transparent; color: var(--shadow-pink); font-family: 'Montserrat', sans-serif; font-size: 13px; cursor: pointer; }
 .bottom-pill-btn.active-pill { background-color: var(--main-pink); color: #FFFFFF; border-color: var(--main-pink); }
 
-/* НОВАЯ КНОПКА ТЕМЫ В СТИЛЕ ТРОПОВ */
 .theme-toggle-btn { width: 36px; height: 36px; border: 1px solid var(--border-light); border-radius: 50%; background-color: var(--card-bg); color: var(--gray-text); display: flex; justify-content: center; align-items: center; font-size: 16px; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.02); flex-shrink: 0; }
 
 .details-top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
