@@ -10,8 +10,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
     
-    <!-- Трюк против кэша Айфона: версия 40 -->
-    <link rel="stylesheet" href="style.css?ver=40">
+    <!-- Трюк против кэша Айфона: версия 41 -->
+    <link rel="stylesheet" href="style.css?ver=41">
 </head>
 <body>
 
@@ -50,7 +50,6 @@
 
             <div class="authors-list-container" id="authors-container" style="display: none;"></div>
             
-            <!-- ИЗМЕНЕНО: Одиночные теперь сразу обычная сетка, без авторов -->
             <div class="books-grid" id="standalones-container" style="display: none;"></div>
             
             <div id="tropes-container" style="display: none;">
@@ -86,7 +85,6 @@
                 
                 <div class="download-section">
                     <button class="round-back-btn" onclick="closeBook()">←</button>
-                    <!-- ИЗМЕНЕНО: Убрано .epub -->
                     <button class="download-btn" id="details-download" onclick="downloadBook()">Скачать книгу</button>
                 </div>
 
@@ -98,7 +96,6 @@
         <nav class="bottom-nav" id="bottom-nav">
             <button class="bottom-pill-btn active-pill" id="nav-home">Главная</button>
             <button class="bottom-pill-btn" id="nav-saved">Сохраненное</button>
-            <!-- НОВОЕ: Кнопка переключения темы -->
             <button class="theme-toggle-btn" id="theme-btn" onclick="toggleTheme()">🌙</button>
         </nav>
     </div>
@@ -131,7 +128,7 @@
         </div>
     </div>
 
-    <!-- Трюк против кэша Айфона: версия 40 -->
-    <script src="app.js?ver=40"></script>
+    <!-- Трюк против кэша Айфона: версия 41 -->
+    <script src="app.js?ver=41"></script>
 </body>
 </html>
