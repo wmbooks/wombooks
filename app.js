@@ -2,11 +2,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const tg = window.Telegram.WebApp;
     tg.expand();
 
+    // --- SVG ИКОНКИ ---
+    const heartEmpty = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>`;
+    const heartFilled = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>`;
+    const moonSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
+    const sunSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
+    const arrowRightSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>`;
+
+    // ВОССТАНОВЛЕНИЕ ТЕМЫ
     const savedTheme = localStorage.getItem('wombooks_theme');
     const themeBtn = document.getElementById('theme-btn');
     if (savedTheme === 'dark') {
         document.body.classList.add('dark-theme');
-        if(themeBtn) themeBtn.innerText = '☀️';
+        if(themeBtn) themeBtn.innerHTML = sunSvg;
+    } else {
+        if(themeBtn) themeBtn.innerHTML = moonSvg;
     }
 
     const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQofE7L59iFriQgwIJ-P0MclqfZ2QhBHR-zbk6FgaaZ7VSJ_dmtv823zjZkXBRWDodnCJ11B_Pa1oPc/pub?output=csv';
@@ -54,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.classList.toggle('dark-theme');
         const isDark = document.body.classList.contains('dark-theme');
         localStorage.setItem('wombooks_theme', isDark ? 'dark' : 'light');
-        if(themeBtn) themeBtn.innerText = isDark ? '☀️' : '🌙';
+        if(themeBtn) themeBtn.innerHTML = isDark ? sunSvg : moonSvg;
     };
 
     function getRecentBooks() { return allBooks.slice(-3).reverse(); }
@@ -134,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (authorsContainer && authorsContainer.style.display === 'block') {
             renderAuthorsList();
-        } else if (standalonesContainer && standalonesContainer.style.display === 'block' || standalonesContainer.style.display === 'grid') {
+        } else if (standalonesContainer && (standalonesContainer.style.display === 'block' || standalonesContainer.style.display === 'grid')) {
             renderStandalonesList();
         } else if (tropesContainer && tropesContainer.style.display === 'block') {
             renderTropesMenu();
@@ -193,7 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function createBookCardHTML(book) {
         const isSaved = savedBookIds.includes(book.id);
-        const heartIcon = isSaved ? '♥' : '♡';
+        const heartIcon = isSaved ? heartFilled : heartEmpty; 
         let seriesBadgeHtml = '';
         if (book.seriesNumber) { seriesBadgeHtml = `<div class="cover-series-badge">${formatSeriesNumber(book.seriesNumber)}</div>`; }
 
@@ -206,7 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <h4 class="book-title">${book.title}</h4>
                 <p class="book-author">${book.author || 'Неизвестный автор'}</p>
                 <div class="card-actions">
-                    <button class="action-btn arrow-btn" onclick="openBook('${book.id}')">➔</button>
+                    <button class="action-btn arrow-btn" onclick="openBook('${book.id}')">${arrowRightSvg}</button>
                     <div class="card-rating-text">${getRatingText(book.rating)}</div>
                     <button class="action-btn fav-btn" onclick="toggleSave(this, '${book.id}')">${heartIcon}</button>
                 </div>
@@ -262,7 +272,6 @@ document.addEventListener('DOMContentLoaded', () => {
         tropesBooksGrid.style.display = 'grid';
     }
 
-    // ИЗМЕНЕНО: Исключаем книги, которые являются "Одиночными"
     function renderAuthorsList() {
         if(!authorsContainer) return;
         authorsContainer.innerHTML = ''; 
@@ -273,7 +282,7 @@ document.addEventListener('DOMContentLoaded', () => {
         allBooks.forEach((book, index) => {
             if (book.series) {
                 const s = book.series.trim().toLowerCase();
-                if (s === 'одиночная' || s === 'одиночные') return; // ПРОПУСКАЕМ ОДИНОЧНЫЕ
+                if (s === 'одиночная' || s === 'одиночные') return; 
             }
 
             const author = book.author || 'Неизвестный автор';
@@ -306,7 +315,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const authorItem = document.createElement('div'); authorItem.className = 'author-item';
             const authorHeader = document.createElement('div'); authorHeader.className = 'author-header';
             authorHeader.onclick = function() { toggleAuthor(this); };
-            authorHeader.innerHTML = `<span>${author}</span><span class="round-arrow author-arrow">➔</span>`;
+            authorHeader.innerHTML = `<span>${author}</span><span class="round-arrow author-arrow">${arrowRightSvg}</span>`;
             
             const seriesList = document.createElement('div'); seriesList.className = 'author-series-list';
             
@@ -315,7 +324,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const seriesItem = document.createElement('div'); seriesItem.className = 'series-item';
                 const seriesHeader = document.createElement('div'); seriesHeader.className = 'series-header';
                 seriesHeader.onclick = function() { toggleSeries(this); };
-                seriesHeader.innerHTML = `<span>${series}</span><span class="round-arrow series-arrow">➔</span>`;
+                seriesHeader.innerHTML = `<span>${series}</span><span class="round-arrow series-arrow">${arrowRightSvg}</span>`;
                 const seriesGrid = document.createElement('div'); seriesGrid.className = 'series-books-grid';
                 authorsMap[author][series].forEach(book => {
                     const card = document.createElement('div'); card.className = 'book-card';
@@ -434,8 +443,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.toggleSave = function(btnElement, id) {
         const index = savedBookIds.indexOf(id);
-        if (index > -1) { savedBookIds.splice(index, 1); btnElement.innerText = '♡'; } 
-        else { savedBookIds.push(id); btnElement.innerText = '♥'; }
+        if (index > -1) { 
+            savedBookIds.splice(index, 1); 
+            btnElement.innerHTML = heartEmpty; 
+        } else { 
+            savedBookIds.push(id); 
+            btnElement.innerHTML = heartFilled; 
+        }
         localStorage.setItem('wombooks_saved', JSON.stringify(savedBookIds));
     };
 
@@ -484,7 +498,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const favBtn = document.getElementById('details-fav-btn');
         const isSaved = savedBookIds.includes(book.id); 
-        if(favBtn) favBtn.innerText = isSaved ? '♥' : '♡';
+        if(favBtn) favBtn.innerHTML = isSaved ? heartFilled : heartEmpty;
 
         if(pageHome) pageHome.style.display = 'none'; 
         if(bottomNav) bottomNav.style.display = 'none'; 
