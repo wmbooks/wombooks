@@ -2,12 +2,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const tg = window.Telegram.WebApp;
     tg.expand();
 
-    // --- ИЗМЕНЕНО: Сердечки и стрелочка стали тоньше (stroke-width 1.2) и меньше ---
+    // --- SVG ИКОНКИ ---
     const heartEmpty = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>`;
     const heartFilled = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>`;
     const arrowRightSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>`;
-    
-    // Луна и солнце
     const moonSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
     const sunSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
 
@@ -49,6 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const filtersContainer = document.querySelector('.category-filters-container'); 
     const disclaimerBox = document.getElementById('disclaimer-box');
     const searchInput = document.getElementById('main-search-input'); 
+    const searchClearBtn = document.getElementById('search-clear-btn'); // Крестик
 
     const pageHome = document.getElementById('page-home');
     const pageDetails = document.getElementById('page-book-details');
@@ -86,12 +85,25 @@ document.addEventListener('DOMContentLoaded', () => {
         return trimmed;
     }
 
+    // НОВОЕ: Очистка поиска крестиком
+    if (searchClearBtn && searchInput) {
+        searchClearBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            searchClearBtn.style.display = 'none';
+            renderCurrentView();
+            searchInput.focus();
+        });
+    }
+
     if (searchInput) {
         searchInput.addEventListener('input', (e) => {
             const query = e.target.value.toLowerCase().trim();
             if (query === '') {
+                if(searchClearBtn) searchClearBtn.style.display = 'none';
                 renderCurrentView(); 
                 return;
+            } else {
+                if(searchClearBtn) searchClearBtn.style.display = 'flex';
             }
             
             if (disclaimerBox) disclaimerBox.style.display = 'none'; 
@@ -141,6 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderCurrentView() {
         if (searchInput && searchInput.value !== '') {
             searchInput.value = '';
+            if(searchClearBtn) searchClearBtn.style.display = 'none';
         }
 
         if (authorsContainer && authorsContainer.style.display === 'block') {
@@ -196,7 +209,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     id: arr[i][0].trim(), title: arr[i][1] ? arr[i][1].trim() : 'Без названия',
                     author: arr[i][2] ? arr[i][2].trim() : '', series: arr[i][3] ? arr[i][3].trim() : '',
                     tropes: arr[i][4] ? arr[i][4].trim() : '', annotation: arr[i][5] ? arr[i][5].trim() : '',
-                    seriesNumber: arr[i][6] ? arr[i][6].trim() : '', pages: arr[i][7] ? arr[i][7].trim() : '', rating: 0 
+                    seriesNumber: arr[i][6] ? arr[i][6].trim() : '', 
+                    pages: arr[i][7] ? arr[i][7].trim() : '',
+                    warnings: arr[i][8] ? arr[i][8].trim() : '', // НОВОЕ: 9-я колонка (Предупреждения)
+                    rating: 0 
                 });
             }
         }
@@ -361,6 +377,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.toggleAuthor = function(headerElement) { const authorItem = headerElement.parentElement; authorItem.classList.toggle('open'); };
     window.toggleSeries = function(headerElement) { const seriesItem = headerElement.parentElement; seriesItem.classList.toggle('open'); };
+    
+    // НОВОЕ: Функция открытия/закрытия предупреждений
+    window.toggleWarnings = function() {
+        const wrapper = document.getElementById('warnings-wrapper');
+        wrapper.classList.toggle('open');
+    };
 
     function setActiveFilter(activeBtn) { 
         [filterRecent, filterTropes, filterAuthors, filterStandalones].forEach(btn => { 
@@ -454,6 +476,18 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('wombooks_saved', JSON.stringify(savedBookIds));
     };
 
+    // НОВОЕ: Функция для отправки (расшаривания) книги
+    window.shareBook = function() {
+        if (!currentOpenBookId) return;
+        const book = allBooks.find(b => b.id === currentOpenBookId);
+        if (!book) return;
+        
+        const shareText = `Смотри, какую книгу я нашла в библиотеке WOMBOOKS!\n\n📖 «${book.title}»\n✍️ Автор: ${book.author}\n\nЗаходи читать: 🩷`;
+        // Открываем нативное окно отправки сообщения в Telegram
+        const shareUrl = `https://t.me/share/url?url=&text=${encodeURIComponent(shareText)}`;
+        tg.openTelegramLink(shareUrl);
+    };
+
     window.openBook = function(id) {
         const book = allBooks.find(b => b.id === id); if (!book) return; currentOpenBookId = id;
         
@@ -492,6 +526,27 @@ document.addEventListener('DOMContentLoaded', () => {
         if(tropesContainerEl) {
             tropesContainerEl.innerHTML = '';
             if (book.tropes) { book.tropes.split(',').forEach(trope => { if (trope.trim()) { const span = document.createElement('span'); span.className = 'trope-tag'; span.innerText = trope.trim(); tropesContainerEl.appendChild(span); } }); }
+        }
+
+        // НОВОЕ: Отрисовка предупреждений о содержании
+        const warningsWrapper = document.getElementById('warnings-wrapper');
+        const warningsContent = document.getElementById('warnings-content');
+        if (warningsWrapper && warningsContent) {
+            warningsWrapper.classList.remove('open'); // Закрываем при открытии новой книги
+            if (book.warnings) {
+                warningsWrapper.style.display = 'block';
+                warningsContent.innerHTML = '';
+                book.warnings.split(',').forEach(w => {
+                    if (w.trim()) {
+                        const span = document.createElement('span');
+                        span.className = 'warning-tag';
+                        span.innerText = w.trim();
+                        warningsContent.appendChild(span);
+                    }
+                });
+            } else {
+                warningsWrapper.style.display = 'none';
+            }
         }
         
         const annEl = document.getElementById('details-annotation');
