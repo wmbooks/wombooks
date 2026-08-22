@@ -112,7 +112,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
                     Назад
                 </button>
-                <!-- ИЗМЕНЕНО: Иконки из шапки убраны -->
+                <!-- Иконки сверху убраны по ТЗ -->
             </div>
             
             <div class="details-content">
@@ -130,36 +130,38 @@
                     <div class="details-rating-box" id="details-rating-box" onclick="openReviewsListModal()">0.00</div>
                 </div>
 
-                <!-- НОВОЕ: Кнопки Сохранить и Отметить прочитанным -->
+                <!-- БЛОК КНОПОК МЕЖДУ РЕЙТИНГОМ И ТРОПАМИ -->
                 <div class="details-action-buttons">
                     <button class="details-action-btn" id="details-main-save-btn" onclick="toggleSaveFromDetails()">Сохранить</button>
                     <button class="details-action-btn" id="details-main-read-btn" onclick="toggleReadFromDetails()">Отметить прочитанным</button>
                 </div>
-
-                <!-- НОВОЕ: Аккордеон "Тропы" -->
-                <div class="warnings-wrapper" id="tropes-wrapper" style="display: none;">
-                    <div class="warnings-header" onclick="toggleTropes()">
-                        <span>Тропы</span>
-                        <span class="round-arrow" id="tropes-arrow">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                        </span>
-                    </div>
-                    <div class="warnings-content" id="tropes-content"></div>
-                </div>
                 
-                <div class="warnings-wrapper" id="warnings-wrapper" style="display: none;">
-                    <div class="warnings-header" onclick="toggleWarnings()">
-                        <span>Предупреждения о содержании</span>
-                        <span class="round-arrow" id="warnings-arrow">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                        </span>
+                <!-- БЛОК АККОРДЕОНОВ (Тропы и Предупреждения) -->
+                <div class="accordions-row" id="accordions-row" style="display: none;">
+                    <div class="warnings-wrapper" id="tropes-wrapper" style="display: none;">
+                        <div class="warnings-header" onclick="toggleTropes()">
+                            <span>Тропы</span>
+                            <span class="round-arrow" id="tropes-arrow">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                            </span>
+                        </div>
+                        <div class="warnings-content" id="tropes-content"></div>
                     </div>
-                    <div class="warnings-content" id="warnings-content"></div>
+                    
+                    <div class="warnings-wrapper" id="warnings-wrapper" style="display: none;">
+                        <div class="warnings-header" onclick="toggleWarnings()">
+                            <span>Предупреждения</span>
+                            <span class="round-arrow" id="warnings-arrow">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                            </span>
+                        </div>
+                        <div class="warnings-content" id="warnings-content"></div>
+                    </div>
                 </div>
 
                 <div class="details-annotation" id="details-annotation">Аннотация...</div>
                 
-                <!-- ИЗМЕНЕНО: Новый блок кнопок в одну линию (стрелка слева, кнопки справа) -->
+                <!-- НИЖНИЕ КНОПКИ В ОДНУ ЛИНИЮ -->
                 <div class="bottom-action-row">
                     <button class="round-back-btn small-back" onclick="closeBook()">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
