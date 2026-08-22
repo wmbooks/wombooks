@@ -10,8 +10,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
     
-    <!-- Трюк против кэша Айфона: версия 51 -->
-    <link rel="stylesheet" href="style.css?ver=51">
+    <!-- Трюк против кэша Айфона: версия 52 -->
+    <link rel="stylesheet" href="style.css?ver=52">
 </head>
 <body>
 
@@ -60,7 +60,6 @@
                     </div>
                 </div>
                 
-                <!-- НОВОЕ: Переключатель Сохраненные / Прочитанные -->
                 <div class="profile-tabs-wrapper">
                     <div class="profile-tabs-header" onclick="toggleProfileDropdown()">
                         <h3 class="saved-books-title" id="profile-tab-title">Сохраненные книги</h3>
@@ -117,9 +116,8 @@
                     <button class="action-btn fav-btn" id="details-share-btn" onclick="shareBook()">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
                     </button>
-                    <!-- НОВОЕ: Иконка прочитанного в шапке книги -->
-                    <button class="action-btn fav-btn" id="details-read-icon-btn" onclick="toggleReadFromDetails()"></button>
-                    <button class="action-btn fav-btn" id="details-fav-btn" onclick="toggleSaveFromDetails()"></button>
+                    <!-- ИЗМЕНЕНО: Только одна кнопка статуса. В JS она будет менять иконку на галочку или сердечко -->
+                    <button class="action-btn fav-btn" id="details-fav-btn" onclick="toggleSaveOrRead(this, currentOpenBookId, true)"></button>
                 </div>
             </div>
             
@@ -161,7 +159,7 @@
 
                 <button class="review-btn" onclick="openReviewModal()">Оценить и оставить отзыв</button>
                 
-                <!-- НОВОЕ: Кнопка "Отметить прочитанным" -->
+                <!-- Кнопка "Отметить прочитанным" -->
                 <button class="review-btn" id="details-mark-read-btn" onclick="toggleReadFromDetails()" style="margin-top: -20px; background-color: var(--card-bg); border-color: var(--border-light); color: var(--gray-text);">Отметить прочитанным</button>
             </div>
         </div>
@@ -203,7 +201,7 @@
         </div>
     </div>
 
-    <!-- Трюк против кэша Айфона: версия 51 -->
-    <script src="app.js?ver=51"></script>
+    <!-- Трюк против кэша Айфона: версия 52 -->
+    <script src="app.js?ver=52"></script>
 </body>
 </html>
