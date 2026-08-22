@@ -2,18 +2,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const tg = window.Telegram.WebApp;
     tg.expand();
 
-    if (tg.requestFullscreen) { tg.requestFullscreen(); }
+    if (tg.requestFullscreen) {
+        tg.requestFullscreen();
+    }
 
-    // --- ИКОНКИ ---
+    // --- SVG ИКОНКИ ---
     const heartEmpty = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>`;
     const heartFilled = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>`;
     const arrowRightSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>`;
     const moonSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
     const sunSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
-    
-    // НОВОЕ: Иконки для Прочитанного (Галочка)
-    const checkGraySvg = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--border-light)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
-    const checkPinkSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--shadow-pink)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+    const checkIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
 
     const savedTheme = localStorage.getItem('wombooks_theme');
     const themeBtn = document.getElementById('theme-btn');
@@ -36,9 +35,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let allRatings = []; 
     
     let savedBookIds = JSON.parse(localStorage.getItem('wombooks_saved')) || [];
-    let readBookIds = JSON.parse(localStorage.getItem('wombooks_read')) || []; // НОВОЕ: Массив прочитанных
+    let readBookIds = JSON.parse(localStorage.getItem('wombooks_read')) || [];
     let currentUserName = localStorage.getItem('wombooks_nickname') || 'Читатель';
-    let currentProfileTab = 'saved'; // НОВОЕ: Текущая вкладка в профиле
+    let currentProfileTab = 'saved'; 
     
     let currentOpenBookId = null;
     let currentRating = 0; 
@@ -221,7 +220,6 @@ document.addEventListener('DOMContentLoaded', () => {
         tg.showAlert('Никнейм успешно сохранен! Все ваши новые отзывы будут подписаны этим именем.');
     };
 
-    // --- НОВОЕ: Управление вкладками профиля ---
     window.toggleProfileDropdown = function() {
         const wrapper = document.querySelector('.profile-tabs-wrapper');
         const menu = document.getElementById('profile-tabs-menu');
@@ -263,7 +261,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (navSaved && navSaved.classList.contains('active-pill')) {
             if (profileSection) profileSection.style.display = 'block';
             
-            // НОВОЕ: Отрисовка в зависимости от выбранной вкладки в профиле
             if (currentProfileTab === 'saved') {
                 renderBooksToGrid(allBooks.filter(book => savedBookIds.includes(book.id)), booksGrid);
             } else {
@@ -325,16 +322,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // ИЗМЕНЕНО: Если книга прочитана, вместо сердечка показываем галочку
     function createBookCardHTML(book) {
         const isSaved = savedBookIds.includes(book.id);
-        const isRead = readBookIds.includes(book.id); // Проверяем прочитанное
-        const heartIcon = isSaved ? heartFilled : heartEmpty; 
-        const checkIcon = isRead ? checkPinkSvg : checkGraySvg; 
+        const isRead = readBookIds.includes(book.id);
+        
+        let iconHtml = heartEmpty;
+        if (isRead) iconHtml = checkIconSvg;
+        else if (isSaved) iconHtml = heartFilled;
         
         let seriesBadgeHtml = '';
         if (book.seriesNumber) { seriesBadgeHtml = `<div class="cover-series-badge">${formatSeriesNumber(book.seriesNumber)}</div>`; }
 
-        // Добавляем плашку и прозрачность, если прочитано
         let readBadgeHtml = isRead ? `<div class="cover-read-badge">Прочитано</div>` : '';
         let coverClass = isRead ? `book-cover read-opacity` : `book-cover`;
 
@@ -350,10 +349,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="card-actions">
                     <button class="action-btn arrow-btn" onclick="openBook('${book.id}')">${arrowRightSvg}</button>
                     <div class="card-rating-text">${getRatingText(book.rating)}</div>
-                    <div class="card-actions-group">
-                        <button class="action-btn fav-btn" onclick="toggleRead(this, '${book.id}')">${checkIcon}</button>
-                        <button class="action-btn fav-btn" onclick="toggleSave(this, '${book.id}')">${heartIcon}</button>
-                    </div>
+                    <button class="action-btn fav-btn" onclick="toggleSaveOrRead(this, '${book.id}')">${iconHtml}</button>
                 </div>
             </div>
         `;
@@ -508,7 +504,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if(activeBtn) activeBtn.classList.add('active-filter'); 
     }
 
-    // НОВОЕ: При нажатии на "Главная", сбрасываем вкладку профиля на "Сохраненные", чтобы при следующем открытии было по умолчанию
     if (navHome) { 
         navHome.addEventListener('click', () => { 
             navHome.classList.add('active-pill'); 
@@ -517,7 +512,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (disclaimerBox) disclaimerBox.style.display = 'flex'; 
             if (profileSection) profileSection.style.display = 'none'; 
             
-            // Сброс вкладки профиля
             currentProfileTab = 'saved';
             const tabTitle = document.getElementById('profile-tab-title');
             const tabAlternative = document.getElementById('profile-alternative-tab');
@@ -596,56 +590,47 @@ document.addEventListener('DOMContentLoaded', () => {
         }); 
     }
 
-    window.toggleSave = function(btnElement, id) {
-        const index = savedBookIds.indexOf(id);
-        if (index > -1) { 
-            savedBookIds.splice(index, 1); 
-            btnElement.innerHTML = heartEmpty; 
-        } else { 
-            savedBookIds.push(id); 
-            btnElement.innerHTML = heartFilled; 
-        }
-        localStorage.setItem('wombooks_saved', JSON.stringify(savedBookIds));
-        // Если находимся во вкладке Сохраненные, перерисовываем
-        if (navSaved && navSaved.classList.contains('active-pill') && currentProfileTab === 'saved') {
-            renderCurrentView();
-        }
-    };
-
-    // НОВОЕ: Функция для галочки "Прочитано" в сетке (только иконка и класс)
-    window.toggleRead = function(btnElement, id) {
-        const index = readBookIds.indexOf(id);
-        const card = btnElement.closest('.book-card');
+    // ИЗМЕНЕНО: Единая функция для клика по иконке статуса
+    window.toggleSaveOrRead = function(btnElement, id, fromDetails = false) {
+        const isRead = readBookIds.includes(id);
         
-        if (index > -1) { 
-            readBookIds.splice(index, 1); 
-            btnElement.innerHTML = checkGraySvg; 
+        if (isRead) {
+            // Если была прочитана, то клик УБИРАЕТ её из прочитанных
+            readBookIds.splice(readBookIds.indexOf(id), 1);
+            localStorage.setItem('wombooks_read', JSON.stringify(readBookIds));
+            
+            // Возвращаем ей правильную иконку сердечка
+            const isSaved = savedBookIds.includes(id);
+            btnElement.innerHTML = isSaved ? heartFilled : heartEmpty;
+            
+            // Если мы кликнули в сетке (не внутри самой книги) — обновляем визуал обложки
+            const card = btnElement.closest('.book-card');
             if (card) {
                 const img = card.querySelector('.book-cover');
                 if (img) img.style.opacity = '1';
                 const badge = card.querySelector('.cover-read-badge');
                 if (badge) badge.remove();
             }
-        } else { 
-            readBookIds.push(id); 
-            btnElement.innerHTML = checkPinkSvg; 
-            if (card) {
-                const img = card.querySelector('.book-cover');
-                if (img) img.style.opacity = '0.7';
-                const wrapper = card.querySelector('.grid-cover-wrapper');
-                if (wrapper && !card.querySelector('.cover-read-badge')) {
-                    const badge = document.createElement('div');
-                    badge.className = 'cover-read-badge';
-                    badge.innerText = 'Прочитано';
-                    wrapper.appendChild(badge);
-                }
+        } else {
+            // Если НЕ прочитана (значит сейчас это сердечко) — переключаем статус Сохранено
+            const index = savedBookIds.indexOf(id);
+            if (index > -1) { 
+                savedBookIds.splice(index, 1); 
+                btnElement.innerHTML = heartEmpty; 
+            } else { 
+                savedBookIds.push(id); 
+                btnElement.innerHTML = heartFilled; 
             }
+            localStorage.setItem('wombooks_saved', JSON.stringify(savedBookIds));
         }
-        localStorage.setItem('wombooks_read', JSON.stringify(readBookIds));
         
-        // Если находимся во вкладке Прочитанные, перерисовываем, чтобы книга исчезла/появилась
-        if (navSaved && navSaved.classList.contains('active-pill') && currentProfileTab === 'read') {
-            renderCurrentView();
+        if (fromDetails) {
+            updateDetailsReadState();
+        } else {
+            // Если мы во вкладке Профиль и убрали/добавили статус — перерисовываем
+            if (navSaved && navSaved.classList.contains('active-pill')) {
+                renderCurrentView();
+            }
         }
     };
 
@@ -670,18 +655,25 @@ document.addEventListener('DOMContentLoaded', () => {
         tg.openTelegramLink(shareUrl);
     };
 
-    // Вспомогательная функция обновления состояния прочитанного в деталях
     function updateDetailsReadState() {
         if (!currentOpenBookId) return;
         const isRead = readBookIds.includes(currentOpenBookId);
-        const iconBtn = document.getElementById('details-read-icon-btn');
-        const mainBtn = document.getElementById('details-mark-read-btn');
+        const isSaved = savedBookIds.includes(currentOpenBookId);
         
-        if (iconBtn) iconBtn.innerHTML = isRead ? checkPinkSvg : checkGraySvg;
+        const mainBtn = document.getElementById('details-mark-read-btn');
+        const favBtn = document.getElementById('details-fav-btn');
+        
         if (mainBtn) mainBtn.innerText = isRead ? 'Убрать из прочитанного' : 'Отметить прочитанным';
+        
+        if (favBtn) {
+            if (isRead) {
+                favBtn.innerHTML = checkIconSvg;
+            } else {
+                favBtn.innerHTML = isSaved ? heartFilled : heartEmpty;
+            }
+        }
     }
 
-    // НОВОЕ: Переключение прочитанного прямо из карточки
     window.toggleReadFromDetails = function() {
         if (!currentOpenBookId) return;
         const index = readBookIds.indexOf(currentOpenBookId);
@@ -757,11 +749,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const annEl = document.getElementById('details-annotation');
         if(annEl) annEl.innerText = book.annotation;
         
-        const favBtn = document.getElementById('details-fav-btn');
-        const isSaved = savedBookIds.includes(book.id); 
-        if(favBtn) favBtn.innerHTML = isSaved ? heartFilled : heartEmpty;
-
-        // Обновляем состояния прочитанного
         updateDetailsReadState();
 
         if(pageHome) pageHome.style.display = 'none'; 
@@ -776,8 +763,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if(bottomNav) bottomNav.style.display = 'flex';
         renderCurrentView(); 
     };
-
-    window.toggleSaveFromDetails = function() { if (!currentOpenBookId) return; const btn = document.getElementById('details-fav-btn'); if(btn) toggleSave(btn, currentOpenBookId); };
 
     window.downloadBook = function() {
         if (!currentOpenBookId) return;
@@ -846,7 +831,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const reviewTextEl = document.getElementById('review-text');
         const reviewText = reviewTextEl ? reviewTextEl.value : '';
         
-        // НОВОЕ: Автоматически добавляем в прочитанное при отзыве
         if (currentOpenBookId && !readBookIds.includes(currentOpenBookId)) {
             readBookIds.push(currentOpenBookId);
             localStorage.setItem('wombooks_read', JSON.stringify(readBookIds));
@@ -877,7 +861,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const book = allBooks.find(b => b.id === currentOpenBookId);
             const ratingBox = document.getElementById('details-rating-box');
             if (book && ratingBox) { ratingBox.innerHTML = getRatingText(book.rating); }
-            updateProfileStats();
         } catch (error) { tg.showAlert('Ошибка отправки. Проверьте интернет.'); }
     };
 
