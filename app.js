@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
         tg.requestFullscreen();
     }
 
-    // --- SVG ИКОНКИ ---
     const heartEmpty = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>`;
     const heartFilled = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>`;
     const arrowRightSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>`;
@@ -322,7 +321,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // ИЗМЕНЕНО: Если книга прочитана, вместо сердечка показываем галочку
     function createBookCardHTML(book) {
         const isSaved = savedBookIds.includes(book.id);
         const isRead = readBookIds.includes(book.id);
@@ -590,20 +588,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }); 
     }
 
-    // ИЗМЕНЕНО: Единая функция для клика по иконке статуса
     window.toggleSaveOrRead = function(btnElement, id, fromDetails = false) {
         const isRead = readBookIds.includes(id);
         
         if (isRead) {
-            // Если была прочитана, то клик УБИРАЕТ её из прочитанных
             readBookIds.splice(readBookIds.indexOf(id), 1);
             localStorage.setItem('wombooks_read', JSON.stringify(readBookIds));
             
-            // Возвращаем ей правильную иконку сердечка
             const isSaved = savedBookIds.includes(id);
             btnElement.innerHTML = isSaved ? heartFilled : heartEmpty;
             
-            // Если мы кликнули в сетке (не внутри самой книги) — обновляем визуал обложки
             const card = btnElement.closest('.book-card');
             if (card) {
                 const img = card.querySelector('.book-cover');
@@ -612,7 +606,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (badge) badge.remove();
             }
         } else {
-            // Если НЕ прочитана (значит сейчас это сердечко) — переключаем статус Сохранено
             const index = savedBookIds.indexOf(id);
             if (index > -1) { 
                 savedBookIds.splice(index, 1); 
@@ -627,7 +620,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (fromDetails) {
             updateDetailsReadState();
         } else {
-            // Если мы во вкладке Профиль и убрали/добавили статус — перерисовываем
             if (navSaved && navSaved.classList.contains('active-pill')) {
                 renderCurrentView();
             }
