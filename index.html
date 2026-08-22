@@ -10,12 +10,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
     
-    <!-- Трюк против кэша Айфона: версия 50 -->
-    <link rel="stylesheet" href="style.css?ver=50">
+    <!-- Трюк против кэша Айфона: версия 51 -->
+    <link rel="stylesheet" href="style.css?ver=51">
 </head>
 <body>
 
-    <!-- Наша железобетонная шапка -->
     <header class="top-header">
         <h1 class="header-logo"></h1>
     </header>
@@ -33,7 +32,7 @@
                 </span>
             </div>
 
-            <!-- Блок профиля -->
+            <!-- БЛОК ПРОФИЛЯ -->
             <div id="profile-section" style="display: none;">
                 <div class="profile-card">
                     <div class="profile-header-info">
@@ -60,7 +59,19 @@
                         </div>
                     </div>
                 </div>
-                <h3 class="saved-books-title">Сохраненные книги</h3>
+                
+                <!-- НОВОЕ: Переключатель Сохраненные / Прочитанные -->
+                <div class="profile-tabs-wrapper">
+                    <div class="profile-tabs-header" onclick="toggleProfileDropdown()">
+                        <h3 class="saved-books-title" id="profile-tab-title">Сохраненные книги</h3>
+                        <span class="round-arrow" id="profile-tab-arrow">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                        </span>
+                    </div>
+                    <div class="profile-tabs-menu" id="profile-tabs-menu" style="display:none;">
+                        <div class="profile-tab-item" id="profile-alternative-tab" onclick="selectAlternativeTab()">Прочитанные книги</div>
+                    </div>
+                </div>
             </div>
 
             <div class="category-filters-container" id="main-filters">
@@ -106,6 +117,8 @@
                     <button class="action-btn fav-btn" id="details-share-btn" onclick="shareBook()">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
                     </button>
+                    <!-- НОВОЕ: Иконка прочитанного в шапке книги -->
+                    <button class="action-btn fav-btn" id="details-read-icon-btn" onclick="toggleReadFromDetails()"></button>
                     <button class="action-btn fav-btn" id="details-fav-btn" onclick="toggleSaveFromDetails()"></button>
                 </div>
             </div>
@@ -147,6 +160,9 @@
                 </div>
 
                 <button class="review-btn" onclick="openReviewModal()">Оценить и оставить отзыв</button>
+                
+                <!-- НОВОЕ: Кнопка "Отметить прочитанным" -->
+                <button class="review-btn" id="details-mark-read-btn" onclick="toggleReadFromDetails()" style="margin-top: -20px; background-color: var(--card-bg); border-color: var(--border-light); color: var(--gray-text);">Отметить прочитанным</button>
             </div>
         </div>
 
@@ -187,7 +203,7 @@
         </div>
     </div>
 
-    <!-- Трюк против кэша Айфона: версия 50 -->
-    <script src="app.js?ver=50"></script>
+    <!-- Трюк против кэша Айфона: версия 51 -->
+    <script src="app.js?ver=51"></script>
 </body>
 </html>
