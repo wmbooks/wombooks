@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (tg.requestFullscreen) { tg.requestFullscreen(); }
 
-    // --- ИКОНКИ ---
     const checkIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
     const shareIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>`;
     const moonSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
@@ -318,7 +317,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // ИЗМЕНЕНО: Новая верстка карточки в сетке (без иконок, с кнопкой "Подробнее")
+    // ИЗМЕНЕНО: Новая верстка карточки в сетке (Иконки убраны, добавлена кнопка "Подробнее")
     function createBookCardHTML(book) {
         const isRead = readBookIds.includes(book.id);
         let seriesBadgeHtml = '';
@@ -481,12 +480,13 @@ document.addEventListener('DOMContentLoaded', () => {
     window.toggleAuthor = function(headerElement) { const authorItem = headerElement.parentElement; authorItem.classList.toggle('open'); };
     window.toggleSeries = function(headerElement) { const seriesItem = headerElement.parentElement; seriesItem.classList.toggle('open'); };
     
-    window.toggleWarnings = function() {
-        document.getElementById('warnings-wrapper').classList.toggle('open');
-    };
-    
+    // ИЗМЕНЕНО: Функции открытия/закрытия обоих аккордеонов
     window.toggleTropes = function() {
         document.getElementById('tropes-wrapper').classList.toggle('open');
+    };
+    
+    window.toggleWarnings = function() {
+        document.getElementById('warnings-wrapper').classList.toggle('open');
     };
 
     function setActiveFilter(activeBtn) { 
@@ -603,7 +603,7 @@ document.addEventListener('DOMContentLoaded', () => {
         tg.openTelegramLink(shareUrl);
     };
 
-    // ИЗМЕНЕНО: Новые функции Сохранить и Прочитано для страницы деталей
+    // ИЗМЕНЕНО: Функции Сохранения и Прочтения (теперь с системными уведомлениями)
     function updateDetailsState() {
         if (!currentOpenBookId) return;
         const isRead = readBookIds.includes(currentOpenBookId);
@@ -676,7 +676,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             if (book.pages) { seriesContainer.innerHTML += `<div class="gray-badge">${book.pages}</div>`; }
             
-            // Добавляем иконку шера
             seriesContainer.innerHTML += `<button class="share-icon-circle" onclick="shareBook()">${shareIconSvg}</button>`;
         }
 
@@ -690,17 +689,26 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+        // ИЗМЕНЕНО: Логика отображения аккордеонов на одной строке
+        const accRow = document.getElementById('accordions-row');
         const tropesWrapper = document.getElementById('tropes-wrapper');
         const tropesContent = document.getElementById('tropes-content');
+        const warningsWrapper = document.getElementById('warnings-wrapper');
+        const warningsContent = document.getElementById('warnings-content');
+        
+        let hasTropes = false;
+        let hasWarnings = false;
+
         if (tropesWrapper && tropesContent) {
             tropesWrapper.classList.remove('open'); 
             if (book.tropes) {
                 tropesWrapper.style.display = 'flex'; 
+                hasTropes = true;
                 tropesContent.innerHTML = '';
                 book.tropes.split(',').forEach(t => {
                     if (t.trim()) {
                         const span = document.createElement('span');
-                        span.className = 'warning-tag'; // Используем тот же стиль
+                        span.className = 'warning-tag';
                         span.innerText = t.trim();
                         tropesContent.appendChild(span);
                     }
@@ -710,12 +718,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        const warningsWrapper = document.getElementById('warnings-wrapper');
-        const warningsContent = document.getElementById('warnings-content');
         if (warningsWrapper && warningsContent) {
             warningsWrapper.classList.remove('open'); 
             if (book.warnings) {
                 warningsWrapper.style.display = 'flex'; 
+                hasWarnings = true;
                 warningsContent.innerHTML = '';
                 book.warnings.split(',').forEach(w => {
                     if (w.trim()) {
@@ -728,6 +735,10 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 warningsWrapper.style.display = 'none';
             }
+        }
+        
+        if (accRow) {
+            accRow.style.display = (hasTropes || hasWarnings) ? 'flex' : 'none';
         }
         
         const annEl = document.getElementById('details-annotation');
