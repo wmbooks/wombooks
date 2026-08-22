@@ -75,7 +75,6 @@ body { background-color: var(--bg-color); color: var(--text-dark); font-family: 
 .saved-books-title { font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 600; color: var(--text-dark); margin: 0; }
 .profile-tabs-wrapper .round-arrow { width: 22px; height: 22px; border-color: var(--border-light); transition: transform 0.3s ease; }
 .profile-tabs-wrapper.open .round-arrow { transform: rotate(90deg); color: var(--shadow-pink); border-color: var(--shadow-pink); }
-/* ИЗМЕНЕНО: z-index увеличен до 150, чтобы быть ВЫШЕ обложек и значков */
 .profile-tabs-menu { position: absolute; top: 100%; left: 0; background-color: var(--card-bg); border: 1px solid var(--border-light); border-radius: 12px; padding: 5px; box-shadow: 0 4px 15px var(--shadow-color); z-index: 150; min-width: 180px; margin-top: 8px; }
 .profile-tab-item { padding: 10px 15px; font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 500; color: var(--text-dark); cursor: pointer; border-radius: 8px; transition: background-color 0.2s; }
 .profile-tab-item:hover { background-color: var(--gray-bg); }
@@ -88,22 +87,24 @@ body { background-color: var(--bg-color); color: var(--text-dark); font-family: 
 .book-card { background-color: var(--card-bg); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px var(--shadow-color); display: flex; flex-direction: column; position: relative; }
 
 .grid-cover-wrapper { position: relative; display: block; overflow: hidden; border-radius: 12px 12px 0 0; }
-.cover-series-badge { position: absolute; top: 6px; right: 6px; padding: 3px 8px; background-color: var(--card-bg); color: var(--gray-text); border-radius: 10px; font-size: 9px; font-weight: 600; white-space: nowrap; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 10; }
+/* ИЗМЕНЕНО: Шрифт серии увеличен */
+.cover-series-badge { position: absolute; top: 6px; right: 6px; padding: 3px 8px; background-color: var(--card-bg); color: var(--gray-text); border-radius: 10px; font-size: 11px; font-weight: 600; white-space: nowrap; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 10; display: flex; align-items: center; justify-content: center; }
+/* ИЗМЕНЕНО: Плашка прочитано теперь выглядит как серия с иконкой */
+.cover-read-badge { position: absolute; top: 6px; left: 6px; padding: 3px 6px; background-color: var(--card-bg); color: var(--shadow-pink); border-radius: 10px; font-size: 11px; font-weight: 600; white-space: nowrap; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 10; display: flex; align-items: center; justify-content: center; }
 
-.cover-read-badge { position: absolute; top: 6px; left: 6px; padding: 3px 8px; background-color: var(--gray-bg); color: var(--gray-text); border-radius: 10px; font-size: 9px; font-weight: 600; white-space: nowrap; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 10; border: 1px solid var(--border-light); }
 .book-cover { width: 100%; aspect-ratio: 1 / 1.6; object-fit: cover; background-color: var(--pink-light-bg); display: block; transition: opacity 0.3s ease; }
 .read-opacity { opacity: 0.7; }
 
 .card-info { padding: 10px 8px; display: flex; flex-direction: column; flex-grow: 1; }
-.book-title { font-family: 'Felidae', serif; font-size: 12px; color: var(--text-dark); margin-bottom: 4px; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.book-author { font-size: 9px; color: var(--gray-text); margin-bottom: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* ИЗМЕНЕНО: Увеличены шрифты карточки */
+.book-title { font-family: 'Felidae', serif; font-size: 14px; color: var(--text-dark); margin-bottom: 4px; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.book-author { font-size: 11px; color: var(--gray-text); margin-bottom: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-.card-actions { display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
-.action-btn { background: transparent; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; }
-.arrow-btn { width: 17px; height: 17px; border: 0.8px solid var(--shadow-pink); border-radius: 50%; color: var(--shadow-pink); }
-.fav-btn { color: var(--shadow-pink); }
-
-.card-rating-text { font-size: 11px; font-family: 'Montserrat', sans-serif; display: flex; justify-content: center; align-items: center; flex-grow: 1; }
+/* ИЗМЕНЕНО: Кнопка Подробнее вместо иконок */
+.card-actions-vertical { display: flex; flex-direction: column; gap: 8px; align-items: center; margin-top: auto; }
+.card-rating-text { font-size: 11px; font-family: 'Montserrat', sans-serif; display: flex; justify-content: center; align-items: center; width: 100%; }
+.card-details-btn { width: 100%; padding: 6px; border: 1px solid var(--main-pink); border-radius: 15px; background-color: transparent; color: var(--shadow-pink); font-family: 'Montserrat', sans-serif; font-size: 11px; cursor: pointer; transition: all 0.3s; }
+.card-details-btn:hover { background-color: var(--main-pink); color: #FFF; }
 
 .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background-color: var(--card-bg); display: flex; justify-content: center; gap: 15px; padding: 15px 20px 25px 20px; box-shadow: 0 -4px 20px rgba(0,0,0,0.05); border-top-left-radius: 20px; border-top-right-radius: 20px; z-index: 100; }
 .bottom-pill-btn { padding: 8px 24px; border: 1px solid var(--main-pink); border-radius: 20px; background: transparent; color: var(--shadow-pink); font-family: 'Montserrat', sans-serif; font-size: 13px; cursor: pointer; }
@@ -114,40 +115,47 @@ body { background-color: var(--bg-color); color: var(--text-dark); font-family: 
 .details-top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
 .back-btn { background: transparent; border: none; color: var(--shadow-pink); font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 6px; }
 
-.top-bar-actions { display: flex; gap: 12px; align-items: center; }
-
 .details-cover-wrapper { position: relative; width: 140px; margin: 0 auto 20px auto; overflow: hidden; border-radius: 8px; box-shadow: 0 4px 20px var(--shadow-color); }
 .details-cover { width: 100%; display: block; }
 .details-cover-wrapper .cover-series-badge { top: 8px; right: 8px; font-size: 10px; padding: 4px 10px; border-radius: 12px; }
 
 .details-title { font-family: 'Felidae', serif; font-size: 22px; color: var(--text-dark); text-align: center; margin-bottom: 6px; }
-.details-author { font-size: 12px; color: var(--gray-text); text-align: center; margin-bottom: 15px; }
-
+/* ИЗМЕНЕНО: Увеличены шрифты внутри деталей */
+.details-author { font-size: 14px; color: var(--gray-text); text-align: center; margin-bottom: 15px; }
 .details-series-wrapper { display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
-.details-series { display: flex; align-items: center; padding: 4px 12px; background-color: var(--pink-light-bg); color: var(--shadow-pink); border-radius: 12px; font-size: 10px; }
-.gray-badge { padding: 4px 12px; background-color: var(--gray-bg); color: var(--gray-text); border-radius: 12px; font-size: 10px; font-weight: 500; white-space: nowrap; }
+.details-series { display: flex; align-items: center; padding: 4px 12px; background-color: var(--pink-light-bg); color: var(--shadow-pink); border-radius: 12px; font-size: 12px; }
+.gray-badge { padding: 4px 12px; background-color: var(--gray-bg); color: var(--gray-text); border-radius: 12px; font-size: 12px; font-weight: 500; white-space: nowrap; }
+
+/* НОВОЕ: Иконка шера рядом с кол-вом страниц */
+.share-icon-circle { width: 24px; height: 24px; border: 1px solid var(--border-light); border-radius: 50%; background-color: var(--card-bg); color: var(--gray-text); display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.2s; }
+.share-icon-circle:hover { color: var(--shadow-pink); border-color: var(--shadow-pink); }
 
 .details-rating-wrapper { display: flex; justify-content: center; margin-bottom: 20px; }
 .details-rating-box { padding: 8px 24px; border: 1px solid var(--border-light); border-radius: 25px; font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 500; color: var(--text-dark); display: flex; align-items: center; justify-content: center; background-color: transparent; cursor: pointer; }
 
-.details-tropes { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 20px; }
-.trope-tag { border: 1px solid var(--main-pink); color: var(--shadow-pink); padding: 4px 10px; border-radius: 15px; font-size: 10px; background-color: transparent; }
+/* НОВОЕ: Кнопки Сохранить и Прочитано */
+.details-action-buttons { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; padding: 0 10px; }
+.details-action-btn { flex: 1; padding: 10px; border: 1px solid var(--main-pink); border-radius: 20px; background-color: transparent; color: var(--shadow-pink); font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.3s; }
+.details-action-btn.active { background-color: var(--main-pink); color: #FFFFFF; }
 
-.warnings-wrapper { display: flex; flex-direction: column; align-items: center; margin-bottom: 25px; width: 100%; }
-.warnings-header { display: inline-flex; justify-content: center; align-items: center; gap: 10px; padding: 4px 6px 4px 14px; border: 1px solid var(--border-light); border-radius: 20px; background-color: var(--card-bg); color: var(--gray-text); font-family: 'Montserrat', sans-serif; font-size: 11px; cursor: pointer; transition: background-color 0.3s; }
+/* ИЗМЕНЕНО: Шрифты в аккордеонах увеличены до 13px */
+.warnings-wrapper { display: flex; flex-direction: column; align-items: center; margin-bottom: 15px; width: 100%; }
+.warnings-header { display: inline-flex; justify-content: center; align-items: center; gap: 10px; padding: 6px 14px; border: 1px solid var(--border-light); border-radius: 20px; background-color: var(--card-bg); color: var(--gray-text); font-family: 'Montserrat', sans-serif; font-size: 13px; cursor: pointer; transition: background-color 0.3s; }
 .warnings-header:hover { background-color: var(--border-light); }
-.warnings-header .round-arrow { width: 22px; height: 22px; border-color: var(--border-light); }
-.warnings-content { display: none; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 15px; width: 100%; }
+.warnings-header .round-arrow { width: 22px; height: 22px; border-color: var(--border-light); transition: transform 0.3s; }
+.warnings-content { display: none; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 15px; width: 100%; padding-bottom: 10px; }
 .warnings-wrapper.open .warnings-content { display: flex; }
-.warnings-wrapper.open #warnings-arrow { transform: rotate(90deg); color: var(--shadow-pink); border-color: var(--shadow-pink); }
-.warning-tag { flex-grow: 1; text-align: center; padding: 6px 10px; border: 1px solid var(--border-light); border-radius: 15px; background-color: var(--card-bg); color: var(--gray-text); font-size: 10px; }
+.warnings-wrapper.open #warnings-arrow, .warnings-wrapper.open #tropes-arrow { transform: rotate(90deg); color: var(--shadow-pink); border-color: var(--shadow-pink); }
+.warning-tag { flex-grow: 1; text-align: center; padding: 8px 10px; border: 1px solid var(--border-light); border-radius: 15px; background-color: var(--card-bg); color: var(--gray-text); font-size: 11px; }
 
-.details-annotation { font-size: 12px; line-height: 1.6; color: var(--text-dark); margin-bottom: 30px; text-align: justify; padding: 0 5px; }
-.download-section { display: flex; align-items: center; gap: 12px; margin-bottom: 15px; }
-.round-back-btn { width: 46px; height: 46px; border: 1px solid var(--main-pink); border-radius: 50%; background-color: transparent; color: var(--shadow-pink); display: flex; justify-content: center; align-items: center; cursor: pointer; flex-shrink: 0; }
-.download-btn { flex-grow: 1; display: block; background-color: var(--main-pink); color: #FFFFFF; text-align: center; padding: 14px; border-radius: 25px; font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 500; text-decoration: none; box-shadow: 0 4px 15px var(--shadow-color); border: none; cursor: pointer; }
+.details-annotation { font-size: 12px; line-height: 1.6; color: var(--text-dark); margin-bottom: 30px; margin-top: 10px; text-align: justify; padding: 0 5px; }
 
-.review-btn { display: block; width: 100%; background-color: transparent; color: var(--shadow-pink); text-align: center; padding: 14px; border-radius: 25px; border: 1px solid var(--main-pink); font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; margin-bottom: 30px; transition: all 0.3s; }
+/* НОВОЕ: Новый блок кнопок под аннотацией */
+.bottom-action-row { display: flex; gap: 10px; align-items: stretch; margin-bottom: 30px; }
+.small-back { width: 44px; height: auto; border: 1px solid var(--main-pink); border-radius: 15px; background-color: transparent; color: var(--shadow-pink); display: flex; justify-content: center; align-items: center; cursor: pointer; flex-shrink: 0; }
+.bottom-buttons-col { display: flex; flex-direction: column; gap: 10px; flex-grow: 1; }
+.download-btn { display: block; background-color: var(--main-pink); color: #FFFFFF; text-align: center; padding: 14px; border-radius: 15px; font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 500; text-decoration: none; box-shadow: 0 4px 15px var(--shadow-color); border: none; cursor: pointer; }
+.bottom-review { display: block; width: 100%; background-color: transparent; color: var(--shadow-pink); text-align: center; padding: 14px; border-radius: 15px; border: 1px solid var(--main-pink); font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; }
 
 .authors-list-container { }
 .author-item { background: var(--card-bg); border-radius: 12px; box-shadow: 0 4px 15px var(--shadow-color); margin-bottom: 10px; overflow: hidden; }
