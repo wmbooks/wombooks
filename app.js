@@ -32,10 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let allBooks = [];
     let allRatings = []; 
     let savedBookIds = JSON.parse(localStorage.getItem('wombooks_saved')) || [];
-    
-    // НОВОЕ: Достаем никнейм пользователя (по умолчанию "Читатель")
     let currentUserName = localStorage.getItem('wombooks_nickname') || 'Читатель';
-    
     let currentOpenBookId = null;
     let currentRating = 0; 
     let activeTropeName = null; 
@@ -57,14 +54,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const tropesBooksGrid = document.getElementById('tropes-books-grid');
     
     const filtersContainer = document.querySelector('.category-filters-container'); 
-    const mainFilters = document.getElementById('main-filters'); // Фильтры главной страницы
+    const mainFilters = document.getElementById('main-filters'); 
     const disclaimerBox = document.getElementById('disclaimer-box');
     const searchInput = document.getElementById('main-search-input'); 
     const searchClearBtn = document.getElementById('search-clear-btn'); 
 
-    // Блок профиля
     const profileSection = document.getElementById('profile-section');
-
     const pageHome = document.getElementById('page-home');
     const pageDetails = document.getElementById('page-book-details');
     const bottomNav = document.getElementById('bottom-nav');
@@ -161,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
             allRatings = await ratingsResponse.json();
             calculateRatings();
             renderCurrentView();
-            updateProfileStats(); // НОВОЕ: Обновляем статус профиля после загрузки оценок
+            updateProfileStats();
             
             if (currentOpenBookId && pageDetails && pageDetails.style.display === 'block') {
                 const book = allBooks.find(b => b.id === currentOpenBookId);
@@ -171,13 +166,10 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (e) { console.error("Оценки не загрузились", e); }
     }
 
-    // --- НОВОЕ: ЛОГИКА ПРОФИЛЯ ---
     function updateProfileStats() {
         const userId = tg.initDataUnsafe?.user?.id || 'anonymous';
-        // Ищем все отзывы текущего пользователя
         const myReviews = allRatings.filter(r => String(r.userId) === String(userId));
         
-        // Считаем те, где больше 5 слов
         let detailedCount = 0;
         myReviews.forEach(r => {
             if (r.reviewText && r.reviewText.trim().split(/\s+/).length >= 5) {
@@ -185,7 +177,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Обновляем визуал
         const displayNameEl = document.getElementById('profile-display-name');
         const statusTextEl = document.getElementById('profile-status-text');
         const countTextEl = document.getElementById('review-count-text');
@@ -200,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (countTextEl) countTextEl.innerText = `${detailedCount} (Цель достигнута!)`;
             if (fillEl) fillEl.style.width = '100%';
             if (hintTextEl) hintTextEl.style.display = 'none';
-            if (editBlock) editBlock.style.display = 'block'; // Разблокируем выбор ника
+            if (editBlock) editBlock.style.display = 'block'; 
         } else {
             if (statusTextEl) statusTextEl.innerText = "Новичок";
             if (countTextEl) countTextEl.innerText = `${detailedCount}/5`;
@@ -236,7 +227,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (tropesContainer && tropesContainer.style.display === 'block') {
             renderTropesMenu();
         } else if (navSaved && navSaved.classList.contains('active-pill')) {
-            // ИЗМЕНЕНО: Показываем профиль в сохраненках
             if (profileSection) profileSection.style.display = 'block';
             renderBooksToGrid(allBooks.filter(book => savedBookIds.includes(book.id)), booksGrid);
         } else if (filterRecent && filterRecent.classList.contains('active-filter')) {
@@ -473,7 +463,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (navSaved) navSaved.classList.remove('active-pill'); 
             if (mainFilters) mainFilters.style.display = 'flex';
             if (disclaimerBox) disclaimerBox.style.display = 'flex'; 
-            if (profileSection) profileSection.style.display = 'none'; // Скрываем профиль
+            if (profileSection) profileSection.style.display = 'none'; 
             if (filterRecent) setActiveFilter(filterRecent); 
             if(authorsContainer) authorsContainer.style.display = 'none'; 
             if(standalonesContainer) standalonesContainer.style.display = 'none'; 
@@ -488,8 +478,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (navHome) navHome.classList.remove('active-pill'); 
             if (mainFilters) mainFilters.style.display = 'none';
             if (disclaimerBox) disclaimerBox.style.display = 'none'; 
-            if (profileSection) profileSection.style.display = 'block'; // Показываем профиль
-            updateProfileStats(); // Обновляем статусы перед показом
+            if (profileSection) profileSection.style.display = 'block'; 
+            updateProfileStats(); 
             if(authorsContainer) authorsContainer.style.display = 'none'; 
             if(standalonesContainer) standalonesContainer.style.display = 'none'; 
             if(tropesContainer) tropesContainer.style.display = 'none'; 
@@ -555,6 +545,7 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('wombooks_saved', JSON.stringify(savedBookIds));
     };
 
+    // ИСПРАВЛЕНО: Обновленный текст кнопки "Поделиться"
     window.shareBook = function() {
         if (!currentOpenBookId) return;
         const book = allBooks.find(b => b.id === currentOpenBookId);
@@ -564,13 +555,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (book.series && book.series.trim().toLowerCase() !== 'одиночная' && book.series.trim().toLowerCase() !== 'одиночные') { 
             seriesInfo = `\nСерия: ${book.series}`;
             if (book.seriesNumber) {
-                seriesInfo += ` , ${formatSeriesNumber(book.seriesNumber)}`;
+                seriesInfo += `, ${formatSeriesNumber(book.seriesNumber)}`;
             }
         }
 
-        const appLink = `https://t.me/wombookbot/myapp`; 
+        const appLink = `t.me/wombookbot/app`; 
         
-        const shareText = `Эта книга тебе точно понравится!\n\nНазвание: ${book.title}${seriesInfo}\nАвтор: ${book.author || 'Неизвестный автор'}\n\nПрочитать можно здесь: ${appLink}\nПодписывайся на канал, чтобы читать больше интересных книг – https://t.me/+8Y0po5gZxCU2NWRi`;
+        const shareText = `Название: ${book.title}${seriesInfo}\nАвтор: ${book.author || 'Неизвестный автор'}\n\nПрочитать можно здесь: ${appLink}\nПодписывайся на канал, чтобы читать больше интересных книг – https://t.me/+8Y0po5gZxCU2NWRi`;
         
         const shareUrl = `https://t.me/share/url?url=&text=${encodeURIComponent(shareText)}`;
         tg.openTelegramLink(shareUrl);
@@ -676,7 +667,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const item = document.createElement('div');
                 item.className = 'review-item';
                 
-                // НОВОЕ: Добавляем имя пользователя над текстом отзыва
                 const authorDiv = document.createElement('div');
                 authorDiv.className = 'review-item-author';
                 authorDiv.innerText = r.userName || 'Читатель';
@@ -726,21 +716,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const reviewTextEl = document.getElementById('review-text');
         const reviewText = reviewTextEl ? reviewTextEl.value : '';
         
-        // НОВОЕ: Если текст введен, проверяем, засчитывать ли его для профиля
         if (reviewText.trim().split(/\s+/).length >= 5) {
-            // Отзыв качественный! Обновляем статистику
             setTimeout(updateProfileStats, 1000); 
         }
 
         const userId = tg.initDataUnsafe?.user?.id || 'anonymous'; 
-        
-        // Передаем имя пользователя на сервер
         const payload = { 
             bookId: currentOpenBookId, 
             userId: userId, 
             rating: currentRating, 
             reviewText: reviewText,
-            userName: currentUserName // НОВОЕ ПОЛЕ
+            userName: currentUserName 
         };
         
         closeReviewModal();
