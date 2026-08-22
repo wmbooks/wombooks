@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
         tg.requestFullscreen();
     }
 
-    // --- SVG ИКОНКИ ---
     const heartEmpty = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>`;
     const heartFilled = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>`;
     const arrowRightSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>`;
@@ -33,6 +32,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let allBooks = [];
     let allRatings = []; 
     let savedBookIds = JSON.parse(localStorage.getItem('wombooks_saved')) || [];
+    
+    // НОВОЕ: Достаем никнейм пользователя (по умолчанию "Читатель")
+    let currentUserName = localStorage.getItem('wombooks_nickname') || 'Читатель';
+    
     let currentOpenBookId = null;
     let currentRating = 0; 
     let activeTropeName = null; 
@@ -54,9 +57,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const tropesBooksGrid = document.getElementById('tropes-books-grid');
     
     const filtersContainer = document.querySelector('.category-filters-container'); 
+    const mainFilters = document.getElementById('main-filters'); // Фильтры главной страницы
     const disclaimerBox = document.getElementById('disclaimer-box');
     const searchInput = document.getElementById('main-search-input'); 
     const searchClearBtn = document.getElementById('search-clear-btn'); 
+
+    // Блок профиля
+    const profileSection = document.getElementById('profile-section');
 
     const pageHome = document.getElementById('page-home');
     const pageDetails = document.getElementById('page-book-details');
@@ -121,6 +128,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (authorsContainer) authorsContainer.style.display = 'none'; 
             if (standalonesContainer) standalonesContainer.style.display = 'none'; 
             if (tropesContainer) tropesContainer.style.display = 'none'; 
+            if (profileSection) profileSection.style.display = 'none';
+            if (mainFilters) mainFilters.style.display = 'none';
             if (booksGrid) booksGrid.style.display = 'grid'; 
 
             const filtered = allBooks.filter(b => {
@@ -152,6 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
             allRatings = await ratingsResponse.json();
             calculateRatings();
             renderCurrentView();
+            updateProfileStats(); // НОВОЕ: Обновляем статус профиля после загрузки оценок
             
             if (currentOpenBookId && pageDetails && pageDetails.style.display === 'block') {
                 const book = allBooks.find(b => b.id === currentOpenBookId);
@@ -160,6 +170,58 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (e) { console.error("Оценки не загрузились", e); }
     }
+
+    // --- НОВОЕ: ЛОГИКА ПРОФИЛЯ ---
+    function updateProfileStats() {
+        const userId = tg.initDataUnsafe?.user?.id || 'anonymous';
+        // Ищем все отзывы текущего пользователя
+        const myReviews = allRatings.filter(r => String(r.userId) === String(userId));
+        
+        // Считаем те, где больше 5 слов
+        let detailedCount = 0;
+        myReviews.forEach(r => {
+            if (r.reviewText && r.reviewText.trim().split(/\s+/).length >= 5) {
+                detailedCount++;
+            }
+        });
+
+        // Обновляем визуал
+        const displayNameEl = document.getElementById('profile-display-name');
+        const statusTextEl = document.getElementById('profile-status-text');
+        const countTextEl = document.getElementById('review-count-text');
+        const fillEl = document.getElementById('review-progress-fill');
+        const hintTextEl = document.getElementById('progress-hint-text');
+        const editBlock = document.getElementById('nickname-edit-block');
+
+        if (displayNameEl) displayNameEl.innerText = currentUserName;
+
+        if (detailedCount >= 5) {
+            if (statusTextEl) statusTextEl.innerText = "Книжный эксперт";
+            if (countTextEl) countTextEl.innerText = `${detailedCount} (Цель достигнута!)`;
+            if (fillEl) fillEl.style.width = '100%';
+            if (hintTextEl) hintTextEl.style.display = 'none';
+            if (editBlock) editBlock.style.display = 'block'; // Разблокируем выбор ника
+        } else {
+            if (statusTextEl) statusTextEl.innerText = "Новичок";
+            if (countTextEl) countTextEl.innerText = `${detailedCount}/5`;
+            if (fillEl) fillEl.style.width = `${(detailedCount / 5) * 100}%`;
+            if (hintTextEl) hintTextEl.style.display = 'block';
+            if (editBlock) editBlock.style.display = 'none';
+        }
+    }
+
+    window.saveNickname = function() {
+        const input = document.getElementById('nickname-input');
+        if (!input || input.value.trim() === '') {
+            tg.showAlert('Пожалуйста, введите никнейм!');
+            return;
+        }
+        currentUserName = input.value.trim();
+        localStorage.setItem('wombooks_nickname', currentUserName);
+        document.getElementById('profile-display-name').innerText = currentUserName;
+        input.value = '';
+        tg.showAlert('Никнейм успешно сохранен! Все ваши новые отзывы будут подписаны этим именем.');
+    };
 
     function renderCurrentView() {
         if (searchInput && searchInput.value !== '') {
@@ -174,10 +236,14 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (tropesContainer && tropesContainer.style.display === 'block') {
             renderTropesMenu();
         } else if (navSaved && navSaved.classList.contains('active-pill')) {
+            // ИЗМЕНЕНО: Показываем профиль в сохраненках
+            if (profileSection) profileSection.style.display = 'block';
             renderBooksToGrid(allBooks.filter(book => savedBookIds.includes(book.id)), booksGrid);
         } else if (filterRecent && filterRecent.classList.contains('active-filter')) {
+            if (profileSection) profileSection.style.display = 'none';
             renderBooksToGrid(getRecentBooks(), booksGrid);
         } else {
+            if (profileSection) profileSection.style.display = 'none';
             renderBooksToGrid(allBooks, booksGrid);
         }
     }
@@ -405,8 +471,9 @@ document.addEventListener('DOMContentLoaded', () => {
         navHome.addEventListener('click', () => { 
             navHome.classList.add('active-pill'); 
             if (navSaved) navSaved.classList.remove('active-pill'); 
-            if (filtersContainer) filtersContainer.style.display = 'flex';
+            if (mainFilters) mainFilters.style.display = 'flex';
             if (disclaimerBox) disclaimerBox.style.display = 'flex'; 
+            if (profileSection) profileSection.style.display = 'none'; // Скрываем профиль
             if (filterRecent) setActiveFilter(filterRecent); 
             if(authorsContainer) authorsContainer.style.display = 'none'; 
             if(standalonesContainer) standalonesContainer.style.display = 'none'; 
@@ -419,8 +486,10 @@ document.addEventListener('DOMContentLoaded', () => {
         navSaved.addEventListener('click', () => { 
             navSaved.classList.add('active-pill'); 
             if (navHome) navHome.classList.remove('active-pill'); 
-            if (filtersContainer) filtersContainer.style.display = 'none';
+            if (mainFilters) mainFilters.style.display = 'none';
             if (disclaimerBox) disclaimerBox.style.display = 'none'; 
+            if (profileSection) profileSection.style.display = 'block'; // Показываем профиль
+            updateProfileStats(); // Обновляем статусы перед показом
             if(authorsContainer) authorsContainer.style.display = 'none'; 
             if(standalonesContainer) standalonesContainer.style.display = 'none'; 
             if(tropesContainer) tropesContainer.style.display = 'none'; 
@@ -606,12 +675,21 @@ document.addEventListener('DOMContentLoaded', () => {
             [...bookReviews].reverse().forEach(r => {
                 const item = document.createElement('div');
                 item.className = 'review-item';
+                
+                // НОВОЕ: Добавляем имя пользователя над текстом отзыва
+                const authorDiv = document.createElement('div');
+                authorDiv.className = 'review-item-author';
+                authorDiv.innerText = r.userName || 'Читатель';
+                
                 const ratingDiv = document.createElement('div');
                 ratingDiv.className = 'review-item-rating';
                 ratingDiv.innerText = parseFloat(r.rating).toFixed(2);
+                
                 const textDiv = document.createElement('div');
                 textDiv.className = 'review-item-text';
                 textDiv.innerText = r.reviewText;
+                
+                item.appendChild(authorDiv);
                 item.appendChild(ratingDiv);
                 item.appendChild(textDiv);
                 container.appendChild(item);
@@ -647,10 +725,27 @@ document.addEventListener('DOMContentLoaded', () => {
         if (currentRating === 0) { tg.showAlert('Пожалуйста, поставьте хотя бы одну звездочку!'); return; }
         const reviewTextEl = document.getElementById('review-text');
         const reviewText = reviewTextEl ? reviewTextEl.value : '';
-        const userId = tg.initDataUnsafe?.user?.id || 'Аноним'; 
-        const payload = { bookId: currentOpenBookId, userId: userId, rating: currentRating, reviewText: reviewText };
+        
+        // НОВОЕ: Если текст введен, проверяем, засчитывать ли его для профиля
+        if (reviewText.trim().split(/\s+/).length >= 5) {
+            // Отзыв качественный! Обновляем статистику
+            setTimeout(updateProfileStats, 1000); 
+        }
+
+        const userId = tg.initDataUnsafe?.user?.id || 'anonymous'; 
+        
+        // Передаем имя пользователя на сервер
+        const payload = { 
+            bookId: currentOpenBookId, 
+            userId: userId, 
+            rating: currentRating, 
+            reviewText: reviewText,
+            userName: currentUserName // НОВОЕ ПОЛЕ
+        };
+        
         closeReviewModal();
         tg.showAlert('Отправляем ваш отзыв...');
+        
         try {
             await fetch(scriptUrl, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
             tg.showAlert('Спасибо! Оценка учтена.');
@@ -659,6 +754,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const book = allBooks.find(b => b.id === currentOpenBookId);
             const ratingBox = document.getElementById('details-rating-box');
             if (book && ratingBox) { ratingBox.innerHTML = getRatingText(book.rating); }
+            updateProfileStats();
         } catch (error) { tg.showAlert('Ошибка отправки. Проверьте интернет.'); }
     };
 
