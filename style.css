@@ -37,17 +37,18 @@ body.dark-theme {
 
 body { background-color: var(--bg-color); color: var(--text-dark); font-family: 'Montserrat', sans-serif; -webkit-tap-highlight-color: transparent; }
 
-.top-header { position: fixed; top: 0; left: 0; width: 100%; height: 90px; padding-top: 40px; background-color: var(--bg-color); display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.03); z-index: 1000; }
+/* ИЗМЕНЕНО: Убрано position: fixed и лишние тени. Теперь она плавно прокручивается вместе со страницей */
+.top-header { width: 100%; padding: 20px 0; background-color: var(--bg-color); display: none; justify-content: center; align-items: center; }
 .header-logo { font-family: 'Felidae', serif; font-size: 20px; font-weight: normal; color: var(--shadow-pink); letter-spacing: 1px; }
 
-#app { padding: 105px 20px 100px 20px; max-width: 600px; margin: 0 auto; }
+/* ИЗМЕНЕНО: Отступ сверху теперь всего 20px, так как шапка больше не fixed */
+#app { padding: 20px 20px 100px 20px; max-width: 600px; margin: 0 auto; }
 
-/* ИЗМЕНЕНО: Стили для поиска с лупой слева и крестиком справа */
 .search-container { position: relative; margin-bottom: 20px; }
-.search-input { width: 100%; padding: 12px 40px; border: 1px solid var(--border-light); border-radius: 25px; background-color: var(--card-bg); font-family: 'Montserrat', sans-serif; font-size: 13px; color: var(--text-dark); outline: none; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+.search-input { width: 100%; padding: 12px 65px 12px 20px; border: 1px solid var(--border-light); border-radius: 25px; background-color: var(--card-bg); font-family: 'Montserrat', sans-serif; font-size: 13px; color: var(--text-dark); outline: none; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
 .search-input::placeholder { color: var(--gray-text); }
-.search-icon-left { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--gray-text); display: flex; align-items: center; justify-content: center; }
-.search-clear { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--gray-text); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: color 0.2s; }
+.search-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--gray-text); display: flex; align-items: center; justify-content: center; }
+.search-clear { position: absolute; right: 40px; top: 50%; transform: translateY(-50%); color: var(--gray-text); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: color 0.2s; }
 .search-clear:hover { color: var(--shadow-pink); }
 
 .category-filters-container { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
@@ -86,7 +87,6 @@ body { background-color: var(--bg-color); color: var(--text-dark); font-family: 
 .details-top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
 .back-btn { background: transparent; border: none; color: var(--shadow-pink); font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 6px; }
 
-/* НОВОЕ: Группа кнопок справки */
 .top-bar-actions { display: flex; gap: 12px; align-items: center; }
 
 .details-cover-wrapper { position: relative; width: 140px; margin: 0 auto 20px auto; overflow: hidden; border-radius: 8px; box-shadow: 0 4px 20px var(--shadow-color); }
@@ -106,7 +106,6 @@ body { background-color: var(--bg-color); color: var(--text-dark); font-family: 
 .details-tropes { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 20px; }
 .trope-tag { border: 1px solid var(--main-pink); color: var(--shadow-pink); padding: 4px 10px; border-radius: 15px; font-size: 10px; background-color: transparent; }
 
-/* НОВОЕ: Стили для аккордеона предупреждений */
 .warnings-wrapper { margin: 0 10px 25px 10px; }
 .warnings-header { display: flex; justify-content: space-between; align-items: center; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 500; color: var(--text-dark); cursor: pointer; padding: 8px 12px; background-color: var(--gray-bg); border-radius: 15px; transition: background-color 0.3s; }
 .warnings-header:hover { background-color: var(--border-light); }
@@ -125,7 +124,7 @@ body { background-color: var(--bg-color); color: var(--text-dark); font-family: 
 .authors-list-container { }
 .author-item { background: var(--card-bg); border-radius: 12px; box-shadow: 0 4px 15px var(--shadow-color); margin-bottom: 10px; overflow: hidden; }
 .author-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 600; color: var(--text-dark); cursor: pointer; transition: background-color 0.3s, color 0.3s; }
-.round-arrow { width: 26px; height: 26px; border: 1px solid var(--border-light); border-radius: 50%; display: flex; justify-content: center; align-items: center; color: var(--gray-text); transition: all 0.3s ease; flex-shrink: 0; }
+.round-arrow { width: 26px; height: 26px; border: 1px solid var(--border-light); border-radius: 50%; display: flex; justify-content: center; align-items: center; color: var(--gray-text); transition: transform 0.3s ease; flex-shrink: 0; }
 .author-item.open .author-header { background-color: var(--main-pink); color: #FFFFFF; }
 .author-item.open .author-header .round-arrow { border-color: #FFFFFF; color: #FFFFFF; transform: rotate(90deg); }
 
