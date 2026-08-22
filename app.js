@@ -1,13 +1,26 @@
 document.addEventListener('DOMContentLoaded', () => {
     const tg = window.Telegram.WebApp;
-    
-    // Растягиваем окно по высоте
     tg.expand();
 
-    // Запрашиваем настоящий Fullscreen (скрывает верхнюю шапку Telegram, если поддерживается)
     if (tg.requestFullscreen) {
         tg.requestFullscreen();
     }
+
+    // --- УМНАЯ ШАПКА ---
+    // Скрываем шапку, если приложение открыто просто в браузере (вне Телеграма)
+    function updateHeaderVisibility() {
+        const topHeader = document.querySelector('.top-header');
+        if (topHeader) {
+            // tg.platform возвращает 'unknown', если это просто браузер (не ТГ)
+            if (tg.platform === 'unknown' || !tg.initData) {
+                topHeader.style.display = 'none';
+            } else {
+                // Если мы внутри Телеграма (в любом виде) - показываем
+                topHeader.style.display = 'flex';
+            }
+        }
+    }
+    updateHeaderVisibility();
 
     // --- SVG ИКОНКИ ---
     const heartEmpty = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>`;
@@ -16,7 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const moonSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
     const sunSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
 
-    // ВОССТАНОВЛЕНИЕ ТЕМЫ И ШАПКИ
     const savedTheme = localStorage.getItem('wombooks_theme');
     const themeBtn = document.getElementById('theme-btn');
     const isDarkInitial = savedTheme === 'dark';
@@ -30,27 +42,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (tg.setHeaderColor) { tg.setHeaderColor(isDarkInitial ? '#121212' : '#FFFFFF'); }
     if (tg.setBackgroundColor) { tg.setBackgroundColor(isDarkInitial ? '#121212' : '#FFFFFF'); }
-
-    // НОВОЕ: Проверка на Fullscreen для скрытия/показа шапки
-    function updateHeaderVisibility() {
-        const topHeader = document.querySelector('.top-header');
-        if (topHeader) {
-            // Если открыто в Fullscreen, шапка отображается, иначе - скрыта
-            if (tg.isFullscreen) {
-                topHeader.style.display = 'flex';
-            } else {
-                topHeader.style.display = 'none';
-            }
-        }
-    }
-    
-    // Проверяем при загрузке
-    updateHeaderVisibility();
-    
-    // И отслеживаем изменения (если Telegram их транслирует)
-    if (tg.onEvent) {
-        tg.onEvent('fullscreenChanged', updateHeaderVisibility);
-    }
 
     const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQofE7L59iFriQgwIJ-P0MclqfZ2QhBHR-zbk6FgaaZ7VSJ_dmtv823zjZkXBRWDodnCJ11B_Pa1oPc/pub?output=csv';
     const scriptUrl = 'https://script.google.com/macros/s/AKfycbxF_KGJfmq8npELJDMecB1QxRl0zew1W6K8S18vRQ9CP4lf_DWc_RIdstdCqk_v1auX/exec';
@@ -577,7 +568,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (warningsWrapper && warningsContent) {
             warningsWrapper.classList.remove('open'); 
             if (book.warnings) {
-                warningsWrapper.style.display = 'block';
+                warningsWrapper.style.display = 'flex'; // ИЗМЕНЕНО: теперь flex
                 warningsContent.innerHTML = '';
                 book.warnings.split(',').forEach(w => {
                     if (w.trim()) {
