@@ -75,7 +75,8 @@ body { background-color: var(--bg-color); color: var(--text-dark); font-family: 
 .saved-books-title { font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 600; color: var(--text-dark); margin: 0; }
 .profile-tabs-wrapper .round-arrow { width: 22px; height: 22px; border-color: var(--border-light); transition: transform 0.3s ease; }
 .profile-tabs-wrapper.open .round-arrow { transform: rotate(90deg); color: var(--shadow-pink); border-color: var(--shadow-pink); }
-.profile-tabs-menu { position: absolute; top: 100%; left: 0; background-color: var(--card-bg); border: 1px solid var(--border-light); border-radius: 12px; padding: 5px; box-shadow: 0 4px 15px var(--shadow-color); z-index: 10; min-width: 180px; margin-top: 8px; }
+/* ИЗМЕНЕНО: z-index увеличен до 150, чтобы быть ВЫШЕ обложек и значков */
+.profile-tabs-menu { position: absolute; top: 100%; left: 0; background-color: var(--card-bg); border: 1px solid var(--border-light); border-radius: 12px; padding: 5px; box-shadow: 0 4px 15px var(--shadow-color); z-index: 150; min-width: 180px; margin-top: 8px; }
 .profile-tab-item { padding: 10px 15px; font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 500; color: var(--text-dark); cursor: pointer; border-radius: 8px; transition: background-color 0.2s; }
 .profile-tab-item:hover { background-color: var(--gray-bg); }
 
