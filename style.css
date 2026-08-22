@@ -12,6 +12,8 @@
     --review-bg: #FDFDFD;
     --overlay-bg: rgba(0,0,0,0.4);
     --shadow-color: rgba(214, 115, 171, 0.1);
+    /* Оригинальный фон для плашек обложки */
+    --badge-bg: rgba(245, 245, 245, 0.95);
 }
 
 body.dark-theme {
@@ -28,6 +30,8 @@ body.dark-theme {
     --review-bg: #1A1A1A;
     --overlay-bg: rgba(0,0,0,0.7);
     --shadow-color: rgba(0,0,0,0.4);
+    /* Чуть затемненный фон для плашек в темной теме */
+    --badge-bg: rgba(35, 35, 35, 0.95);
 }
 
 @font-face { font-family: 'Sloop Script Pro'; src: url('SloopScriptPro.ttf') format('truetype'); font-weight: normal; font-style: normal; }
@@ -87,23 +91,24 @@ body { background-color: var(--bg-color); color: var(--text-dark); font-family: 
 .book-card { background-color: var(--card-bg); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px var(--shadow-color); display: flex; flex-direction: column; position: relative; }
 
 .grid-cover-wrapper { position: relative; display: block; overflow: hidden; border-radius: 12px 12px 0 0; }
-/* ИЗМЕНЕНО: Шрифт серии увеличен */
-.cover-series-badge { position: absolute; top: 6px; right: 6px; padding: 3px 8px; background-color: var(--card-bg); color: var(--gray-text); border-radius: 10px; font-size: 11px; font-weight: 600; white-space: nowrap; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 10; display: flex; align-items: center; justify-content: center; }
-/* ИЗМЕНЕНО: Плашка прочитано теперь выглядит как серия с иконкой */
-.cover-read-badge { position: absolute; top: 6px; left: 6px; padding: 3px 6px; background-color: var(--card-bg); color: var(--shadow-pink); border-radius: 10px; font-size: 11px; font-weight: 600; white-space: nowrap; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 10; display: flex; align-items: center; justify-content: center; }
+
+/* ИЗМЕНЕНО: Номер серии и плашка прочитано теперь 10px и с оригинальным фоном */
+.cover-series-badge { position: absolute; top: 6px; right: 6px; padding: 3px 8px; background-color: var(--badge-bg); color: var(--gray-text); border-radius: 10px; font-size: 10px; font-weight: 600; white-space: nowrap; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 10; display: flex; align-items: center; justify-content: center; }
+.cover-read-badge { position: absolute; top: 6px; left: 6px; padding: 3px 8px; background-color: var(--badge-bg); color: var(--shadow-pink); border-radius: 10px; font-size: 10px; font-weight: 600; white-space: nowrap; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 10; display: flex; align-items: center; justify-content: center; }
 
 .book-cover { width: 100%; aspect-ratio: 1 / 1.6; object-fit: cover; background-color: var(--pink-light-bg); display: block; transition: opacity 0.3s ease; }
 .read-opacity { opacity: 0.7; }
 
 .card-info { padding: 10px 8px; display: flex; flex-direction: column; flex-grow: 1; }
-/* ИЗМЕНЕНО: Увеличены шрифты карточки */
-.book-title { font-family: 'Felidae', serif; font-size: 14px; color: var(--text-dark); margin-bottom: 4px; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.book-author { font-size: 11px; color: var(--gray-text); margin-bottom: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-/* ИЗМЕНЕНО: Кнопка Подробнее вместо иконок */
+/* ИЗМЕНЕНО: Название книги 11px, Автор 10px */
+.book-title { font-family: 'Felidae', serif; font-size: 11px; color: var(--text-dark); margin-bottom: 4px; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.book-author { font-size: 10px; color: var(--gray-text); margin-bottom: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ИЗМЕНЕНО: Кнопка Подробнее 11px, располагается под рейтингом */
 .card-actions-vertical { display: flex; flex-direction: column; gap: 8px; align-items: center; margin-top: auto; }
 .card-rating-text { font-size: 11px; font-family: 'Montserrat', sans-serif; display: flex; justify-content: center; align-items: center; width: 100%; }
-.card-details-btn { width: 100%; padding: 6px; border: 1px solid var(--main-pink); border-radius: 15px; background-color: transparent; color: var(--shadow-pink); font-family: 'Montserrat', sans-serif; font-size: 11px; cursor: pointer; transition: all 0.3s; }
+.card-details-btn { width: 100%; padding: 4px; border: 1px solid var(--main-pink); border-radius: 15px; background-color: transparent; color: var(--shadow-pink); font-family: 'Montserrat', sans-serif; font-size: 11px; cursor: pointer; transition: all 0.3s; }
 .card-details-btn:hover { background-color: var(--main-pink); color: #FFF; }
 
 .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background-color: var(--card-bg); display: flex; justify-content: center; gap: 15px; padding: 15px 20px 25px 20px; box-shadow: 0 -4px 20px rgba(0,0,0,0.05); border-top-left-radius: 20px; border-top-right-radius: 20px; z-index: 100; }
@@ -119,43 +124,47 @@ body { background-color: var(--bg-color); color: var(--text-dark); font-family: 
 .details-cover { width: 100%; display: block; }
 .details-cover-wrapper .cover-series-badge { top: 8px; right: 8px; font-size: 10px; padding: 4px 10px; border-radius: 12px; }
 
-.details-title { font-family: 'Felidae', serif; font-size: 22px; color: var(--text-dark); text-align: center; margin-bottom: 6px; }
-/* ИЗМЕНЕНО: Увеличены шрифты внутри деталей */
-.details-author { font-size: 14px; color: var(--gray-text); text-align: center; margin-bottom: 15px; }
-.details-series-wrapper { display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
-.details-series { display: flex; align-items: center; padding: 4px 12px; background-color: var(--pink-light-bg); color: var(--shadow-pink); border-radius: 12px; font-size: 12px; }
-.gray-badge { padding: 4px 12px; background-color: var(--gray-bg); color: var(--gray-text); border-radius: 12px; font-size: 12px; font-weight: 500; white-space: nowrap; }
+/* ИЗМЕНЕНО: Шрифты внутри книги */
+.details-title { font-family: 'Felidae', serif; font-size: 20px; color: var(--text-dark); text-align: center; margin-bottom: 6px; }
+.details-author { font-size: 12px; color: var(--gray-text); text-align: center; margin-bottom: 15px; }
 
-/* НОВОЕ: Иконка шера рядом с кол-вом страниц */
+.details-series-wrapper { display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+.details-series { display: flex; align-items: center; padding: 4px 12px; background-color: var(--pink-light-bg); color: var(--shadow-pink); border-radius: 12px; font-size: 11px; }
+
+/* ИЗМЕНЕНО: Плашка страниц стала 12px и похожа на тропы */
+.gray-badge { padding: 4px 12px; background-color: var(--card-bg); border: 1px solid var(--border-light); color: var(--gray-text); border-radius: 15px; font-size: 12px; font-weight: 500; white-space: nowrap; }
+
 .share-icon-circle { width: 24px; height: 24px; border: 1px solid var(--border-light); border-radius: 50%; background-color: var(--card-bg); color: var(--gray-text); display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.2s; }
 .share-icon-circle:hover { color: var(--shadow-pink); border-color: var(--shadow-pink); }
 
 .details-rating-wrapper { display: flex; justify-content: center; margin-bottom: 20px; }
 .details-rating-box { padding: 8px 24px; border: 1px solid var(--border-light); border-radius: 25px; font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 500; color: var(--text-dark); display: flex; align-items: center; justify-content: center; background-color: transparent; cursor: pointer; }
 
-/* НОВОЕ: Кнопки Сохранить и Прочитано */
+/* ИЗМЕНЕНО: Кнопки Сохранить и Прочитано стали меньше (12px) */
 .details-action-buttons { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; padding: 0 10px; }
-.details-action-btn { flex: 1; padding: 10px; border: 1px solid var(--main-pink); border-radius: 20px; background-color: transparent; color: var(--shadow-pink); font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.3s; }
+.details-action-btn { flex: 1; padding: 8px 10px; border: 1px solid var(--main-pink); border-radius: 20px; background-color: transparent; color: var(--shadow-pink); font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.3s; }
 .details-action-btn.active { background-color: var(--main-pink); color: #FFFFFF; }
 
-/* ИЗМЕНЕНО: Шрифты в аккордеонах увеличены до 13px */
-.warnings-wrapper { display: flex; flex-direction: column; align-items: center; margin-bottom: 15px; width: 100%; }
-.warnings-header { display: inline-flex; justify-content: center; align-items: center; gap: 10px; padding: 6px 14px; border: 1px solid var(--border-light); border-radius: 20px; background-color: var(--card-bg); color: var(--gray-text); font-family: 'Montserrat', sans-serif; font-size: 13px; cursor: pointer; transition: background-color 0.3s; }
+/* ИЗМЕНЕНО: Аккордеоны стоят рядом на одной линии */
+.accordions-row { display: flex; gap: 10px; width: 100%; margin-bottom: 25px; align-items: flex-start; padding: 0 5px; }
+.warnings-wrapper { margin: 0; display: flex; flex-direction: column; align-items: center; width: 100%; flex: 1; }
+.warnings-header { width: 100%; display: flex; justify-content: center; align-items: center; gap: 6px; padding: 6px 8px; border: 1px solid var(--border-light); border-radius: 20px; background-color: var(--card-bg); color: var(--gray-text); font-family: 'Montserrat', sans-serif; font-size: 12px; cursor: pointer; transition: background-color 0.3s; text-align: center; }
 .warnings-header:hover { background-color: var(--border-light); }
-.warnings-header .round-arrow { width: 22px; height: 22px; border-color: var(--border-light); transition: transform 0.3s; }
+.warnings-header span:first-child { font-size: 12px; line-height: 1.2; }
+.warnings-header .round-arrow { width: 22px; height: 22px; border-color: var(--border-light); transition: transform 0.3s; flex-shrink: 0; }
 .warnings-content { display: none; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 15px; width: 100%; padding-bottom: 10px; }
 .warnings-wrapper.open .warnings-content { display: flex; }
 .warnings-wrapper.open #warnings-arrow, .warnings-wrapper.open #tropes-arrow { transform: rotate(90deg); color: var(--shadow-pink); border-color: var(--shadow-pink); }
 .warning-tag { flex-grow: 1; text-align: center; padding: 8px 10px; border: 1px solid var(--border-light); border-radius: 15px; background-color: var(--card-bg); color: var(--gray-text); font-size: 11px; }
 
-.details-annotation { font-size: 12px; line-height: 1.6; color: var(--text-dark); margin-bottom: 30px; margin-top: 10px; text-align: justify; padding: 0 5px; }
+.details-annotation { font-size: 12px; line-height: 1.6; color: var(--text-dark); margin-bottom: 30px; text-align: justify; padding: 0 5px; }
 
-/* НОВОЕ: Новый блок кнопок под аннотацией */
+/* ИЗМЕНЕНО: Стрелка стала меньше (40px) */
 .bottom-action-row { display: flex; gap: 10px; align-items: stretch; margin-bottom: 30px; }
-.small-back { width: 44px; height: auto; border: 1px solid var(--main-pink); border-radius: 15px; background-color: transparent; color: var(--shadow-pink); display: flex; justify-content: center; align-items: center; cursor: pointer; flex-shrink: 0; }
+.small-back { width: 40px; height: auto; border: 1px solid var(--main-pink); border-radius: 15px; background-color: transparent; color: var(--shadow-pink); display: flex; justify-content: center; align-items: center; cursor: pointer; flex-shrink: 0; transition: all 0.3s; }
 .bottom-buttons-col { display: flex; flex-direction: column; gap: 10px; flex-grow: 1; }
-.download-btn { display: block; background-color: var(--main-pink); color: #FFFFFF; text-align: center; padding: 14px; border-radius: 15px; font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 500; text-decoration: none; box-shadow: 0 4px 15px var(--shadow-color); border: none; cursor: pointer; }
-.bottom-review { display: block; width: 100%; background-color: transparent; color: var(--shadow-pink); text-align: center; padding: 14px; border-radius: 15px; border: 1px solid var(--main-pink); font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; }
+.download-btn { display: block; background-color: var(--main-pink); color: #FFFFFF; text-align: center; padding: 12px; border-radius: 15px; font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 500; text-decoration: none; box-shadow: 0 4px 15px var(--shadow-color); border: none; cursor: pointer; }
+.bottom-review { display: block; width: 100%; background-color: transparent; color: var(--shadow-pink); text-align: center; padding: 12px; border-radius: 15px; border: 1px solid var(--main-pink); font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; }
 
 .authors-list-container { }
 .author-item { background: var(--card-bg); border-radius: 12px; box-shadow: 0 4px 15px var(--shadow-color); margin-bottom: 10px; overflow: hidden; }
