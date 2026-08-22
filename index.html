@@ -10,8 +10,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
     
-    <!-- Трюк против кэша Айфона: версия 48 -->
-    <link rel="stylesheet" href="style.css?ver=48">
+    <!-- Трюк против кэша Айфона: версия 49 -->
+    <link rel="stylesheet" href="style.css?ver=49">
 </head>
 <body>
 
@@ -32,7 +32,37 @@
                 </span>
             </div>
 
-            <div class="category-filters-container">
+            <!-- НОВОЕ: Блок профиля (показывается только во вкладке "Профиль") -->
+            <div id="profile-section" style="display: none;">
+                <div class="profile-card">
+                    <div class="profile-header-info">
+                        <div class="profile-avatar">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        </div>
+                        <div>
+                            <h3 class="profile-name" id="profile-display-name">Читатель</h3>
+                            <p class="profile-status" id="profile-status-text">Новичок</p>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-progress-block">
+                        <p class="progress-title">Развернутые отзывы (от 5 слов): <span id="review-count-text">0/5</span></p>
+                        <div class="progress-bar-bg"><div class="progress-bar-fill" id="review-progress-fill"></div></div>
+                        <p class="progress-hint" id="progress-hint-text">Напишите 5 развернутых отзывов, чтобы получить возможность выбрать себе уникальный никнейм!</p>
+                    </div>
+
+                    <div id="nickname-edit-block" style="display: none;">
+                        <p class="nickname-label">Вы достигли цели! Выберите никнейм:</p>
+                        <div class="nickname-input-group">
+                            <input type="text" id="nickname-input" class="nickname-input" placeholder="Ваш никнейм" maxlength="15">
+                            <button class="nickname-save-btn" onclick="saveNickname()">Сохранить</button>
+                        </div>
+                    </div>
+                </div>
+                <h3 class="saved-books-title">Сохраненные книги</h3>
+            </div>
+
+            <div class="category-filters-container" id="main-filters">
                 <div class="category-filters-row">
                     <button class="filter-btn active-filter" id="filter-recent">Недавно добавленное</button>
                 </div>
@@ -122,7 +152,8 @@
         <!-- НИЖНЕЕ МЕНЮ НАВИГАЦИИ -->
         <nav class="bottom-nav" id="bottom-nav">
             <button class="bottom-pill-btn active-pill" id="nav-home">Главная</button>
-            <button class="bottom-pill-btn" id="nav-saved">Сохраненное</button>
+            <!-- ИЗМЕНЕНО: Кнопка переименована в Профиль -->
+            <button class="bottom-pill-btn" id="nav-saved">Профиль</button>
             <button class="theme-toggle-btn" id="theme-btn" onclick="toggleTheme()"></button>
         </nav>
     </div>
@@ -155,7 +186,7 @@
         </div>
     </div>
 
-    <!-- Трюк против кэша Айфона: версия 48 -->
-    <script src="app.js?ver=48"></script>
+    <!-- Трюк против кэша Айфона: версия 49 -->
+    <script src="app.js?ver=49"></script>
 </body>
 </html>
