@@ -10,8 +10,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
     
-    <!-- Трюк против кэша Айфона: версия 44 -->
-    <link rel="stylesheet" href="style.css?ver=44">
+    <!-- Трюк против кэша Айфона: версия 46 -->
+    <link rel="stylesheet" href="style.css?ver=46">
 </head>
 <body>
 
@@ -23,13 +23,12 @@
         <!-- СТРАНИЦА 1: ГЛАВНАЯ (ВИТРИНА) -->
         <div id="page-home">
             <div class="search-container">
-                <span class="search-icon-left">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                </span>
                 <input type="text" class="search-input" id="main-search-input" placeholder="Найти книгу или автора">
-                <!-- НОВОЕ: Крестик для очистки поиска -->
                 <span class="search-clear" id="search-clear-btn" style="display: none;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </span>
+                <span class="search-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                 </span>
             </div>
 
@@ -72,10 +71,8 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
                     Назад
                 </button>
-                <!-- НОВОЕ: Группа кнопок (Поделиться и Сердечко) -->
                 <div class="top-bar-actions">
                     <button class="action-btn fav-btn" id="details-share-btn" onclick="shareBook()">
-                        <!-- SVG Иконка отправки (бумажный самолетик) -->
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
                     </button>
                     <button class="action-btn fav-btn" id="details-fav-btn" onclick="toggleSaveFromDetails()"></button>
@@ -99,7 +96,6 @@
 
                 <div class="details-tropes" id="details-tropes"></div>
                 
-                <!-- НОВОЕ: Блок предупреждений -->
                 <div class="warnings-wrapper" id="warnings-wrapper" style="display: none;">
                     <div class="warnings-header" onclick="toggleWarnings()">
                         <span>Предупреждения о содержании</span>
@@ -131,7 +127,7 @@
         </nav>
     </div>
 
-    <!-- МОДАЛЬНЫЕ ОКНА -->
+    <!-- МОДАЛЬНОЕ ОКНО ДЛЯ ОТЗЫВА -->
     <div id="review-modal" class="modal-overlay" style="display: none;">
         <div class="modal-content">
             <h3 class="modal-title">Оценить книгу</h3>
@@ -150,6 +146,7 @@
         </div>
     </div>
 
+    <!-- МОДАЛЬНОЕ ОКНО ОТЗЫВОВ -->
     <div id="reviews-list-modal" class="modal-overlay" style="display: none;">
         <div class="modal-content reviews-list-content">
             <h3 class="modal-title">Отзывы читателей</h3>
@@ -160,7 +157,7 @@
         </div>
     </div>
 
-    <!-- Трюк против кэша Айфона: версия 44 -->
-    <script src="app.js?ver=44"></script>
+    <!-- Трюк против кэша Айфона: версия 46 -->
+    <script src="app.js?ver=46"></script>
 </body>
 </html>
