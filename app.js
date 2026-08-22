@@ -1,6 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
     const tg = window.Telegram.WebApp;
+    
+    // Растягиваем окно по высоте
     tg.expand();
+
+    // НОВОЕ: Запрашиваем настоящий Fullscreen (скрывает верхнюю шапку Telegram)
+    if (tg.requestFullscreen) {
+        tg.requestFullscreen();
+    }
 
     // --- SVG ИКОНКИ ---
     const heartEmpty = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>`;
@@ -9,13 +16,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const moonSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
     const sunSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
 
+    // ВОССТАНОВЛЕНИЕ ТЕМЫ
     const savedTheme = localStorage.getItem('wombooks_theme');
     const themeBtn = document.getElementById('theme-btn');
-    if (savedTheme === 'dark') {
+    const isDarkInitial = savedTheme === 'dark';
+
+    if (isDarkInitial) {
         document.body.classList.add('dark-theme');
         if(themeBtn) themeBtn.innerHTML = sunSvg;
     } else {
         if(themeBtn) themeBtn.innerHTML = moonSvg;
+    }
+
+    // НОВОЕ: Красим шапку Телеграма под цвет нашего приложения (если Fullscreen не сработает)
+    if (tg.setHeaderColor) {
+        tg.setHeaderColor(isDarkInitial ? '#121212' : '#FFFFFF');
+    }
+    if (tg.setBackgroundColor) {
+        tg.setBackgroundColor(isDarkInitial ? '#121212' : '#FFFFFF');
     }
 
     const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQofE7L59iFriQgwIJ-P0MclqfZ2QhBHR-zbk6FgaaZ7VSJ_dmtv823zjZkXBRWDodnCJ11B_Pa1oPc/pub?output=csv';
@@ -47,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const filtersContainer = document.querySelector('.category-filters-container'); 
     const disclaimerBox = document.getElementById('disclaimer-box');
     const searchInput = document.getElementById('main-search-input'); 
-    const searchClearBtn = document.getElementById('search-clear-btn'); // Крестик
+    const searchClearBtn = document.getElementById('search-clear-btn'); 
 
     const pageHome = document.getElementById('page-home');
     const pageDetails = document.getElementById('page-book-details');
@@ -65,6 +83,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const isDark = document.body.classList.contains('dark-theme');
         localStorage.setItem('wombooks_theme', isDark ? 'dark' : 'light');
         if(themeBtn) themeBtn.innerHTML = isDark ? sunSvg : moonSvg;
+        
+        // Меняем цвет шапки Телеграма при смене темы
+        if (tg.setHeaderColor) {
+            tg.setHeaderColor(isDark ? '#121212' : '#FFFFFF');
+        }
+        if (tg.setBackgroundColor) {
+            tg.setBackgroundColor(isDark ? '#121212' : '#FFFFFF');
+        }
     };
 
     function getRecentBooks() { return allBooks.slice(-3).reverse(); }
@@ -85,7 +111,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return trimmed;
     }
 
-    // НОВОЕ: Очистка поиска крестиком
     if (searchClearBtn && searchInput) {
         searchClearBtn.addEventListener('click', () => {
             searchInput.value = '';
@@ -211,7 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     tropes: arr[i][4] ? arr[i][4].trim() : '', annotation: arr[i][5] ? arr[i][5].trim() : '',
                     seriesNumber: arr[i][6] ? arr[i][6].trim() : '', 
                     pages: arr[i][7] ? arr[i][7].trim() : '',
-                    warnings: arr[i][8] ? arr[i][8].trim() : '', // НОВОЕ: 9-я колонка (Предупреждения)
+                    warnings: arr[i][8] ? arr[i][8].trim() : '', 
                     rating: 0 
                 });
             }
@@ -378,7 +403,6 @@ document.addEventListener('DOMContentLoaded', () => {
     window.toggleAuthor = function(headerElement) { const authorItem = headerElement.parentElement; authorItem.classList.toggle('open'); };
     window.toggleSeries = function(headerElement) { const seriesItem = headerElement.parentElement; seriesItem.classList.toggle('open'); };
     
-    // НОВОЕ: Функция открытия/закрытия предупреждений
     window.toggleWarnings = function() {
         const wrapper = document.getElementById('warnings-wrapper');
         wrapper.classList.toggle('open');
@@ -476,14 +500,23 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('wombooks_saved', JSON.stringify(savedBookIds));
     };
 
-    // НОВОЕ: Функция для отправки (расшаривания) книги
     window.shareBook = function() {
         if (!currentOpenBookId) return;
         const book = allBooks.find(b => b.id === currentOpenBookId);
         if (!book) return;
         
-        const shareText = `Смотри, какую книгу я нашла в библиотеке WOMBOOKS!\n\n📖 «${book.title}»\n✍️ Автор: ${book.author}\n\nЗаходи читать: 🩷`;
-        // Открываем нативное окно отправки сообщения в Telegram
+        let seriesInfo = '';
+        if (book.series && book.series.trim().toLowerCase() !== 'одиночная' && book.series.trim().toLowerCase() !== 'одиночные') { 
+            seriesInfo = `\nСерия: ${book.series}`;
+            if (book.seriesNumber) {
+                seriesInfo += ` , ${formatSeriesNumber(book.seriesNumber)}`;
+            }
+        }
+
+        const appLink = `https://t.me/wombookbot/myapp`; 
+        
+        const shareText = `Эта книга тебе точно понравится!\n\nНазвание: ${book.title}${seriesInfo}\nАвтор: ${book.author || 'Неизвестный автор'}\n\nПрочитать можно здесь: ${appLink}\nПодписывайся на канал, чтобы читать больше интересных книг – https://t.me/+8Y0po5gZxCU2NWRi`;
+        
         const shareUrl = `https://t.me/share/url?url=&text=${encodeURIComponent(shareText)}`;
         tg.openTelegramLink(shareUrl);
     };
@@ -528,11 +561,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (book.tropes) { book.tropes.split(',').forEach(trope => { if (trope.trim()) { const span = document.createElement('span'); span.className = 'trope-tag'; span.innerText = trope.trim(); tropesContainerEl.appendChild(span); } }); }
         }
 
-        // НОВОЕ: Отрисовка предупреждений о содержании
         const warningsWrapper = document.getElementById('warnings-wrapper');
         const warningsContent = document.getElementById('warnings-content');
         if (warningsWrapper && warningsContent) {
-            warningsWrapper.classList.remove('open'); // Закрываем при открытии новой книги
+            warningsWrapper.classList.remove('open'); 
             if (book.warnings) {
                 warningsWrapper.style.display = 'block';
                 warningsContent.innerHTML = '';
