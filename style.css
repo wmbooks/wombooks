@@ -37,12 +37,12 @@ body.dark-theme {
 
 body { background-color: var(--bg-color); color: var(--text-dark); font-family: 'Montserrat', sans-serif; -webkit-tap-highlight-color: transparent; }
 
-/* ИЗМЕНЕНО: Убрано position: fixed и лишние тени. Теперь она плавно прокручивается вместе со страницей */
-.top-header { width: 100%; padding: 20px 0; background-color: var(--bg-color); display: none; justify-content: center; align-items: center; }
+/* ИЗМЕНЕНО: Шапка теперь в общем потоке (без fixed), уезжает вверх при прокрутке */
+.top-header { width: 100%; padding: 25px 0 10px 0; background-color: var(--bg-color); display: flex; justify-content: center; align-items: center; }
 .header-logo { font-family: 'Felidae', serif; font-size: 20px; font-weight: normal; color: var(--shadow-pink); letter-spacing: 1px; }
 
-/* ИЗМЕНЕНО: Отступ сверху теперь всего 20px, так как шапка больше не fixed */
-#app { padding: 20px 20px 100px 20px; max-width: 600px; margin: 0 auto; }
+/* ИЗМЕНЕНО: Отступ сверху уменьшен, так как шапка сама занимает место */
+#app { padding: 10px 20px 100px 20px; max-width: 600px; margin: 0 auto; }
 
 .search-container { position: relative; margin-bottom: 20px; }
 .search-input { width: 100%; padding: 12px 65px 12px 20px; border: 1px solid var(--border-light); border-radius: 25px; background-color: var(--card-bg); font-family: 'Montserrat', sans-serif; font-size: 13px; color: var(--text-dark); outline: none; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
@@ -106,13 +106,16 @@ body { background-color: var(--bg-color); color: var(--text-dark); font-family: 
 .details-tropes { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 20px; }
 .trope-tag { border: 1px solid var(--main-pink); color: var(--shadow-pink); padding: 4px 10px; border-radius: 15px; font-size: 10px; background-color: transparent; }
 
-.warnings-wrapper { margin: 0 10px 25px 10px; }
-.warnings-header { display: flex; justify-content: space-between; align-items: center; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 500; color: var(--text-dark); cursor: pointer; padding: 8px 12px; background-color: var(--gray-bg); border-radius: 15px; transition: background-color 0.3s; }
+/* ИЗМЕНЕНО: Стили для аккордеона предупреждений */
+.warnings-wrapper { display: flex; flex-direction: column; align-items: center; margin-bottom: 25px; width: 100%; }
+.warnings-header { display: inline-flex; justify-content: center; align-items: center; gap: 10px; padding: 4px 6px 4px 14px; border: 1px solid var(--border-light); border-radius: 20px; background-color: var(--card-bg); color: var(--gray-text); font-family: 'Montserrat', sans-serif; font-size: 11px; cursor: pointer; transition: background-color 0.3s; }
 .warnings-header:hover { background-color: var(--border-light); }
-.warnings-content { display: none; flex-wrap: wrap; gap: 6px; margin-top: 12px; padding: 0 5px; }
+.warnings-header .round-arrow { width: 22px; height: 22px; border-color: var(--border-light); }
+.warnings-content { display: none; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 15px; width: 100%; }
 .warnings-wrapper.open .warnings-content { display: flex; }
 .warnings-wrapper.open #warnings-arrow { transform: rotate(90deg); color: var(--shadow-pink); border-color: var(--shadow-pink); }
-.warning-tag { padding: 4px 10px; border: 1px solid var(--border-light); border-radius: 15px; background-color: var(--card-bg); color: var(--gray-text); font-size: 10px; }
+/* Теги растягиваются по ширине (flex-grow) */
+.warning-tag { flex-grow: 1; text-align: center; padding: 6px 10px; border: 1px solid var(--border-light); border-radius: 15px; background-color: var(--card-bg); color: var(--gray-text); font-size: 10px; }
 
 .details-annotation { font-size: 12px; line-height: 1.6; color: var(--text-dark); margin-bottom: 30px; text-align: justify; padding: 0 5px; }
 .download-section { display: flex; align-items: center; gap: 12px; margin-bottom: 15px; }
