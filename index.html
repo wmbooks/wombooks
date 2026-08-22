@@ -10,8 +10,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
     
-    <!-- Трюк против кэша Айфона: версия 54 -->
-    <link rel="stylesheet" href="style.css?ver=54">
+    <!-- Трюк против кэша Айфона: версия 55 -->
+    <link rel="stylesheet" href="style.css?ver=55">
 </head>
 <body>
 
@@ -112,7 +112,12 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
                     Назад
                 </button>
-                <!-- Иконки сверху убраны по ТЗ -->
+                <div class="top-bar-actions">
+                    <button class="action-btn fav-btn" id="details-share-btn" onclick="shareBook()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                    </button>
+                    <button class="action-btn fav-btn" id="details-fav-btn" onclick="toggleSaveOrRead(this, currentOpenBookId, true)"></button>
+                </div>
             </div>
             
             <div class="details-content">
@@ -130,47 +135,30 @@
                     <div class="details-rating-box" id="details-rating-box" onclick="openReviewsListModal()">0.00</div>
                 </div>
 
-                <!-- БЛОК КНОПОК МЕЖДУ РЕЙТИНГОМ И ТРОПАМИ -->
-                <div class="details-action-buttons">
-                    <button class="details-action-btn" id="details-main-save-btn" onclick="toggleSaveFromDetails()">Сохранить</button>
-                    <button class="details-action-btn" id="details-main-read-btn" onclick="toggleReadFromDetails()">Отметить прочитанным</button>
-                </div>
+                <div class="details-tropes" id="details-tropes"></div>
                 
-                <!-- БЛОК АККОРДЕОНОВ (Тропы и Предупреждения) -->
-                <div class="accordions-row" id="accordions-row" style="display: none;">
-                    <div class="warnings-wrapper" id="tropes-wrapper" style="display: none;">
-                        <div class="warnings-header" onclick="toggleTropes()">
-                            <span>Тропы</span>
-                            <span class="round-arrow" id="tropes-arrow">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                            </span>
-                        </div>
-                        <div class="warnings-content" id="tropes-content"></div>
+                <div class="warnings-wrapper" id="warnings-wrapper" style="display: none;">
+                    <div class="warnings-header" onclick="toggleWarnings()">
+                        <span>Предупреждения о содержании</span>
+                        <span class="round-arrow" id="warnings-arrow">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                        </span>
                     </div>
-                    
-                    <div class="warnings-wrapper" id="warnings-wrapper" style="display: none;">
-                        <div class="warnings-header" onclick="toggleWarnings()">
-                            <span>Предупреждения</span>
-                            <span class="round-arrow" id="warnings-arrow">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                            </span>
-                        </div>
-                        <div class="warnings-content" id="warnings-content"></div>
-                    </div>
+                    <div class="warnings-content" id="warnings-content"></div>
                 </div>
 
                 <div class="details-annotation" id="details-annotation">Аннотация...</div>
                 
-                <!-- НИЖНИЕ КНОПКИ В ОДНУ ЛИНИЮ -->
-                <div class="bottom-action-row">
-                    <button class="round-back-btn small-back" onclick="closeBook()">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                <div class="download-section">
+                    <button class="round-back-btn" onclick="closeBook()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
                     </button>
-                    <div class="bottom-buttons-col">
-                        <button class="download-btn" id="details-download" onclick="downloadBook()">Скачать книгу</button>
-                        <button class="review-btn bottom-review" onclick="openReviewModal()">Оставить отзыв</button>
-                    </div>
+                    <button class="download-btn" id="details-download" onclick="downloadBook()">Скачать книгу</button>
                 </div>
+
+                <button class="review-btn" onclick="openReviewModal()">Оценить и оставить отзыв</button>
+                
+                <button class="review-btn" id="details-mark-read-btn" onclick="toggleReadFromDetails()" style="margin-top: -20px; background-color: var(--card-bg); border-color: var(--border-light); color: var(--gray-text);">Отметить прочитанным</button>
             </div>
         </div>
 
@@ -211,7 +199,7 @@
         </div>
     </div>
 
-    <!-- Трюк против кэша Айфона: версия 54 -->
-    <script src="app.js?ver=54"></script>
+    <!-- Трюк против кэша Айфона: версия 55 -->
+    <script src="app.js?ver=55"></script>
 </body>
 </html>
