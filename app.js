@@ -332,7 +332,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let seriesBadgeHtml = '';
         if (book.seriesNumber) { seriesBadgeHtml = `<div class="cover-series-badge">${formatSeriesNumber(book.seriesNumber)}</div>`; }
 
-        let readBadgeHtml = isRead ? `<div class="cover-read-badge">Прочитано</div>` : '';
+        let readBadgeHtml = isRead ? `<div class="cover-read-badge">${checkIconSvg}</div>` : '';
         let coverClass = isRead ? `book-cover read-opacity` : `book-cover`;
 
         return `
@@ -490,6 +490,11 @@ document.addEventListener('DOMContentLoaded', () => {
     window.toggleAuthor = function(headerElement) { const authorItem = headerElement.parentElement; authorItem.classList.toggle('open'); };
     window.toggleSeries = function(headerElement) { const seriesItem = headerElement.parentElement; seriesItem.classList.toggle('open'); };
     
+    // ИЗМЕНЕНО: Добавлена функция для тропов
+    window.toggleTropes = function() {
+        document.getElementById('tropes-wrapper').classList.toggle('open');
+    };
+    
     window.toggleWarnings = function() {
         document.getElementById('warnings-wrapper').classList.toggle('open');
     };
@@ -501,8 +506,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if(activeBtn) activeBtn.classList.add('active-filter'); 
     }
 
+    // ИЗМЕНЕНО: Возвращаем правильный padding для списка при навигации
     if (navHome) { 
         navHome.addEventListener('click', () => { 
+            document.getElementById('app').style.paddingBottom = '100px';
             navHome.classList.add('active-pill'); 
             if (navSaved) navSaved.classList.remove('active-pill'); 
             if (mainFilters) mainFilters.style.display = 'flex';
@@ -528,6 +535,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (navSaved) { 
         navSaved.addEventListener('click', () => { 
+            document.getElementById('app').style.paddingBottom = '100px';
             navSaved.classList.add('active-pill'); 
             if (navHome) navHome.classList.remove('active-pill'); 
             if (mainFilters) mainFilters.style.display = 'none';
@@ -670,6 +678,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const index = readBookIds.indexOf(currentOpenBookId);
         if (index > -1) { 
             readBookIds.splice(index, 1); 
+            // Уведомление отключено, так как вернулись к классике, но можно вернуть tg.showAlert если нужно.
         } else { 
             readBookIds.push(currentOpenBookId); 
         }
@@ -679,6 +688,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.openBook = function(id) {
         const book = allBooks.find(b => b.id === id); if (!book) return; currentOpenBookId = id;
+        
+        // ИЗМЕНЕНО: Схлапываем отступ у приложения, чтобы убрать белое окно внизу
+        const appContainer = document.getElementById('app');
+        if (appContainer) appContainer.style.paddingBottom = '20px';
         
         const coverEl = document.getElementById('details-cover');
         if(coverEl) coverEl.src = `covers/${book.id}.PNG`;
@@ -711,10 +724,25 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        const tropesContainerEl = document.getElementById('details-tropes'); 
-        if(tropesContainerEl) {
-            tropesContainerEl.innerHTML = '';
-            if (book.tropes) { book.tropes.split(',').forEach(trope => { if (trope.trim()) { const span = document.createElement('span'); span.className = 'trope-tag'; span.innerText = trope.trim(); tropesContainerEl.appendChild(span); } }); }
+        // ИЗМЕНЕНО: Отрисовка тропов теперь через аккордеон
+        const tropesWrapper = document.getElementById('tropes-wrapper');
+        const tropesContent = document.getElementById('tropes-content');
+        if (tropesWrapper && tropesContent) {
+            tropesWrapper.classList.remove('open'); 
+            if (book.tropes) {
+                tropesWrapper.style.display = 'flex'; 
+                tropesContent.innerHTML = '';
+                book.tropes.split(',').forEach(t => {
+                    if (t.trim()) {
+                        const span = document.createElement('span');
+                        span.className = 'trope-tag'; // Оставили розовый цвет
+                        span.innerText = t.trim();
+                        tropesContent.appendChild(span);
+                    }
+                });
+            } else {
+                tropesWrapper.style.display = 'none';
+            }
         }
 
         const warningsWrapper = document.getElementById('warnings-wrapper');
@@ -749,6 +777,10 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     window.closeBook = function() {
+        // ИЗМЕНЕНО: Возвращаем отступ, когда возвращаемся на главную
+        const appContainer = document.getElementById('app');
+        if (appContainer) appContainer.style.paddingBottom = '100px';
+        
         if(pageDetails) pageDetails.style.display = 'none'; 
         if(pageHome) pageHome.style.display = 'block'; 
         if(bottomNav) bottomNav.style.display = 'flex';
