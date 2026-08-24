@@ -13,6 +13,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const sunSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
     const checkIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
 
+    // -- ЛОГИКА УВЕДОМЛЕНИЙ (TOAST) --
+    let toastTimeout;
+    window.showToast = function(message) {
+        const toast = document.getElementById('toast');
+        if(!toast) return;
+        toast.innerText = message;
+        toast.classList.add('show');
+        clearTimeout(toastTimeout);
+        toastTimeout = setTimeout(() => {
+            toast.classList.remove('show');
+        }, 2500);
+    };
+
     const savedTheme = localStorage.getItem('wombooks_theme');
     const themeBtn = document.getElementById('theme-btn');
     const isDarkInitial = savedTheme === 'dark';
@@ -209,14 +222,14 @@ document.addEventListener('DOMContentLoaded', () => {
     window.saveNickname = function() {
         const input = document.getElementById('nickname-input');
         if (!input || input.value.trim() === '') {
-            tg.showAlert('Пожалуйста, введите никнейм!');
+            showToast('Пожалуйста, введите никнейм!');
             return;
         }
         currentUserName = input.value.trim();
         localStorage.setItem('wombooks_nickname', currentUserName);
         document.getElementById('profile-display-name').innerText = currentUserName;
         input.value = '';
-        tg.showAlert('Никнейм успешно сохранен! Все ваши новые отзывы будут подписаны этим именем.');
+        showToast('Никнейм успешно сохранен!');
     };
 
     window.toggleProfileDropdown = function() {
@@ -588,6 +601,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     window.toggleSaveOrRead = function(btnElement, id, fromDetails = false) {
+        // Добавляем микро-анимацию на клик
+        btnElement.classList.remove('pulse');
+        void btnElement.offsetWidth; // Сбрасываем анимацию для повторного запуска
+        btnElement.classList.add('pulse');
+
         const isRead = readBookIds.includes(id);
         
         if (isRead) {
@@ -604,14 +622,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 const badge = card.querySelector('.cover-read-badge');
                 if (badge) badge.remove();
             }
+            showToast('Убрано из прочитанного');
         } else {
             const index = savedBookIds.indexOf(id);
             if (index > -1) { 
                 savedBookIds.splice(index, 1); 
                 btnElement.innerHTML = heartEmpty; 
+                showToast('Убрано из сохраненных');
             } else { 
                 savedBookIds.push(id); 
                 btnElement.innerHTML = heartFilled; 
+                showToast('Книга добавлена в сохраненные');
             }
             localStorage.setItem('wombooks_saved', JSON.stringify(savedBookIds));
         }
@@ -670,8 +691,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const index = readBookIds.indexOf(currentOpenBookId);
         if (index > -1) { 
             readBookIds.splice(index, 1); 
+            showToast('Убрано из прочитанного');
         } else { 
             readBookIds.push(currentOpenBookId); 
+            showToast('Отмечено прочитанным');
         }
         localStorage.setItem('wombooks_read', JSON.stringify(readBookIds));
         updateDetailsReadState();
@@ -818,7 +841,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     window.submitReview = async function() {
-        if (currentRating === 0) { tg.showAlert('Пожалуйста, поставьте хотя бы одну звездочку!'); return; }
+        if (currentRating === 0) { showToast('Пожалуйста, поставьте хотя бы одну звездочку!'); return; }
         const reviewTextEl = document.getElementById('review-text');
         const reviewText = reviewTextEl ? reviewTextEl.value : '';
         
@@ -842,17 +865,16 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         
         closeReviewModal();
-        tg.showAlert('Отправляем ваш отзыв...');
         
         try {
             await fetch(scriptUrl, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
-            tg.showAlert('Спасибо! Оценка учтена.');
+            showToast('Спасибо! Оценка учтена.');
             allRatings.push(payload);
             calculateRatings();
             const book = allBooks.find(b => b.id === currentOpenBookId);
             const ratingBox = document.getElementById('details-rating-box');
             if (book && ratingBox) { ratingBox.innerHTML = getRatingText(book.rating); }
-        } catch (error) { tg.showAlert('Ошибка отправки. Проверьте интернет.'); }
+        } catch (error) { showToast('Ошибка отправки. Проверьте интернет.'); }
     };
 
     fetchBooksAndRatings();
