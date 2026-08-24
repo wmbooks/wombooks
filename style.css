@@ -40,7 +40,7 @@ body { background-color: var(--bg-color); color: var(--text-dark); font-family: 
 .top-header { position: fixed; top: 0; left: 0; width: 100%; height: 90px; padding-top: 40px; background-color: var(--bg-color); display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.03); z-index: 1000; }
 .header-logo { font-family: 'Felidae', serif; font-size: 20px; font-weight: normal; color: var(--shadow-pink); letter-spacing: 1px; }
 
-#app { padding: 105px 20px 100px 20px; max-width: 600px; margin: 0 auto; }
+#app { padding: 105px 20px 100px 20px; max-width: 600px; margin: 0 auto; transition: padding-bottom 0.3s; }
 
 .search-container { position: relative; margin-bottom: 20px; }
 .search-input { width: 100%; padding: 12px 65px 12px 20px; border: 1px solid var(--border-light); border-radius: 25px; background-color: var(--card-bg); font-family: 'Montserrat', sans-serif; font-size: 13px; color: var(--text-dark); outline: none; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
@@ -87,9 +87,8 @@ body { background-color: var(--bg-color); color: var(--text-dark); font-family: 
 .book-card { background-color: var(--card-bg); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px var(--shadow-color); display: flex; flex-direction: column; position: relative; }
 
 .grid-cover-wrapper { position: relative; display: block; overflow: hidden; border-radius: 12px 12px 0 0; }
-.cover-series-badge { position: absolute; top: 6px; right: 6px; padding: 3px 8px; background-color: var(--card-bg); color: var(--gray-text); border-radius: 10px; font-size: 9px; font-weight: 600; white-space: nowrap; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 10; }
-
-.cover-read-badge { position: absolute; top: 6px; left: 6px; padding: 3px 8px; background-color: var(--gray-bg); color: var(--gray-text); border-radius: 10px; font-size: 9px; font-weight: 600; white-space: nowrap; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 10; border: 1px solid var(--border-light); }
+.cover-series-badge { position: absolute; top: 6px; right: 6px; padding: 3px 8px; background-color: var(--card-bg); color: var(--gray-text); border-radius: 10px; font-size: 9px; font-weight: 600; white-space: nowrap; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 10; display: flex; align-items: center; justify-content: center; }
+.cover-read-badge { position: absolute; top: 6px; left: 6px; padding: 3px 8px; background-color: var(--gray-bg); color: var(--gray-text); border-radius: 10px; font-size: 9px; font-weight: 600; white-space: nowrap; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 10; border: 1px solid var(--border-light); display: flex; align-items: center; justify-content: center; }
 .book-cover { width: 100%; aspect-ratio: 1 / 1.6; object-fit: cover; background-color: var(--pink-light-bg); display: block; transition: opacity 0.3s ease; }
 .read-opacity { opacity: 0.7; }
 
@@ -129,24 +128,26 @@ body { background-color: var(--bg-color); color: var(--text-dark); font-family: 
 .details-rating-wrapper { display: flex; justify-content: center; margin-bottom: 20px; }
 .details-rating-box { padding: 8px 24px; border: 1px solid var(--border-light); border-radius: 25px; font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 500; color: var(--text-dark); display: flex; align-items: center; justify-content: center; background-color: transparent; cursor: pointer; }
 
-.details-tropes { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 20px; }
-.trope-tag { border: 1px solid var(--main-pink); color: var(--shadow-pink); padding: 4px 10px; border-radius: 15px; font-size: 10px; background-color: transparent; }
-
-.warnings-wrapper { display: flex; flex-direction: column; align-items: center; margin-bottom: 25px; width: 100%; }
+/* ИЗМЕНЕНО: Отступ уменьшен до 15px для более компактного вида аккордеонов */
+.warnings-wrapper { display: flex; flex-direction: column; align-items: center; margin-bottom: 15px; width: 100%; }
 .warnings-header { display: inline-flex; justify-content: center; align-items: center; gap: 10px; padding: 4px 6px 4px 14px; border: 1px solid var(--border-light); border-radius: 20px; background-color: var(--card-bg); color: var(--gray-text); font-family: 'Montserrat', sans-serif; font-size: 11px; cursor: pointer; transition: background-color 0.3s; }
 .warnings-header:hover { background-color: var(--border-light); }
-.warnings-header .round-arrow { width: 22px; height: 22px; border-color: var(--border-light); }
-.warnings-content { display: none; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 15px; width: 100%; }
+.warnings-header .round-arrow { width: 22px; height: 22px; border-color: var(--border-light); transition: transform 0.3s ease; }
+.warnings-content { display: none; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 15px; width: 100%; padding-bottom: 10px; }
 .warnings-wrapper.open .warnings-content { display: flex; }
-.warnings-wrapper.open #warnings-arrow { transform: rotate(90deg); color: var(--shadow-pink); border-color: var(--shadow-pink); }
+.warnings-wrapper.open #warnings-arrow, .warnings-wrapper.open #tropes-arrow { transform: rotate(90deg); color: var(--shadow-pink); border-color: var(--shadow-pink); }
 .warning-tag { flex-grow: 1; text-align: center; padding: 6px 10px; border: 1px solid var(--border-light); border-radius: 15px; background-color: var(--card-bg); color: var(--gray-text); font-size: 10px; }
+
+/* ИЗМЕНЕНО: Новый класс для тропов (розовая обводка и текст, но тянется как предупреждения) */
+.trope-tag { flex-grow: 1; text-align: center; border: 1px solid var(--main-pink); color: var(--shadow-pink); padding: 6px 10px; border-radius: 15px; font-size: 10px; background-color: transparent; }
 
 .details-annotation { font-size: 12px; line-height: 1.6; color: var(--text-dark); margin-bottom: 30px; text-align: justify; padding: 0 5px; }
 .download-section { display: flex; align-items: center; gap: 12px; margin-bottom: 15px; }
 .round-back-btn { width: 46px; height: 46px; border: 1px solid var(--main-pink); border-radius: 50%; background-color: transparent; color: var(--shadow-pink); display: flex; justify-content: center; align-items: center; cursor: pointer; flex-shrink: 0; }
 .download-btn { flex-grow: 1; display: block; background-color: var(--main-pink); color: #FFFFFF; text-align: center; padding: 14px; border-radius: 25px; font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 500; text-decoration: none; box-shadow: 0 4px 15px var(--shadow-color); border: none; cursor: pointer; }
 
-.review-btn { display: block; width: 100%; background-color: transparent; color: var(--shadow-pink); text-align: center; padding: 14px; border-radius: 25px; border: 1px solid var(--main-pink); font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; margin-bottom: 30px; }
+/* Марджин убран, так как отступом теперь управляет #app */
+.review-btn { display: block; width: 100%; background-color: transparent; color: var(--shadow-pink); text-align: center; padding: 14px; border-radius: 25px; border: 1px solid var(--main-pink); font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; margin-bottom: 0; transition: all 0.3s ease; }
 
 .authors-list-container { }
 .author-item { background: var(--card-bg); border-radius: 12px; box-shadow: 0 4px 15px var(--shadow-color); margin-bottom: 10px; overflow: hidden; }
