@@ -6,12 +6,16 @@ document.addEventListener('DOMContentLoaded', () => {
         tg.requestFullscreen();
     }
 
+    // --- ИКОНКИ ---
     const heartEmpty = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>`;
     const heartFilled = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>`;
     const arrowRightSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>`;
     const moonSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
     const sunSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
-    const checkIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+    const shareIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>`;
+    
+    // ИЗМЕНЕНО: Иконка прочитанного в размере 10px для витрины
+    const checkSmallSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--shadow-pink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
 
     const savedTheme = localStorage.getItem('wombooks_theme');
     const themeBtn = document.getElementById('theme-btn');
@@ -321,18 +325,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // ИЗМЕНЕНО: Карточки в сетке (оригинальные стрелки/сердечки, прочитано = галочка)
     function createBookCardHTML(book) {
         const isSaved = savedBookIds.includes(book.id);
         const isRead = readBookIds.includes(book.id);
         
-        let iconHtml = heartEmpty;
-        if (isRead) iconHtml = checkIconSvg;
-        else if (isSaved) iconHtml = heartFilled;
+        let iconHtml = isSaved ? heartFilled : heartEmpty; 
         
         let seriesBadgeHtml = '';
         if (book.seriesNumber) { seriesBadgeHtml = `<div class="cover-series-badge">${formatSeriesNumber(book.seriesNumber)}</div>`; }
 
-        let readBadgeHtml = isRead ? `<div class="cover-read-badge">${checkIconSvg}</div>` : '';
+        let readBadgeHtml = isRead ? `<div class="cover-read-badge">${checkSmallSvg}</div>` : '';
         let coverClass = isRead ? `book-cover read-opacity` : `book-cover`;
 
         return `
@@ -490,13 +493,11 @@ document.addEventListener('DOMContentLoaded', () => {
     window.toggleAuthor = function(headerElement) { const authorItem = headerElement.parentElement; authorItem.classList.toggle('open'); };
     window.toggleSeries = function(headerElement) { const seriesItem = headerElement.parentElement; seriesItem.classList.toggle('open'); };
     
-    // ИЗМЕНЕНО: Добавлена функция для тропов
-    window.toggleTropes = function() {
-        document.getElementById('tropes-wrapper').classList.toggle('open');
-    };
-    
     window.toggleWarnings = function() {
         document.getElementById('warnings-wrapper').classList.toggle('open');
+    };
+    window.toggleTropes = function() {
+        document.getElementById('tropes-wrapper').classList.toggle('open');
     };
 
     function setActiveFilter(activeBtn) { 
@@ -506,7 +507,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if(activeBtn) activeBtn.classList.add('active-filter'); 
     }
 
-    // ИЗМЕНЕНО: Возвращаем правильный padding для списка при навигации
     if (navHome) { 
         navHome.addEventListener('click', () => { 
             document.getElementById('app').style.paddingBottom = '100px';
@@ -595,24 +595,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }); 
     }
 
-    window.toggleSaveOrRead = function(btnElement, id, fromDetails = false) {
+    window.toggleSaveOrRead = function(btnElement, id) {
         const isRead = readBookIds.includes(id);
         
-        if (isRead) {
-            readBookIds.splice(readBookIds.indexOf(id), 1);
-            localStorage.setItem('wombooks_read', JSON.stringify(readBookIds));
-            
-            const isSaved = savedBookIds.includes(id);
-            btnElement.innerHTML = isSaved ? heartFilled : heartEmpty;
-            
-            const card = btnElement.closest('.book-card');
-            if (card) {
-                const img = card.querySelector('.book-cover');
-                if (img) img.style.opacity = '1';
-                const badge = card.querySelector('.cover-read-badge');
-                if (badge) badge.remove();
-            }
-        } else {
+        if (!isRead) {
             const index = savedBookIds.indexOf(id);
             if (index > -1) { 
                 savedBookIds.splice(index, 1); 
@@ -624,12 +610,8 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem('wombooks_saved', JSON.stringify(savedBookIds));
         }
         
-        if (fromDetails) {
-            updateDetailsReadState();
-        } else {
-            if (navSaved && navSaved.classList.contains('active-pill')) {
-                renderCurrentView();
-            }
+        if (navSaved && navSaved.classList.contains('active-pill')) {
+            renderCurrentView();
         }
     };
 
@@ -654,42 +636,59 @@ document.addEventListener('DOMContentLoaded', () => {
         tg.openTelegramLink(shareUrl);
     };
 
-    function updateDetailsReadState() {
+    function updateDetailsState() {
         if (!currentOpenBookId) return;
         const isRead = readBookIds.includes(currentOpenBookId);
         const isSaved = savedBookIds.includes(currentOpenBookId);
         
-        const mainBtn = document.getElementById('details-mark-read-btn');
-        const favBtn = document.getElementById('details-fav-btn');
+        const readBtn = document.getElementById('details-main-read-btn');
+        const saveBtn = document.getElementById('details-main-save-btn');
         
-        if (mainBtn) mainBtn.innerText = isRead ? 'Убрать из прочитанного' : 'Отметить прочитанным';
+        if (readBtn) {
+            readBtn.innerText = isRead ? 'В прочитанном' : 'Отметить прочитанным';
+            if (isRead) readBtn.classList.add('active');
+            else readBtn.classList.remove('active');
+        }
         
-        if (favBtn) {
-            if (isRead) {
-                favBtn.innerHTML = checkIconSvg;
-            } else {
-                favBtn.innerHTML = isSaved ? heartFilled : heartEmpty;
-            }
+        if (saveBtn) {
+            saveBtn.innerText = isSaved ? 'В сохраненных' : 'Сохранить';
+            if (isSaved) saveBtn.classList.add('active');
+            else saveBtn.classList.remove('active');
         }
     }
+
+    // ИЗМЕНЕНО: Добавлен показ уведомлений (Alert) при нажатии кнопок
+    window.toggleSaveFromDetails = function() {
+        if (!currentOpenBookId) return;
+        const index = savedBookIds.indexOf(currentOpenBookId);
+        if (index > -1) { 
+            savedBookIds.splice(index, 1); 
+            tg.showAlert('Книга удалена из сохраненных');
+        } else { 
+            savedBookIds.push(currentOpenBookId); 
+            tg.showAlert('Книга сохранена');
+        }
+        localStorage.setItem('wombooks_saved', JSON.stringify(savedBookIds));
+        updateDetailsState();
+    };
 
     window.toggleReadFromDetails = function() {
         if (!currentOpenBookId) return;
         const index = readBookIds.indexOf(currentOpenBookId);
         if (index > -1) { 
             readBookIds.splice(index, 1); 
-            // Уведомление отключено, так как вернулись к классике, но можно вернуть tg.showAlert если нужно.
+            tg.showAlert('Книга удалена из прочитанных');
         } else { 
             readBookIds.push(currentOpenBookId); 
+            tg.showAlert('Книга отмечена прочитанной');
         }
         localStorage.setItem('wombooks_read', JSON.stringify(readBookIds));
-        updateDetailsReadState();
+        updateDetailsState();
     };
 
     window.openBook = function(id) {
         const book = allBooks.find(b => b.id === id); if (!book) return; currentOpenBookId = id;
         
-        // ИЗМЕНЕНО: Схлапываем отступ у приложения, чтобы убрать белое окно внизу
         const appContainer = document.getElementById('app');
         if (appContainer) appContainer.style.paddingBottom = '20px';
         
@@ -712,6 +711,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 seriesContainer.innerHTML += `<div class="details-series">${book.series}</div>`; 
             }
             if (book.pages) { seriesContainer.innerHTML += `<div class="gray-badge">${book.pages}</div>`; }
+            
+            seriesContainer.innerHTML += `<button class="share-icon-circle" onclick="shareBook()">${shareIconSvg}</button>`;
         }
 
         const seriesNumBadge = document.getElementById('details-series-num-badge');
@@ -724,18 +725,25 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // ИЗМЕНЕНО: Отрисовка тропов теперь через аккордеон
+        const accRow = document.getElementById('accordions-row');
         const tropesWrapper = document.getElementById('tropes-wrapper');
         const tropesContent = document.getElementById('tropes-content');
+        const warningsWrapper = document.getElementById('warnings-wrapper');
+        const warningsContent = document.getElementById('warnings-content');
+        
+        let hasTropes = false;
+        let hasWarnings = false;
+
         if (tropesWrapper && tropesContent) {
             tropesWrapper.classList.remove('open'); 
             if (book.tropes) {
                 tropesWrapper.style.display = 'flex'; 
+                hasTropes = true;
                 tropesContent.innerHTML = '';
                 book.tropes.split(',').forEach(t => {
                     if (t.trim()) {
                         const span = document.createElement('span');
-                        span.className = 'trope-tag'; // Оставили розовый цвет
+                        span.className = 'warning-tag'; // Один стиль для обоих
                         span.innerText = t.trim();
                         tropesContent.appendChild(span);
                     }
@@ -745,12 +753,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        const warningsWrapper = document.getElementById('warnings-wrapper');
-        const warningsContent = document.getElementById('warnings-content');
         if (warningsWrapper && warningsContent) {
             warningsWrapper.classList.remove('open'); 
             if (book.warnings) {
                 warningsWrapper.style.display = 'flex'; 
+                hasWarnings = true;
                 warningsContent.innerHTML = '';
                 book.warnings.split(',').forEach(w => {
                     if (w.trim()) {
@@ -765,10 +772,14 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
         
+        if (accRow) {
+            accRow.style.display = (hasTropes || hasWarnings) ? 'flex' : 'none';
+        }
+        
         const annEl = document.getElementById('details-annotation');
         if(annEl) annEl.innerText = book.annotation;
         
-        updateDetailsReadState();
+        updateDetailsState();
 
         if(pageHome) pageHome.style.display = 'none'; 
         if(bottomNav) bottomNav.style.display = 'none'; 
@@ -777,7 +788,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     window.closeBook = function() {
-        // ИЗМЕНЕНО: Возвращаем отступ, когда возвращаемся на главную
         const appContainer = document.getElementById('app');
         if (appContainer) appContainer.style.paddingBottom = '100px';
         
@@ -857,7 +867,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (currentOpenBookId && !readBookIds.includes(currentOpenBookId)) {
             readBookIds.push(currentOpenBookId);
             localStorage.setItem('wombooks_read', JSON.stringify(readBookIds));
-            updateDetailsReadState();
+            updateDetailsState();
         }
 
         if (reviewText.trim().split(/\s+/).length >= 5) {
