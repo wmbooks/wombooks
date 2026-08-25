@@ -10,81 +10,17 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="style.css?ver=62">
+    <link rel="stylesheet" href="style.css?ver=63">
 </head>
 <body>
 
     <div id="toast" class="toast"></div>
 
-    <header class="top-header">
-        <h1 class="header-logo">wombooks.</h1>
-    </header>
+    <header class="top-header"></header>
 
     <div id="app">
+        <!-- СТРАНИЦА: ГЛАВНАЯ -->
         <div id="page-home">
-            <div class="search-container">
-                <input type="text" class="search-input" id="main-search-input" placeholder="Найти книгу или автора">
-                <span class="search-clear" id="search-clear-btn" style="display: none;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </span>
-                <span class="search-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                </span>
-            </div>
-
-            <div id="profile-section" style="display: none;">
-                <div class="profile-card">
-                    <div class="profile-header-info">
-                        <div class="profile-avatar">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                        </div>
-                        <div>
-                            <h3 class="profile-name" id="profile-display-name">Читатель</h3>
-                            <p class="profile-status" id="profile-status-text">Новичок</p>
-                        </div>
-                    </div>
-                    
-                    <div class="profile-progress-block">
-                        <p class="progress-title">Развернутые отзывы (от 5 слов): <span id="review-count-text">0/5</span></p>
-                        <div class="progress-bar-bg"><div class="progress-bar-fill" id="review-progress-fill"></div></div>
-                        <p class="progress-hint" id="progress-hint-text">Напишите 5 развернутых отзывов, чтобы получить возможность выбрать себе уникальный никнейм!</p>
-                    </div>
-
-                    <div id="nickname-edit-block" style="display: none;">
-                        <p class="nickname-label">Вы достигли цели! Выберите никнейм:</p>
-                        <div class="nickname-input-group">
-                            <input type="text" id="nickname-input" class="nickname-input" placeholder="Ваш никнейм" maxlength="15">
-                            <button class="nickname-save-btn" onclick="saveNickname()">Сохранить</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="profile-tabs-wrapper">
-                    <div class="profile-tabs-header" onclick="toggleProfileDropdown()">
-                        <h3 class="saved-books-title" id="profile-tab-title">Сохраненные книги</h3>
-                        <span class="round-arrow" id="profile-tab-arrow">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                        </span>
-                    </div>
-                    <div class="profile-tabs-menu" id="profile-tabs-menu" style="display:none;">
-                        <div class="profile-tab-item" id="profile-alternative-tab" onclick="selectAlternativeTab()">Прочитанные книги</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="category-filters-container" id="main-filters">
-                <div class="category-filters-row">
-                    <button class="filter-btn active-filter" id="filter-recent">Недавно добавленное</button>
-                </div>
-                <div class="category-filters-row">
-                    <button class="filter-btn" id="filter-authors">Авторы</button>
-                    <button class="filter-btn" id="filter-tropes">Тропы</button>
-                    <button class="filter-btn" id="filter-standalones">Одиночные</button>
-                </div>
-            </div>
-
-            <div class="books-grid" id="books-grid"></div>
-
             <div class="disclaimer-container" id="disclaimer-box">
                 <div class="disclaimer-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
@@ -95,15 +31,88 @@
                 </div>
             </div>
 
-            <div class="authors-list-container" id="authors-container" style="display: none;"></div>
-            <div class="books-grid" id="standalones-container" style="display: none;"></div>
-            
+            <div class="search-container">
+                <input type="text" class="search-input" id="main-search-input" placeholder="Найти книгу или автора">
+                <span class="search-clear" id="search-clear-btn" style="display: none;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </span>
+                <span class="search-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                </span>
+            </div>
+
+            <div id="recent-section">
+                <div class="section-header">
+                    <h2 class="section-title">Недавно добавленное</h2>
+                </div>
+                <div class="carousel" id="recent-carousel"></div>
+            </div>
+
+            <div class="books-grid" id="search-grid" style="display: none;"></div>
+        </div>
+
+        <!-- СТРАНИЦА: ВСЕ КНИГИ -->
+        <div id="page-all" style="display: none;">
+            <div class="category-filters-container">
+                <div class="category-filters-row" style="justify-content: center;">
+                    <button class="filter-btn" id="filter-tropes">Тропы</button>
+                    <button class="filter-btn" id="filter-standalones">Одиночные</button>
+                </div>
+            </div>
+
+            <div class="authors-list-container" id="authors-container"></div>
             <div id="tropes-container" style="display: none;">
                 <div class="tropes-menu" id="tropes-menu"></div>
                 <div class="books-grid" id="tropes-books-grid" style="display: none;"></div>
             </div>
+            <div class="books-grid" id="standalones-container" style="display: none;"></div>
         </div>
 
+        <!-- СТРАНИЦА: ПРОФИЛЬ -->
+        <div id="page-profile" style="display: none;">
+            <div class="profile-card">
+                <div class="profile-header-info">
+                    <div class="profile-avatar">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    </div>
+                    <div style="flex-grow: 1;">
+                        <h3 class="profile-name" id="profile-display-name">Читатель</h3>
+                        <p class="profile-status" id="profile-status-text">Новичок</p>
+                    </div>
+                    <button class="theme-toggle-btn" id="theme-btn" onclick="toggleTheme()"></button>
+                </div>
+                
+                <div class="profile-progress-block">
+                    <p class="progress-title">Развернутые отзывы (от 5 слов): <span id="review-count-text">0/5</span></p>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" id="review-progress-fill"></div></div>
+                    <p class="progress-hint" id="progress-hint-text">Напишите 5 развернутых отзывов, чтобы получить возможность выбрать себе уникальный никнейм!</p>
+                </div>
+
+                <div id="nickname-edit-block" style="display: none;">
+                    <p class="nickname-label">Вы достигли цели! Выберите никнейм:</p>
+                    <div class="nickname-input-group">
+                        <input type="text" id="nickname-input" class="nickname-input" placeholder="Ваш никнейм" maxlength="15">
+                        <button class="nickname-save-btn" onclick="saveNickname()">Сохранить</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="profile-tabs-wrapper">
+                <div class="profile-tabs-header" onclick="toggleProfileDropdown()">
+                    <h3 class="saved-books-title" id="profile-tab-title">Сохраненные книги</h3>
+                    <span class="round-arrow" id="profile-tab-arrow">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    </span>
+                </div>
+                <div class="profile-tabs-menu" id="profile-tabs-menu" style="display:none;">
+                    <div class="profile-tab-item" id="profile-alternative-tab" onclick="selectAlternativeTab()">Прочитанные книги</div>
+                </div>
+            </div>
+
+            <div class="books-grid" id="profile-books-grid"></div>
+        </div>
+
+        <!-- СТРАНИЦА: КНИГА -->
         <div id="page-book-details" style="display: none;">
             <div class="details-top-bar">
                 <button class="back-btn" onclick="closeBook()">
@@ -132,8 +141,16 @@
                 <div class="details-rating-wrapper">
                     <div class="details-rating-box" id="details-rating-box" onclick="openReviewsListModal()">0.00</div>
                 </div>
-
-                <div class="details-tropes" id="details-tropes"></div>
+                
+                <div class="warnings-wrapper">
+                    <div class="warnings-header" onclick="toggleDetailsTropes()">
+                        <span>Тропы</span>
+                        <span class="round-arrow" id="tropes-arrow">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                        </span>
+                    </div>
+                    <div class="warnings-content" id="details-tropes"></div>
+                </div>
                 
                 <div class="warnings-wrapper" id="warnings-wrapper" style="display: none;">
                     <div class="warnings-header" onclick="toggleWarnings()">
@@ -147,26 +164,52 @@
 
                 <div class="details-annotation" id="details-annotation">Аннотация...</div>
                 
-                <div class="download-section">
+                <!-- Компактные кнопки -->
+                <div class="actions-row">
                     <button class="round-back-btn" onclick="closeBook()">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
                     </button>
-                    <button class="download-btn" id="details-download" onclick="downloadBook()">Скачать книгу</button>
+                    <button class="download-btn" id="details-download" onclick="downloadBook()">Скачать</button>
+                    
+                    <div class="combo-btn">
+                        <button class="combo-main" onclick="openReviewModal()">Оценить</button>
+                        <button class="combo-arrow" id="read-arrow-btn" onclick="toggleReadAccordion()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                        </button>
+                    </div>
                 </div>
 
-                <button class="review-btn" onclick="openReviewModal()">Оценить и оставить отзыв</button>
-                
-                <button class="review-btn" id="details-mark-read-btn" onclick="toggleReadFromDetails()" style="margin-top: -20px; background-color: var(--card-bg); border-color: transparent; color: var(--gray-text);">Отметить прочитанным</button>
+                <!-- Выплывающее "Прочитано" -->
+                <div class="read-accordion-wrapper" id="read-accordion">
+                    <button class="mark-read-btn" id="details-mark-read-btn" onclick="toggleReadFromDetails()">Прочитано</button>
+                </div>
             </div>
         </div>
 
-        <nav class="bottom-nav" id="bottom-nav">
-            <button class="bottom-pill-btn active-pill" id="nav-home">Главная</button>
-            <button class="bottom-pill-btn" id="nav-saved">Профиль</button>
-            <button class="theme-toggle-btn" id="theme-btn" onclick="toggleTheme()"></button>
+        <!-- Островок навигации -->
+        <nav class="floating-nav" id="bottom-nav">
+            <div class="nav-item active-pill" id="nav-home">
+                <div class="nav-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                </div>
+                <span class="nav-text">Главная</span>
+            </div>
+            <div class="nav-item" id="nav-all">
+                <div class="nav-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect></svg>
+                </div>
+                <span class="nav-text">Все</span>
+            </div>
+            <div class="nav-item" id="nav-profile">
+                <div class="nav-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                </div>
+                <span class="nav-text">Профиль</span>
+            </div>
         </nav>
     </div>
 
+    <!-- Модальные окна -->
     <div id="review-modal" class="modal-overlay" style="display: none;">
         <div class="modal-content">
             <h3 class="modal-title">Оценить книгу</h3>
@@ -195,6 +238,6 @@
         </div>
     </div>
 
-    <script src="app.js?ver=62"></script>
+    <script src="app.js?ver=63"></script>
 </body>
 </html>
