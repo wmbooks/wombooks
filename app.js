@@ -386,7 +386,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderBooksToGrid(books, gridElement) {
         if(!gridElement) return;
         gridElement.innerHTML = ''; 
-        if (books.length === 0) { gridElement.innerHTML = '<p style="text-align:center; width: 200%; margin-top: 20px; font-size: 12px; color: var(--gray-text);">Ничего не найдено.</p>'; return; }
+        if (books.length === 0) { gridElement.innerHTML = '<p style="text-align:center; width: 100%; margin-top: 20px; font-size: 12px; color: var(--gray-text);">Ничего не найдено.</p>'; return; }
         books.forEach((book) => {
             const card = document.createElement('div');
             card.className = 'book-card';
@@ -800,16 +800,22 @@ document.addEventListener('DOMContentLoaded', () => {
             [...bookReviews].reverse().forEach(r => {
                 const item = document.createElement('div');
                 item.className = 'review-item';
+                
                 const authorDiv = document.createElement('div');
                 authorDiv.className = 'review-item-author';
                 authorDiv.innerText = r.userName || 'Читатель';
+                
                 const ratingDiv = document.createElement('div');
                 ratingDiv.className = 'review-item-rating';
                 ratingDiv.innerText = parseFloat(r.rating).toFixed(2);
+                
                 const textDiv = document.createElement('div');
                 textDiv.className = 'review-item-text';
                 textDiv.innerText = r.reviewText;
-                item.appendChild(authorDiv); item.appendChild(ratingDiv); item.appendChild(textDiv);
+                
+                item.appendChild(authorDiv);
+                item.appendChild(ratingDiv);
+                item.appendChild(textDiv);
                 container.appendChild(item);
             });
         }
