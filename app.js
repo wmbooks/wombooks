@@ -36,8 +36,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if(themeBtn) themeBtn.innerHTML = moonSvg;
     }
 
-    if (tg.setHeaderColor) { tg.setHeaderColor(isDarkInitial ? '#121212' : '#FFFFFF'); }
-    if (tg.setBackgroundColor) { tg.setBackgroundColor(isDarkInitial ? '#121212' : '#FFFFFF'); }
+    if (tg.setHeaderColor) { tg.setHeaderColor(isDarkInitial ? '#121212' : '#FAFAFA'); }
+    if (tg.setBackgroundColor) { tg.setBackgroundColor(isDarkInitial ? '#121212' : '#FAFAFA'); }
 
     const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQofE7L59iFriQgwIJ-P0MclqfZ2QhBHR-zbk6FgaaZ7VSJ_dmtv823zjZkXBRWDodnCJ11B_Pa1oPc/pub?output=csv';
     const scriptUrl = 'https://script.google.com/macros/s/AKfycbxF_KGJfmq8npELJDMecB1QxRl0zew1W6K8S18vRQ9CP4lf_DWc_RIdstdCqk_v1auX/exec';
@@ -63,6 +63,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const booksGrid = document.getElementById('books-grid');
+    const recentCarousel = document.getElementById('recent-carousel');
+    const recentSection = document.getElementById('recent-section');
     const authorsContainer = document.getElementById('authors-container');
     const standalonesContainer = document.getElementById('standalones-container'); 
     
@@ -70,7 +72,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const tropesMenu = document.getElementById('tropes-menu');
     const tropesBooksGrid = document.getElementById('tropes-books-grid');
     
-    const filtersContainer = document.querySelector('.category-filters-container'); 
     const mainFilters = document.getElementById('main-filters'); 
     const disclaimerBox = document.getElementById('disclaimer-box');
     const searchInput = document.getElementById('main-search-input'); 
@@ -81,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const pageDetails = document.getElementById('page-book-details');
     const bottomNav = document.getElementById('bottom-nav');
 
-    const filterRecent = document.getElementById('filter-recent');
+    const filterAll = document.getElementById('filter-all');
     const filterTropes = document.getElementById('filter-tropes');
     const filterAuthors = document.getElementById('filter-authors');
     const filterStandalones = document.getElementById('filter-standalones');
@@ -94,8 +95,8 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('wombooks_theme', isDark ? 'dark' : 'light');
         if(themeBtn) themeBtn.innerHTML = isDark ? sunSvg : moonSvg;
         
-        if (tg.setHeaderColor) { tg.setHeaderColor(isDark ? '#121212' : '#FFFFFF'); }
-        if (tg.setBackgroundColor) { tg.setBackgroundColor(isDark ? '#121212' : '#FFFFFF'); }
+        if (tg.setHeaderColor) { tg.setHeaderColor(isDark ? '#121212' : '#FAFAFA'); }
+        if (tg.setBackgroundColor) { tg.setBackgroundColor(isDark ? '#121212' : '#FAFAFA'); }
     };
 
     function getRecentBooks() { return allBooks.slice(-4).reverse(); }
@@ -142,6 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (tropesContainer) tropesContainer.style.display = 'none'; 
             if (profileSection) profileSection.style.display = 'none';
             if (mainFilters) mainFilters.style.display = 'none';
+            if (recentSection) recentSection.style.display = 'none';
             if (booksGrid) booksGrid.style.display = 'grid'; 
 
             const filtered = allBooks.filter(b => {
@@ -263,13 +265,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if(searchClearBtn) searchClearBtn.style.display = 'none';
         }
 
-        if (authorsContainer && authorsContainer.style.display === 'block') {
-            renderAuthorsList();
-        } else if (standalonesContainer && (standalonesContainer.style.display === 'block' || standalonesContainer.style.display === 'grid')) {
-            renderStandalonesList();
-        } else if (tropesContainer && tropesContainer.style.display === 'block') {
-            renderTropesMenu();
-        } else if (navSaved && navSaved.classList.contains('active-pill')) {
+        if (navSaved && navSaved.classList.contains('active-pill')) {
+            if (recentSection) recentSection.style.display = 'none';
             if (profileSection) profileSection.style.display = 'block';
             
             if (currentProfileTab === 'saved') {
@@ -277,12 +274,20 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 renderBooksToGrid(allBooks.filter(book => readBookIds.includes(book.id)), booksGrid);
             }
-        } else if (filterRecent && filterRecent.classList.contains('active-filter')) {
-            if (profileSection) profileSection.style.display = 'none';
-            renderBooksToGrid(getRecentBooks(), booksGrid);
         } else {
             if (profileSection) profileSection.style.display = 'none';
-            renderBooksToGrid(allBooks, booksGrid);
+            if (recentSection) recentSection.style.display = 'block';
+            renderCarousel(getRecentBooks(), recentCarousel);
+
+            if (authorsContainer && authorsContainer.style.display === 'block') {
+                renderAuthorsList();
+            } else if (standalonesContainer && (standalonesContainer.style.display === 'block' || standalonesContainer.style.display === 'grid')) {
+                renderStandalonesList();
+            } else if (tropesContainer && tropesContainer.style.display === 'block') {
+                renderTropesMenu();
+            } else {
+                renderBooksToGrid(allBooks, booksGrid);
+            }
         }
     }
 
@@ -368,12 +373,23 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderBooksToGrid(books, gridElement) {
         if(!gridElement) return;
         gridElement.innerHTML = ''; 
-        if (books.length === 0) { gridElement.innerHTML = '<p style="text-align:center; width: 200%; margin-top: 20px; font-size: 12px; color: var(--gray-text);">Ничего не найдено.</p>'; return; }
-        books.forEach((book, index) => {
+        if (books.length === 0) { gridElement.innerHTML = '<p style="text-align:center; width: 200%; margin-top: 20px; font-size: 13px; color: var(--gray-text);">Ничего не найдено.</p>'; return; }
+        books.forEach((book) => {
             const card = document.createElement('div');
             card.className = 'book-card';
             card.innerHTML = createBookCardHTML(book); 
             gridElement.appendChild(card);
+        });
+    }
+
+    function renderCarousel(books, carouselElement) {
+        if(!carouselElement) return;
+        carouselElement.innerHTML = ''; 
+        books.forEach((book) => {
+            const card = document.createElement('div');
+            card.className = 'book-card';
+            card.innerHTML = createBookCardHTML(book); 
+            carouselElement.appendChild(card);
         });
     }
 
@@ -439,7 +455,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const allAuthors = Object.keys(authorsMap);
         if (allAuthors.length === 0) { 
-            authorsContainer.innerHTML = '<p style="text-align:center; margin-top: 20px; font-size: 12px; color: var(--gray-text);">Авторов пока нет.</p>'; 
+            authorsContainer.innerHTML = '<p style="text-align:center; margin-top: 20px; font-size: 13px; color: var(--gray-text);">Авторов пока нет.</p>'; 
             return; 
         }
 
@@ -507,7 +523,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     function setActiveFilter(activeBtn) { 
-        [filterRecent, filterTropes, filterAuthors, filterStandalones].forEach(btn => { 
+        [filterAll, filterTropes, filterAuthors, filterStandalones].forEach(btn => { 
             if(btn) btn.classList.remove('active-filter'); 
         }); 
         if(activeBtn) activeBtn.classList.add('active-filter'); 
@@ -530,7 +546,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (wrapper) wrapper.classList.remove('open');
             document.getElementById('profile-tabs-menu').style.display = 'none';
 
-            if (filterRecent) setActiveFilter(filterRecent); 
+            if (filterAll) setActiveFilter(filterAll); 
             if(authorsContainer) authorsContainer.style.display = 'none'; 
             if(standalonesContainer) standalonesContainer.style.display = 'none'; 
             if(tropesContainer) tropesContainer.style.display = 'none'; 
@@ -554,9 +570,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }); 
     }
 
-    if (filterRecent) { 
-        filterRecent.addEventListener('click', () => { 
-            setActiveFilter(filterRecent); 
+    if (filterAll) { 
+        filterAll.addEventListener('click', () => { 
+            setActiveFilter(filterAll); 
             if (disclaimerBox) disclaimerBox.style.display = 'flex'; 
             if(authorsContainer) authorsContainer.style.display = 'none'; 
             if(standalonesContainer) standalonesContainer.style.display = 'none'; 
