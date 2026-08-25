@@ -12,7 +12,6 @@
     --overlay-bg: rgba(0,0,0,0.4);
     --shadow-color: rgba(0, 0, 0, 0.04);
     
-    /* ДВЕ ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ОТСТУПОВ */
     --space-sm: 12px;
     --space-lg: 24px;
 }
@@ -50,7 +49,6 @@ body { background-color: var(--bg-color); color: var(--text-dark); font-family: 
 @keyframes pulseClick { 0% { transform: scale(1); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
 .pulse { animation: pulseClick 0.3s ease-in-out; }
 
-/* Шапка возвращена на прежнее место */
 .top-header { position: fixed; top: 0; left: 0; width: 100%; height: 90px; padding-top: 40px; background-color: rgba(255, 255, 255, 0.3); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1.2px solid var(--border-light); z-index: 1000; }
 body.dark-theme .top-header { background-color: rgba(18, 18, 18, 0.3); }
 
@@ -82,33 +80,31 @@ body.dark-theme .top-header { background-color: rgba(18, 18, 18, 0.3); }
 .nickname-input { flex-grow: 1; padding: 10px 15px; border: 1.2px solid var(--border-light); border-radius: 24px; background-color: var(--bg-color); font-family: 'Montserrat', sans-serif; font-size: 12px; color: var(--text-dark); outline: none; }
 .nickname-save-btn { padding: 10px 20px; background-color: var(--main-pink); color: #FFFFFF; border: none; border-radius: 24px; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; }
 
-/* Вкладки профиля (теперь плашки) */
 .profile-tabs-row { display: flex; gap: var(--space-sm); justify-content: center; margin-bottom: var(--space-lg); }
 
 .disclaimer-container { display: flex; gap: var(--space-sm); padding: 15px; margin-bottom: var(--space-lg); border: 1.2px solid var(--border-light); border-radius: 16px; background-color: var(--card-bg); box-shadow: 0 2px 8px var(--shadow-color); align-items: flex-start; }
 .disclaimer-icon { color: var(--shadow-pink); flex-shrink: 0; display: flex; align-items: center; justify-content: center; margin-top: -1px; width: 24px; height: 24px; }
 .disclaimer-text { font-size: 11px; color: var(--gray-text); line-height: 1.4; text-align: justify; }
 
-/* Сетка книг - по 3 везде */
-.books-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-sm); }
+/* Сетка книг - 1 колонка (списком) */
+.books-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-sm); }
 
-.book-card { background-color: var(--card-bg); border-radius: 16px; overflow: hidden; box-shadow: 0 2px 8px var(--shadow-color); border: 1.2px solid var(--border-light); display: flex; flex-direction: column; position: relative; }
+/* Горизонтальная карточка */
+.book-card { background-color: var(--card-bg); border-radius: 16px; overflow: hidden; box-shadow: 0 2px 8px var(--shadow-color); border: 1.2px solid var(--border-light); display: flex; flex-direction: row; position: relative; }
 
-/* Карусель новинок - по 3 */
 .section-header { margin-bottom: var(--space-sm); }
 .section-title { font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 600; color: var(--text-dark); }
 .carousel { display: flex; gap: var(--space-sm); overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 15px; }
 .carousel::-webkit-scrollbar { display: none; }
-.carousel .book-card { flex: 0 0 calc(33.333% - 8px); min-width: unset; scroll-snap-align: start; }
+.carousel .book-card { flex: 0 0 calc(85% - 8px); min-width: unset; scroll-snap-align: start; }
 
-.grid-cover-wrapper { position: relative; display: block; overflow: hidden; border-radius: 14px 14px 0 0; cursor: pointer; }
+.grid-cover-wrapper { position: relative; display: block; width: 105px; flex-shrink: 0; aspect-ratio: 1 / 1.5; cursor: pointer; }
 
-/* Плашка прочитано глобальная */
 .cover-read-badge { position: absolute; top: 6px; left: 6px; padding: 4px 8px; background-color: var(--gray-bg); color: var(--gray-text); border-radius: 24px; font-size: 9px; font-weight: 600; white-space: nowrap; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 10; border: 1.2px solid var(--border-light); }
-.book-cover { width: 100%; aspect-ratio: 1 / 1.6; object-fit: cover; background-color: var(--pink-light-bg); display: block; transition: opacity 0.3s ease; }
+.book-cover { width: 100%; height: 100%; object-fit: cover; background-color: var(--pink-light-bg); display: block; transition: opacity 0.3s ease; }
 .read-opacity { opacity: 0.5; }
 
-.card-info { padding: 8px; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between;}
+.card-info { padding: 10px 12px; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between; min-width: 0; }
 .card-series-text { font-size: 9px; color: var(--main-pink); font-weight: 600; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
 .book-title { font-family: 'Times New Roman', serif; font-size: 12px; font-weight: bold; color: var(--text-dark); margin-bottom: 4px; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; cursor: pointer; }
 .book-author { font-size: 10px; color: var(--gray-text); margin-bottom: var(--space-sm); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500; font-family: 'Montserrat', sans-serif;}
@@ -117,7 +113,6 @@ body.dark-theme .top-header { background-color: rgba(18, 18, 18, 0.3); }
 .card-rating-text { font-size: 11px; font-family: 'Montserrat', sans-serif; display: flex; align-items: center; }
 .fav-btn { color: var(--shadow-pink); width: 24px; height: 24px; display: flex; justify-content: center; align-items: center; background: transparent; border: none; cursor: pointer;}
 
-/* Плавающее меню-островок */
 .floating-nav {
     position: fixed; bottom: var(--space-lg); left: 50%; transform: translateX(-50%);
     background-color: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
@@ -132,7 +127,6 @@ body.dark-theme .floating-nav { background-color: rgba(30, 30, 30, 0.85); }
 .nav-text { font-size: 10px; font-weight: 600; font-family: 'Montserrat', sans-serif; }
 .nav-icon svg { width: 22px; height: 22px; }
 
-/* Универсальные плашки (Тропы, Одиночные, Прочитано и тд) */
 .pill-btn { padding: 8px 16px; border: 1.2px solid var(--border-light); border-radius: 24px; background: var(--card-bg); color: var(--gray-text); font-family: 'Montserrat', sans-serif; font-size: 12px; white-space: nowrap; cursor: pointer; }
 .pill-btn.active-filter { background-color: var(--main-pink); color: #FFFFFF; border-color: var(--main-pink); }
 
@@ -156,7 +150,6 @@ body.dark-theme .floating-nav { background-color: rgba(30, 30, 30, 0.85); }
 .details-rating-wrapper { display: flex; justify-content: center; margin-bottom: var(--space-lg); }
 .details-rating-box { padding: 6px 20px; border: 1.2px solid var(--border-light); border-radius: 24px; font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 500; color: var(--text-dark); display: flex; align-items: center; justify-content: center; background-color: transparent; cursor: pointer; }
 
-/* Аккордеоны Тропов и Предупреждений */
 .warnings-wrapper { display: flex; flex-direction: column; align-items: center; margin-bottom: var(--space-sm); width: 100%; }
 .warnings-header { display: inline-flex; justify-content: center; align-items: center; gap: var(--space-sm); padding: 4px 10px 4px 14px; border: 1.2px solid var(--border-light); border-radius: 24px; background-color: var(--card-bg); color: var(--gray-text); font-family: 'Montserrat', sans-serif; font-size: 11px; cursor: pointer; transition: background-color 0.3s; }
 .warnings-header:hover { background-color: var(--border-light); }
@@ -168,7 +161,6 @@ body.dark-theme .floating-nav { background-color: rgba(30, 30, 30, 0.85); }
 
 .details-annotation { font-size: 12px; line-height: 1.6; color: var(--text-dark); margin-top: var(--space-sm); margin-bottom: var(--space-lg); text-align: justify; padding: 0 5px; }
 
-/* Компактный ряд кнопок */
 .actions-row { display: flex; gap: 8px; align-items: center; margin-bottom: 5px; }
 .round-back-btn { width: 32px; height: 32px; border: 1.2px solid var(--main-pink); border-radius: 50%; background-color: transparent; color: var(--shadow-pink); display: flex; justify-content: center; align-items: center; cursor: pointer; flex-shrink: 0; }
 .download-btn { flex: 1; height: 32px; background-color: var(--main-pink); color: #FFFFFF; text-align: center; border-radius: 24px; font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 500; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;}
@@ -178,7 +170,6 @@ body.dark-theme .floating-nav { background-color: rgba(30, 30, 30, 0.85); }
 .combo-arrow svg { transition: transform 0.3s; }
 .combo-arrow.open svg { transform: rotate(90deg); }
 
-/* Выплывающее прочитано */
 .read-accordion-wrapper { display: none; justify-content: flex-end; width: 100%; margin-bottom: var(--space-lg); padding-bottom: 20px;}
 .read-accordion-wrapper.open { display: flex; }
 .mark-read-btn { background: var(--card-bg); color: var(--gray-text); border: 1.2px solid var(--border-light); border-radius: 24px; padding: 6px 16px; font-family: 'Montserrat', sans-serif; font-size: 11px; cursor: pointer; }
@@ -197,7 +188,7 @@ body.dark-theme .floating-nav { background-color: rgba(30, 30, 30, 0.85); }
 .series-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 500; color: var(--text-dark); cursor: pointer; background-color: var(--bg-color); border-radius: 16px; border: 1.2px solid var(--border-light); transition: border-color 0.3s; }
 .series-item.open .series-header { border-color: var(--main-pink); }
 .series-item.open .series-header .round-arrow { transform: rotate(90deg); color: var(--shadow-pink); border-color: var(--shadow-pink); }
-.series-books-grid { display: none; grid-template-columns: repeat(3, 1fr); gap: var(--space-sm); padding: 15px 0 5px 0; }
+.series-books-grid { display: none; grid-template-columns: 1fr; gap: var(--space-sm); padding: 15px 0 5px 0; }
 .series-item.open .series-books-grid { display: grid; }
 
 .authors-divider { height: 1px; background-color: var(--border-light); margin: 5px 0 15px 0; width: 100%; }
