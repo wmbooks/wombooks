@@ -83,12 +83,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const pageDetails = document.getElementById('page-book-details');
     const bottomNav = document.getElementById('bottom-nav');
 
+    const filterAuthors = document.getElementById('filter-authors');
     const filterTropes = document.getElementById('filter-tropes');
     const filterStandalones = document.getElementById('filter-standalones');
     
     const navHome = document.getElementById('nav-home');
     const navAll = document.getElementById('nav-all');
     const navProfile = document.getElementById('nav-profile');
+
+    const tabSaved = document.getElementById('tab-saved');
+    const tabRead = document.getElementById('tab-read');
 
     window.toggleTheme = function() {
         document.body.classList.toggle('dark-theme');
@@ -240,29 +244,15 @@ document.addEventListener('DOMContentLoaded', () => {
         showToast('Никнейм успешно сохранен!');
     };
 
-    window.toggleProfileDropdown = function() {
-        const wrapper = document.querySelector('.profile-tabs-wrapper');
-        const menu = document.getElementById('profile-tabs-menu');
-        if (wrapper.classList.contains('open')) {
-            wrapper.classList.remove('open');
-            menu.style.display = 'none';
+    window.selectProfileTab = function(tab) {
+        currentProfileTab = tab;
+        if (tab === 'saved') {
+            tabSaved.classList.add('active-filter');
+            tabRead.classList.remove('active-filter');
         } else {
-            wrapper.classList.add('open');
-            menu.style.display = 'block';
+            tabRead.classList.add('active-filter');
+            tabSaved.classList.remove('active-filter');
         }
-    };
-
-    window.selectAlternativeTab = function() {
-        if (currentProfileTab === 'saved') {
-            currentProfileTab = 'read';
-            document.getElementById('profile-tab-title').innerText = 'Прочитанные книги';
-            document.getElementById('profile-alternative-tab').innerText = 'Сохраненные книги';
-        } else {
-            currentProfileTab = 'saved';
-            document.getElementById('profile-tab-title').innerText = 'Сохраненные книги';
-            document.getElementById('profile-alternative-tab').innerText = 'Прочитанные книги';
-        }
-        toggleProfileDropdown(); 
         renderProfileBooks(); 
     };
 
@@ -322,33 +312,72 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    window.toggleSaveFromCard = function(e, btnElement, id) {
+        e.stopPropagation(); 
+        btnElement.classList.remove('pulse');
+        void btnElement.offsetWidth; 
+        btnElement.classList.add('pulse');
+
+        const savedIndex = savedBookIds.indexOf(id);
+        if (savedIndex > -1) {
+            savedBookIds.splice(savedIndex, 1);
+            btnElement.innerHTML = heartEmpty;
+            showToast('Убрано из сохраненных');
+        } else {
+            savedBookIds.push(id);
+            btnElement.innerHTML = heartFilled;
+            showToast('Книга добавлена в сохраненные');
+            
+            const readIndex = readBookIds.indexOf(id);
+            if(readIndex > -1) {
+                readBookIds.splice(readIndex, 1);
+                localStorage.setItem('wombooks_read', JSON.stringify(readBookIds));
+                
+                const card = btnElement.closest('.book-card');
+                if (card) {
+                    const img = card.querySelector('.book-cover');
+                    if (img) img.classList.remove('read-opacity');
+                    const badge = card.querySelector('.cover-read-badge');
+                    if (badge) badge.remove();
+                }
+            }
+        }
+        localStorage.setItem('wombooks_saved', JSON.stringify(savedBookIds));
+        
+        if (navProfile && navProfile.classList.contains('active-pill')) {
+            renderProfileBooks();
+        }
+    };
+
     function createBookCardHTML(book) {
         const isSaved = savedBookIds.includes(book.id);
         const isRead = readBookIds.includes(book.id);
         
-        let iconHtml = heartEmpty;
-        if (isRead) iconHtml = checkIconSvg;
-        else if (isSaved) iconHtml = heartFilled;
+        let iconHtml = isSaved ? heartFilled : heartEmpty;
         
-        let seriesBadgeHtml = '';
-        if (book.seriesNumber) { seriesBadgeHtml = `<div class="cover-series-badge">${formatSeriesNumber(book.seriesNumber)}</div>`; }
-
         let readBadgeHtml = isRead ? `<div class="cover-read-badge">Прочитано</div>` : '';
         let coverClass = isRead ? `book-cover read-opacity` : `book-cover`;
+        
+        let seriesInfo = '';
+        if (book.series && book.series.trim().toLowerCase() !== 'одиночная' && book.series.trim().toLowerCase() !== 'одиночные') {
+            seriesInfo = book.series;
+            if(book.seriesNumber) seriesInfo += `, #${formatSeriesNumber(book.seriesNumber).replace('#','')}`;
+        }
 
         return `
-            <div class="grid-cover-wrapper">
+            <div class="grid-cover-wrapper" onclick="openBook('${book.id}')">
                 <img src="covers/${book.id}.PNG" alt="${book.title}" class="${coverClass}" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\'><rect width=\\'100%\\' height=\\'100%\\' fill=\\'%23F8EBF0\\'/></svg>'">
                 ${readBadgeHtml}
-                ${seriesBadgeHtml}
             </div>
             <div class="card-info">
-                <h4 class="book-title">${book.title}</h4>
-                <p class="book-author">${book.author || 'Неизвестный автор'}</p>
+                <div>
+                    <p class="card-series-text">${seriesInfo}</p>
+                    <h4 class="book-title" onclick="openBook('${book.id}')">${book.title}</h4>
+                    <p class="book-author">${book.author || 'Неизвестный автор'}</p>
+                </div>
                 <div class="card-actions">
-                    <button class="action-btn arrow-btn" onclick="openBook('${book.id}')">${arrowRightSvg}</button>
                     <div class="card-rating-text">${getRatingText(book.rating)}</div>
-                    <button class="action-btn fav-btn" onclick="toggleSaveOrRead(this, '${book.id}')">${iconHtml}</button>
+                    <button class="action-btn fav-btn" onclick="toggleSaveFromCard(event, this, '${book.id}')">${iconHtml}</button>
                 </div>
             </div>
         `;
@@ -382,11 +411,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if(tropesMenu.innerHTML === '') {
             Object.keys(tropesMapping).forEach(tropeName => {
                 const btn = document.createElement('button');
-                btn.className = 'trope-menu-btn';
+                btn.className = 'pill-btn';
                 btn.innerText = tropeName;
                 btn.onclick = () => {
-                    document.querySelectorAll('.trope-menu-btn').forEach(b => b.classList.remove('active-trope-btn'));
-                    btn.classList.add('active-trope-btn');
+                    document.querySelectorAll('.tropes-menu .pill-btn').forEach(b => b.classList.remove('active-filter'));
+                    btn.classList.add('active-filter');
                     activeTropeName = tropeName;
                     filterBooksByTrope(tropeName);
                 };
@@ -503,7 +532,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.toggleSeries = function(headerElement) { const seriesItem = headerElement.parentElement; seriesItem.classList.toggle('open'); };
     
     window.toggleWarnings = function() { document.getElementById('warnings-wrapper').classList.toggle('open'); };
-    window.toggleDetailsTropes = function() { document.getElementById('tropes-wrapper').classList.toggle('open'); };
+    window.toggleDetailsTropes = function() { document.getElementById('tropes-wrapper').parentElement.classList.toggle('open'); };
     
     window.toggleReadAccordion = function() {
         const btn = document.getElementById('read-arrow-btn');
@@ -520,7 +549,6 @@ document.addEventListener('DOMContentLoaded', () => {
         activePage.style.display = 'block';
     }
 
-    // Навигация
     if (navHome) { 
         navHome.addEventListener('click', () => { 
             switchTab(navHome, pageHome);
@@ -530,8 +558,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (navAll) { 
         navAll.addEventListener('click', () => { 
             switchTab(navAll, pageAll);
-            // Сброс фильтров во "Все", показываем авторов
             [filterTropes, filterStandalones].forEach(btn => btn.classList.remove('active-filter'));
+            filterAuthors.classList.add('active-filter');
             authorsContainer.style.display = 'block';
             tropesContainer.style.display = 'none';
             standalonesContainer.style.display = 'none';
@@ -547,84 +575,63 @@ document.addEventListener('DOMContentLoaded', () => {
         }); 
     }
 
-    // Фильтры на вкладке "Все"
+    if (filterAuthors) { 
+        filterAuthors.addEventListener('click', () => { 
+            [filterTropes, filterStandalones].forEach(btn => btn.classList.remove('active-filter'));
+            filterAuthors.classList.add('active-filter');
+            standalonesContainer.style.display = 'none';
+            tropesContainer.style.display = 'none';
+            authorsContainer.style.display = 'block';
+            renderAuthorsList();
+        }); 
+    }
+
     if (filterStandalones) { 
         filterStandalones.addEventListener('click', () => { 
-            if (filterStandalones.classList.contains('active-filter')) {
-                filterStandalones.classList.remove('active-filter');
-                standalonesContainer.style.display = 'none';
-                authorsContainer.style.display = 'block';
-            } else {
-                filterStandalones.classList.add('active-filter');
-                filterTropes.classList.remove('active-filter');
-                authorsContainer.style.display = 'none';
-                tropesContainer.style.display = 'none';
-                standalonesContainer.style.display = 'grid';
-                renderStandalonesList();
-            }
+            [filterTropes, filterAuthors].forEach(btn => btn.classList.remove('active-filter'));
+            filterStandalones.classList.add('active-filter');
+            authorsContainer.style.display = 'none';
+            tropesContainer.style.display = 'none';
+            standalonesContainer.style.display = 'grid';
+            renderStandalonesList();
         }); 
     }
     
     if (filterTropes) { 
         filterTropes.addEventListener('click', () => { 
-            if (filterTropes.classList.contains('active-filter')) {
-                filterTropes.classList.remove('active-filter');
-                tropesContainer.style.display = 'none';
-                authorsContainer.style.display = 'block';
-            } else {
-                filterTropes.classList.add('active-filter');
-                filterStandalones.classList.remove('active-filter');
-                authorsContainer.style.display = 'none';
-                standalonesContainer.style.display = 'none';
-                tropesContainer.style.display = 'block';
-                renderTropesMenu();
-            }
+            [filterAuthors, filterStandalones].forEach(btn => btn.classList.remove('active-filter'));
+            filterTropes.classList.add('active-filter');
+            authorsContainer.style.display = 'none';
+            standalonesContainer.style.display = 'none';
+            tropesContainer.style.display = 'block';
+            renderTropesMenu();
         }); 
     }
 
-    window.toggleSaveOrRead = function(btnElement, id, fromDetails = false) {
+    window.toggleSaveFromDetails = function() {
+        const btnElement = document.getElementById('details-fav-btn');
+        const id = currentOpenBookId;
+        
         btnElement.classList.remove('pulse');
         void btnElement.offsetWidth; 
         btnElement.classList.add('pulse');
 
-        const isRead = readBookIds.includes(id);
-        
-        if (isRead) {
-            readBookIds.splice(readBookIds.indexOf(id), 1);
-            localStorage.setItem('wombooks_read', JSON.stringify(readBookIds));
+        const savedIndex = savedBookIds.indexOf(id);
+        if (savedIndex > -1) { 
+            savedBookIds.splice(savedIndex, 1); 
+            showToast('Убрано из сохраненных');
+        } else { 
+            savedBookIds.push(id); 
+            showToast('Книга добавлена в сохраненные');
             
-            const isSaved = savedBookIds.includes(id);
-            btnElement.innerHTML = isSaved ? heartFilled : heartEmpty;
-            
-            const card = btnElement.closest('.book-card');
-            if (card) {
-                const img = card.querySelector('.book-cover');
-                if (img) img.style.opacity = '1';
-                const badge = card.querySelector('.cover-read-badge');
-                if (badge) badge.remove();
-            }
-            showToast('Убрано из прочитанного');
-        } else {
-            const index = savedBookIds.indexOf(id);
-            if (index > -1) { 
-                savedBookIds.splice(index, 1); 
-                btnElement.innerHTML = heartEmpty; 
-                showToast('Убрано из сохраненных');
-            } else { 
-                savedBookIds.push(id); 
-                btnElement.innerHTML = heartFilled; 
-                showToast('Книга добавлена в сохраненные');
-            }
-            localStorage.setItem('wombooks_saved', JSON.stringify(savedBookIds));
-        }
-        
-        if (fromDetails) {
-            updateDetailsReadState();
-        } else {
-            if (navProfile && navProfile.classList.contains('active-pill')) {
-                renderProfileBooks();
+            const readIndex = readBookIds.indexOf(id);
+            if (readIndex > -1) {
+                readBookIds.splice(readIndex, 1);
+                localStorage.setItem('wombooks_read', JSON.stringify(readBookIds));
             }
         }
+        localStorage.setItem('wombooks_saved', JSON.stringify(savedBookIds));
+        updateDetailsReadState();
     };
 
     window.shareBook = function() {
@@ -641,9 +648,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const appLink = `t.me/wombookbot/app`; 
-        
         const shareText = `Название: ${book.title}${seriesInfo}\nАвтор: ${book.author || 'Неизвестный автор'}\n\nПрочитать можно здесь: ${appLink}\nПодписывайся на канал, чтобы читать больше интересных книг – https://t.me/+8Y0po5gZxCU2NWRi`;
-        
         const shareUrl = `https://t.me/share/url?url=&text=${encodeURIComponent(shareText)}`;
         tg.openTelegramLink(shareUrl);
     };
@@ -657,14 +662,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const favBtn = document.getElementById('details-fav-btn');
         
         if (mainBtn) mainBtn.innerText = isRead ? 'Убрать из прочитанного' : 'Прочитано';
-        
-        if (favBtn) {
-            if (isRead) {
-                favBtn.innerHTML = checkIconSvg;
-            } else {
-                favBtn.innerHTML = isSaved ? heartFilled : heartEmpty;
-            }
-        }
+        if (favBtn) favBtn.innerHTML = isSaved ? heartFilled : heartEmpty;
     }
 
     window.toggleReadFromDetails = function() {
@@ -676,6 +674,12 @@ document.addEventListener('DOMContentLoaded', () => {
         } else { 
             readBookIds.push(currentOpenBookId); 
             showToast('Отмечено прочитанным');
+            
+            const savedIndex = savedBookIds.indexOf(currentOpenBookId);
+            if (savedIndex > -1) {
+                savedBookIds.splice(savedIndex, 1);
+                localStorage.setItem('wombooks_saved', JSON.stringify(savedBookIds));
+            }
         }
         localStorage.setItem('wombooks_read', JSON.stringify(readBookIds));
         updateDetailsReadState();
@@ -700,27 +704,17 @@ document.addEventListener('DOMContentLoaded', () => {
         if(seriesContainer) {
             seriesContainer.innerHTML = '';
             if (book.series && book.series.trim().toLowerCase() !== 'одиночная' && book.series.trim().toLowerCase() !== 'одиночные') { 
-                seriesContainer.innerHTML += `<div class="details-series">${book.series}</div>`; 
-            }
-            if (book.pages) { seriesContainer.innerHTML += `<div class="gray-badge">${book.pages}</div>`; }
-        }
-
-        const seriesNumBadge = document.getElementById('details-series-num-badge');
-        if(seriesNumBadge) {
-            if (book.seriesNumber) {
-                seriesNumBadge.innerText = formatSeriesNumber(book.seriesNumber);
-                seriesNumBadge.style.display = 'block';
-            } else {
-                seriesNumBadge.style.display = 'none';
+                let sInfo = book.series;
+                if(book.seriesNumber) sInfo += `, #${formatSeriesNumber(book.seriesNumber).replace('#','')}`;
+                seriesContainer.innerHTML += `<div class="details-series">${sInfo}</div>`; 
             }
         }
 
-        const tropesContainerEl = document.getElementById('details-tropes'); 
-        const tropesWrapper = document.getElementById('tropes-wrapper');
-        if(tropesContainerEl && tropesWrapper) {
-            tropesWrapper.classList.remove('open');
+        const tropesContainerEl = document.getElementById('tropes-wrapper'); 
+        if(tropesContainerEl) {
+            tropesContainerEl.parentElement.classList.remove('open');
             if (book.tropes) {
-                tropesWrapper.style.display = 'flex';
+                tropesContainerEl.style.display = 'flex';
                 tropesContainerEl.innerHTML = '';
                 book.tropes.split(',').forEach(trope => { 
                     if (trope.trim()) { 
@@ -731,7 +725,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     } 
                 }); 
             } else {
-                tropesWrapper.style.display = 'none';
+                tropesContainerEl.style.display = 'none';
             }
         }
 
@@ -774,8 +768,15 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (navHome.classList.contains('active-pill')) {
             pageHome.style.display = 'block';
+            renderCarousel(getRecentBooks(), recentCarousel);
+            if (searchInput.value !== '') {
+                renderBooksToGrid(allBooks.filter(b => b.title.toLowerCase().includes(searchInput.value.toLowerCase())), searchGrid);
+            }
         } else if (navAll.classList.contains('active-pill')) {
             pageAll.style.display = 'block';
+            if(filterAuthors.classList.contains('active-filter')) renderAuthorsList();
+            if(filterStandalones.classList.contains('active-filter')) renderStandalonesList();
+            if(filterTropes.classList.contains('active-filter')) filterBooksByTrope(activeTropeName);
         } else {
             pageProfile.style.display = 'block';
             renderProfileBooks();
@@ -799,22 +800,16 @@ document.addEventListener('DOMContentLoaded', () => {
             [...bookReviews].reverse().forEach(r => {
                 const item = document.createElement('div');
                 item.className = 'review-item';
-                
                 const authorDiv = document.createElement('div');
                 authorDiv.className = 'review-item-author';
                 authorDiv.innerText = r.userName || 'Читатель';
-                
                 const ratingDiv = document.createElement('div');
                 ratingDiv.className = 'review-item-rating';
                 ratingDiv.innerText = parseFloat(r.rating).toFixed(2);
-                
                 const textDiv = document.createElement('div');
                 textDiv.className = 'review-item-text';
                 textDiv.innerText = r.reviewText;
-                
-                item.appendChild(authorDiv);
-                item.appendChild(ratingDiv);
-                item.appendChild(textDiv);
+                item.appendChild(authorDiv); item.appendChild(ratingDiv); item.appendChild(textDiv);
                 container.appendChild(item);
             });
         }
@@ -852,6 +847,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (currentOpenBookId && !readBookIds.includes(currentOpenBookId)) {
             readBookIds.push(currentOpenBookId);
             localStorage.setItem('wombooks_read', JSON.stringify(readBookIds));
+            
+            const savedIndex = savedBookIds.indexOf(currentOpenBookId);
+            if (savedIndex > -1) {
+                savedBookIds.splice(savedIndex, 1);
+                localStorage.setItem('wombooks_saved', JSON.stringify(savedBookIds));
+            }
             updateDetailsReadState();
         }
 
