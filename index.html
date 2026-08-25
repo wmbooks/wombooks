@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="style.css?ver=64">
+    <link rel="stylesheet" href="style.css?ver=65">
 </head>
 <body>
 
@@ -19,7 +19,6 @@
     <header class="top-header"></header>
 
     <div id="app">
-        <!-- СТРАНИЦА: ГЛАВНАЯ -->
         <div id="page-home">
             <div class="disclaimer-container" id="disclaimer-box">
                 <div class="disclaimer-icon">
@@ -51,7 +50,6 @@
             <div class="books-grid" id="search-grid" style="display: none;"></div>
         </div>
 
-        <!-- СТРАНИЦА: ВСЕ КНИГИ -->
         <div id="page-all" style="display: none;">
             <div class="category-filters-container">
                 <div class="category-filters-row" style="justify-content: center;">
@@ -69,7 +67,6 @@
             <div class="books-grid" id="standalones-container" style="display: none;"></div>
         </div>
 
-        <!-- СТРАНИЦА: ПРОФИЛЬ -->
         <div id="page-profile" style="display: none;">
             <div class="profile-card">
                 <div class="profile-header-info">
@@ -106,7 +103,6 @@
             <div class="books-grid" id="profile-books-grid"></div>
         </div>
 
-        <!-- СТРАНИЦА: КНИГА -->
         <div id="page-book-details" style="display: none;">
             <div class="details-top-bar">
                 <button class="back-btn" onclick="closeBook()">
@@ -176,7 +172,6 @@
             </div>
         </div>
 
-        <!-- Островок навигации -->
         <nav class="floating-nav" id="bottom-nav">
             <div class="nav-item active-pill" id="nav-home">
                 <div class="nav-icon">
@@ -199,7 +194,6 @@
         </nav>
     </div>
 
-    <!-- Модальные окна -->
     <div id="review-modal" class="modal-overlay" style="display: none;">
         <div class="modal-content">
             <h3 class="modal-title">Оценить книгу</h3>
@@ -228,6 +222,6 @@
         </div>
     </div>
 
-    <script src="app.js?ver=64"></script>
+    <script src="app.js?ver=65"></script>
 </body>
 </html>
