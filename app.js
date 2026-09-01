@@ -36,8 +36,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if(themeBtn) themeBtn.innerHTML = moonSvg;
     }
 
-    if (tg.setHeaderColor) { tg.setHeaderColor(isDarkInitial ? '#0A0A0C' : '#FAFAFA'); }
-    if (tg.setBackgroundColor) { tg.setBackgroundColor(isDarkInitial ? '#0A0A0C' : '#FAFAFA'); }
+    if (tg.setHeaderColor) { tg.setHeaderColor(isDarkInitial ? '#121212' : '#FFFFFF'); }
+    if (tg.setBackgroundColor) { tg.setBackgroundColor(isDarkInitial ? '#121212' : '#FFFFFF'); }
 
     const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQofE7L59iFriQgwIJ-P0MclqfZ2QhBHR-zbk6FgaaZ7VSJ_dmtv823zjZkXBRWDodnCJ11B_Pa1oPc/pub?output=csv';
     const scriptUrl = 'https://script.google.com/macros/s/AKfycbxF_KGJfmq8npELJDMecB1QxRl0zew1W6K8S18vRQ9CP4lf_DWc_RIdstdCqk_v1auX/exec';
@@ -100,8 +100,8 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('wombooks_theme', isDark ? 'dark' : 'light');
         if(themeBtn) themeBtn.innerHTML = isDark ? sunSvg : moonSvg;
         
-        if (tg.setHeaderColor) { tg.setHeaderColor(isDark ? '#0A0A0C' : '#FAFAFA'); }
-        if (tg.setBackgroundColor) { tg.setBackgroundColor(isDark ? '#0A0A0C' : '#FAFAFA'); }
+        if (tg.setHeaderColor) { tg.setHeaderColor(isDark ? '#121212' : '#FFFFFF'); }
+        if (tg.setBackgroundColor) { tg.setBackgroundColor(isDark ? '#121212' : '#FFFFFF'); }
     };
 
     function getRecentBooks() { return allBooks.slice(-4).reverse(); }
@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!rating || rating === 0 || rating === "0") {
             return `<span style="color: var(--gray-text); font-weight: 500;">0.00</span>`;
         }
-        return `<span style="color: var(--main-pink); font-weight: 600;">${parseFloat(rating).toFixed(2)}</span>`;
+        return `<span style="color: var(--shadow-pink); font-weight: 600;">${parseFloat(rating).toFixed(2)}</span>`;
     }
 
     function formatSeriesNumber(numStr) {
@@ -168,7 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             loadRatingsAsync();
         } catch (error) {
-            if(recentCarousel) recentCarousel.innerHTML = '<p class="ui-label" style="text-align:center;">Ошибка загрузки.</p>';
+            if(recentCarousel) recentCarousel.innerHTML = '<p style="text-align:center; font-size: 13px; color: var(--shadow-pink);">Ошибка загрузки.</p>';
         }
     }
 
@@ -221,7 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (countTextEl) countTextEl.innerText = `${detailedCount} (Цель достигнута!)`;
             if (fillEl) fillEl.style.width = '100%';
             if (hintTextEl) hintTextEl.style.display = 'none';
-            if (editBlock) editBlock.style.display = 'flex'; 
+            if (editBlock) editBlock.style.display = 'block'; 
         } else {
             if (statusTextEl) statusTextEl.innerText = "Новичок";
             if (countTextEl) countTextEl.innerText = `${detailedCount}/5`;
@@ -354,7 +354,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const isRead = readBookIds.includes(book.id);
         
         let iconHtml = isSaved ? heartFilled : heartEmpty;
-        let readBadgeHtml = isRead ? `<div class="cover-read-badge glass-panel ui-label">Прочитано</div>` : '';
+        
+        let readBadgeHtml = isRead ? `<div class="cover-read-badge">Прочитано</div>` : '';
         let coverClass = isRead ? `book-cover read-opacity` : `book-cover`;
         
         let seriesInfo = '';
@@ -364,18 +365,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         return `
-            <div class="book-card glass-panel" onclick="openBook('${book.id}')">
+            <div class="grid-cover-wrapper" onclick="openBook('${book.id}')">
                 <img src="covers/${book.id}.PNG" alt="${book.title}" class="${coverClass}" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\'><rect width=\\'100%\\' height=\\'100%\\' fill=\\'%23F8EBF0\\'/></svg>'">
-                <div class="card-overlay"></div>
                 ${readBadgeHtml}
-                <div class="card-info">
-                    <p class="card-series-text ui-label">${seriesInfo}</p>
-                    <h4 class="book-title title-editorial">${book.title}</h4>
-                    <p class="book-author ui-label">${book.author || 'Неизвестный автор'}</p>
-                    <div class="card-actions">
-                        <div class="card-rating-text">${getRatingText(book.rating)}</div>
-                        <button class="action-btn fav-btn" onclick="toggleSaveFromCard(event, this, '${book.id}')">${iconHtml}</button>
-                    </div>
+            </div>
+            <div class="card-info">
+                <div>
+                    <p class="card-series-text">${seriesInfo}</p>
+                    <h4 class="book-title" onclick="openBook('${book.id}')">${book.title}</h4>
+                    <p class="book-author">${book.author || 'Неизвестный автор'}</p>
+                </div>
+                <div class="card-actions">
+                    <div class="card-rating-text">${getRatingText(book.rating)}</div>
+                    <button class="action-btn fav-btn" onclick="toggleSaveFromCard(event, this, '${book.id}')">${iconHtml}</button>
                 </div>
             </div>
         `;
@@ -384,11 +386,12 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderBooksToGrid(books, gridElement) {
         if(!gridElement) return;
         gridElement.innerHTML = ''; 
-        if (books.length === 0) { gridElement.innerHTML = '<p class="ui-label" style="text-align:center; width: 100%; margin-top: 20px; color: var(--gray-text);">Ничего не найдено.</p>'; return; }
+        if (books.length === 0) { gridElement.innerHTML = '<p style="text-align:center; width: 100%; margin-top: 20px; font-size: 12px; color: var(--gray-text);">Ничего не найдено.</p>'; return; }
         books.forEach((book) => {
-            const wrapper = document.createElement('div');
-            wrapper.innerHTML = createBookCardHTML(book); 
-            gridElement.appendChild(wrapper.firstElementChild);
+            const card = document.createElement('div');
+            card.className = 'book-card';
+            card.innerHTML = createBookCardHTML(book); 
+            gridElement.appendChild(card);
         });
     }
 
@@ -396,9 +399,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if(!carouselElement) return;
         carouselElement.innerHTML = ''; 
         books.forEach((book) => {
-            const wrapper = document.createElement('div');
-            wrapper.innerHTML = createBookCardHTML(book); 
-            carouselElement.appendChild(wrapper.firstElementChild);
+            const card = document.createElement('div');
+            card.className = 'book-card';
+            card.innerHTML = createBookCardHTML(book); 
+            carouselElement.appendChild(card);
         });
     }
 
@@ -407,7 +411,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if(tropesMenu.innerHTML === '') {
             Object.keys(tropesMapping).forEach(tropeName => {
                 const btn = document.createElement('button');
-                btn.className = 'pill-btn glass-panel';
+                btn.className = 'pill-btn';
                 btn.innerText = tropeName;
                 btn.onclick = () => {
                     document.querySelectorAll('.tropes-menu .pill-btn').forEach(b => b.classList.remove('active-filter'));
@@ -464,7 +468,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const allAuthors = Object.keys(authorsMap);
         if (allAuthors.length === 0) { 
-            authorsContainer.innerHTML = '<p class="ui-label" style="text-align:center; margin-top: 20px; color: var(--gray-text);">Авторов пока нет.</p>'; 
+            authorsContainer.innerHTML = '<p style="text-align:center; margin-top: 20px; font-size: 13px; color: var(--gray-text);">Авторов пока нет.</p>'; 
             return; 
         }
 
@@ -478,7 +482,7 @@ document.addEventListener('DOMContentLoaded', () => {
         otherAuthors.sort((a, b) => authorMaxIndex[b] - authorMaxIndex[a]);
 
         const renderAuthorItem = (author) => {
-            const authorItem = document.createElement('div'); authorItem.className = 'author-item glass-panel';
+            const authorItem = document.createElement('div'); authorItem.className = 'author-item';
             const authorHeader = document.createElement('div'); authorHeader.className = 'author-header';
             authorHeader.onclick = function() { toggleAuthor(this); };
             authorHeader.innerHTML = `<span>${author}</span><span class="round-arrow author-arrow">${arrowRightSvg}</span>`;
@@ -493,9 +497,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 seriesHeader.innerHTML = `<span>${series}</span><span class="round-arrow series-arrow">${arrowRightSvg}</span>`;
                 const seriesGrid = document.createElement('div'); seriesGrid.className = 'series-books-grid';
                 authorsMap[author][series].forEach(book => {
-                    const wrapper = document.createElement('div');
-                    wrapper.innerHTML = createBookCardHTML(book); 
-                    seriesGrid.appendChild(wrapper.firstElementChild);
+                    const card = document.createElement('div'); card.className = 'book-card';
+                    card.innerHTML = createBookCardHTML(book); seriesGrid.appendChild(card);
                 });
                 seriesItem.appendChild(seriesHeader); seriesItem.appendChild(seriesGrid); seriesList.appendChild(seriesItem);
             });
@@ -716,7 +719,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 book.tropes.split(',').forEach(trope => { 
                     if (trope.trim()) { 
                         const span = document.createElement('span'); 
-                        span.className = 'warning-tag ui-label glass-panel'; 
+                        span.className = 'warning-tag'; 
                         span.innerText = trope.trim(); 
                         tropesContainerEl.appendChild(span); 
                     } 
@@ -736,7 +739,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 book.warnings.split(',').forEach(w => {
                     if (w.trim()) {
                         const span = document.createElement('span');
-                        span.className = 'warning-tag ui-label glass-panel';
+                        span.className = 'warning-tag';
                         span.innerText = w.trim();
                         warningsContent.appendChild(span);
                     }
@@ -792,22 +795,22 @@ document.addEventListener('DOMContentLoaded', () => {
         container.innerHTML = '';
         const bookReviews = allRatings.filter(r => r.bookId === currentOpenBookId && r.reviewText && r.reviewText.trim() !== "");
         if (bookReviews.length === 0) {
-            container.innerHTML = '<p class="no-reviews-msg">Пока нет отзывов.</p>';
+            container.innerHTML = '<p class="no-reviews-msg">Пока нет отзывов с текстом.</p>';
         } else {
             [...bookReviews].reverse().forEach(r => {
                 const item = document.createElement('div');
-                item.className = 'review-item glass-panel';
+                item.className = 'review-item';
                 
                 const authorDiv = document.createElement('div');
-                authorDiv.className = 'review-item-author ui-label';
+                authorDiv.className = 'review-item-author';
                 authorDiv.innerText = r.userName || 'Читатель';
                 
                 const ratingDiv = document.createElement('div');
-                ratingDiv.className = 'review-item-rating ui-label';
+                ratingDiv.className = 'review-item-rating';
                 ratingDiv.innerText = parseFloat(r.rating).toFixed(2);
                 
                 const textDiv = document.createElement('div');
-                textDiv.className = 'review-item-text body-text';
+                textDiv.className = 'review-item-text';
                 textDiv.innerText = r.reviewText;
                 
                 item.appendChild(authorDiv);
