@@ -94,6 +94,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const tabSaved = document.getElementById('tab-saved');
     const tabRead = document.getElementById('tab-read');
 
+    /* ===== АНИМИРОВАННЫЙ ИНДИКАТОР НИЖНЕЙ НАВИГАЦИИ ===== */
+    function moveNavIndicator(activeItem) {
+        const indicator = document.getElementById('nav-indicator');
+        if (!indicator || !activeItem || !bottomNav) return;
+        const navRect = bottomNav.getBoundingClientRect();
+        const itemRect = activeItem.getBoundingClientRect();
+        indicator.style.left = (itemRect.left - navRect.left) + 'px';
+        indicator.style.width = itemRect.width + 'px';
+    }
+
+    function currentActiveNavItem() {
+        return document.querySelector('.nav-item.active-pill') || navHome;
+    }
+
+    // выставляем индикатор после первичной раскладки (шрифты/картинки могли ещё не подгрузиться)
+    window.addEventListener('load', () => moveNavIndicator(currentActiveNavItem()));
+    setTimeout(() => moveNavIndicator(currentActiveNavItem()), 50);
+    setTimeout(() => moveNavIndicator(currentActiveNavItem()), 300);
+    window.addEventListener('resize', () => moveNavIndicator(currentActiveNavItem()));
+
     window.toggleTheme = function() {
         document.body.classList.toggle('dark-theme');
         const isDark = document.body.classList.contains('dark-theme');
@@ -369,6 +389,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <img src="covers/${book.id}.PNG" alt="${book.title}" class="${coverClass}" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\'><rect width=\\'100%\\' height=\\'100%\\' fill=\\'%23F8EBF0\\'/></svg>'">
                 ${readBadgeHtml}
             </div>
+            <button class="card-fav-btn" onclick="toggleSaveFromCard(event, this, '${book.id}')">${iconHtml}</button>
             <div class="card-info">
                 <div>
                     <p class="card-series-text">${seriesInfo}</p>
@@ -377,7 +398,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <div class="card-actions">
                     <div class="card-rating-text">${getRatingText(book.rating)}</div>
-                    <button class="action-btn fav-btn" onclick="toggleSaveFromCard(event, this, '${book.id}')">${iconHtml}</button>
                 </div>
             </div>
         `;
@@ -544,6 +564,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function switchTab(activeNavBtn, activePage) {
         [navHome, navAll, navProfile].forEach(btn => { if(btn) btn.classList.remove('active-pill'); });
         activeNavBtn.classList.add('active-pill');
+        moveNavIndicator(activeNavBtn);
         
         [pageHome, pageAll, pageProfile, pageDetails].forEach(page => { if(page) page.style.display = 'none'; });
         activePage.style.display = 'block';
@@ -781,6 +802,7 @@ document.addEventListener('DOMContentLoaded', () => {
             pageProfile.style.display = 'block';
             renderProfileBooks();
         }
+        moveNavIndicator(currentActiveNavItem());
     };
 
     window.downloadBook = function() {
