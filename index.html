@@ -2,229 +2,958 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+    >
+
+    <meta name="theme-color" content="#FFFFFF">
+
     <title>WOMBOOKS</title>
-    
+
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
     <link rel="stylesheet" href="style.css?ver=68">
 </head>
+
 <body>
 
-    <div id="toast" class="toast"></div>
+    <!-- Уведомление -->
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
+    <!-- Верхняя стеклянная панель -->
     <header class="top-header">
-        <img src="logo.png" alt="WOMBOOKS" class="header-logo">
+        <div class="header-inner">
+            <img
+                src="wombooks-logo.png"
+                class="header-logo"
+                alt="WOMBOOKS"
+            >
+        </div>
     </header>
 
-    <div id="app">
-        <div id="page-home">
+    <main id="app">
+
+        <!-- ========================= -->
+        <!-- ГЛАВНАЯ -->
+        <!-- ========================= -->
+
+        <section id="page-home">
+
             <div class="disclaimer-container" id="disclaimer-box">
+
                 <div class="disclaimer-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="17"
+                        height="17"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.6"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
                 </div>
+
                 <div class="disclaimer-text">
-                    <p style="margin-bottom: 6px;">Данное сообщество, как и все материалы в нем, не преследует за собой коммерческой выгоды.</p>
-                    <p>Любая публикация материалов без ссылки на телеграм-канал переводчика строго запрещена.</p>
+                    <p>
+                        Данное сообщество, как и все материалы в нем, не преследует за собой коммерческой выгоды.
+                    </p>
+
+                    <p>
+                        Любая публикация материалов без ссылки на телеграм-канал переводчика строго запрещена.
+                    </p>
                 </div>
+
             </div>
 
+            <!-- Поиск -->
             <div class="search-container">
-                <input type="text" class="search-input" id="main-search-input" placeholder="Найти книгу или автора">
-                <span class="search-clear" id="search-clear-btn" style="display: none;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </span>
-                <span class="search-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                </span>
-            </div>
 
-            <div id="recent-section">
-                <div class="section-header">
-                    <h2 class="section-title">Недавно добавленное</h2>
-                </div>
-                <div class="carousel" id="recent-carousel"></div>
-            </div>
+                <svg
+                    class="search-leading-icon"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <circle cx="11" cy="11" r="7"></circle>
+                    <line x1="20" y1="20" x2="16.65" y2="16.65"></line>
+                </svg>
 
-            <div class="books-grid" id="search-grid" style="display: none;"></div>
-        </div>
+                <input
+                    type="text"
+                    class="search-input"
+                    id="main-search-input"
+                    placeholder="Найти книгу или автора"
+                    autocomplete="off"
+                    spellcheck="false"
+                >
 
-        <div id="page-all" style="display: none;">
-            <div class="category-filters-container">
-                <div class="category-filters-row" style="justify-content: center;">
-                    <button class="pill-btn active-filter" id="filter-authors">Авторы</button>
-                    <button class="pill-btn" id="filter-tropes">Тропы</button>
-                    <button class="pill-btn" id="filter-standalones">Одиночные</button>
-                </div>
-            </div>
-
-            <div class="authors-list-container" id="authors-container"></div>
-            <div id="tropes-container" style="display: none;">
-                <div class="tropes-menu" id="tropes-menu"></div>
-                <div class="books-grid" id="tropes-books-grid" style="display: none;"></div>
-            </div>
-            <div class="books-grid" id="standalones-container" style="display: none;"></div>
-        </div>
-
-        <div id="page-profile" style="display: none;">
-            <div class="profile-card">
-                <div class="profile-header-info">
-                    <div class="profile-avatar">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                    </div>
-                    <div class="profile-text-info">
-                        <h3 class="profile-name" id="profile-display-name">Читатель</h3>
-                        <p class="profile-status" id="profile-status-text">Новичок</p>
-                    </div>
-                    <button class="theme-toggle-btn" id="theme-btn" onclick="toggleTheme()"></button>
-                </div>
-                
-                <div class="profile-progress-block">
-                    <p class="progress-title">Развернутые отзывы (от 5 слов): <span id="review-count-text">0/5</span></p>
-                    <div class="progress-bar-bg"><div class="progress-bar-fill" id="review-progress-fill"></div></div>
-                    <p class="progress-hint" id="progress-hint-text">Напишите 5 развернутых отзывов, чтобы получить возможность выбрать уникальный никнейм!</p>
-                </div>
-
-                <div id="nickname-edit-block" style="display: none;">
-                    <p class="nickname-label">Вы достигли цели! Выберите никнейм:</p>
-                    <div class="nickname-input-group">
-                        <input type="text" id="nickname-input" class="nickname-input" placeholder="Ваш никнейм" maxlength="15">
-                        <button class="nickname-save-btn" onclick="saveNickname()">Сохранить</button>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="profile-tabs-row">
-                <button class="pill-btn active-filter" id="tab-saved" onclick="selectProfileTab('saved')">Сохранено</button>
-                <button class="pill-btn" id="tab-read" onclick="selectProfileTab('read')">Прочитано</button>
-            </div>
-
-            <div class="books-grid" id="profile-books-grid"></div>
-        </div>
-
-        <div id="page-book-details" style="display: none;">
-            <div class="details-top-bar">
-                <button class="back-btn" onclick="closeBook()">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-                    Назад
+                <button
+                    class="search-clear"
+                    id="search-clear-btn"
+                    type="button"
+                    aria-label="Очистить поиск"
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.7"
+                        stroke-linecap="round"
+                    >
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
                 </button>
-                <div class="top-bar-actions">
-                    <button class="action-btn fav-btn" id="details-share-btn" onclick="shareBook()">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-                    </button>
-                    <button class="action-btn fav-btn" id="details-fav-btn" onclick="toggleSaveFromDetails()"></button>
-                </div>
+
             </div>
-            
-            <div class="details-content">
-                <div class="details-cover-wrapper">
-                    <img src="" alt="" class="details-cover" id="details-cover">
+
+            <!-- Недавно добавленное -->
+            <div id="recent-section">
+
+                <div class="section-header">
+                    <div>
+                        <p class="section-kicker">КОЛЛЕКЦИЯ</p>
+                        <h2 class="section-title">Недавно добавленное</h2>
+                    </div>
                 </div>
 
-                <div class="details-series-wrapper" id="details-series-container"></div>
-                <h2 class="details-title" id="details-title">Название</h2>
-                <p class="details-author" id="details-author">Автор</p>
-                
-                <div class="details-rating-wrapper">
-                    <div class="details-rating-box" id="details-rating-box" onclick="openReviewsListModal()">0.00</div>
-                </div>
-                
-                <div class="warnings-wrapper">
-                    <div class="warnings-header" onclick="toggleDetailsTropes()">
-                        <span>Тропы</span>
-                        <span class="round-arrow" id="tropes-arrow">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                        </span>
-                    </div>
-                    <div class="warnings-content" id="tropes-wrapper"></div>
-                </div>
-                
-                <div class="warnings-wrapper">
-                    <div class="warnings-header" onclick="toggleWarnings()">
-                        <span>Предупреждения о содержании</span>
-                        <span class="round-arrow" id="warnings-arrow">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                        </span>
-                    </div>
-                    <div class="warnings-content" id="warnings-content"></div>
-                </div>
+                <div
+                    class="carousel"
+                    id="recent-carousel"
+                ></div>
 
-                <div class="details-annotation" id="details-annotation">Аннотация...</div>
-                
-                <div class="actions-row">
-                    <button class="round-back-btn" onclick="closeBook()">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            </div>
+
+            <div
+                class="books-grid"
+                id="search-grid"
+                style="display:none;"
+            ></div>
+
+        </section>
+
+
+        <!-- ========================= -->
+        <!-- ВСЕ -->
+        <!-- ========================= -->
+
+        <section
+            id="page-all"
+            style="display:none;"
+        >
+
+            <div class="page-heading">
+                <p class="section-kicker">КАТАЛОГ</p>
+                <h1 class="page-title">Все книги</h1>
+            </div>
+
+            <div class="category-filters-container">
+
+                <div class="category-filters-row">
+
+                    <button
+                        class="pill-btn active-filter"
+                        id="filter-authors"
+                        type="button"
+                    >
+                        Авторы
                     </button>
-                    <button class="download-btn" id="details-download" onclick="downloadBook()">Скачать</button>
-                    
-                    <div class="combo-btn">
-                        <button class="combo-main" onclick="openReviewModal()">Оценить</button>
-                        <button class="combo-arrow" id="read-arrow-btn" onclick="toggleReadAccordion()">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+
+                    <button
+                        class="pill-btn"
+                        id="filter-tropes"
+                        type="button"
+                    >
+                        Тропы
+                    </button>
+
+                    <button
+                        class="pill-btn"
+                        id="filter-standalones"
+                        type="button"
+                    >
+                        Одиночные
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div
+                class="authors-list-container"
+                id="authors-container"
+            ></div>
+
+            <div
+                id="tropes-container"
+                style="display:none;"
+            >
+
+                <div
+                    class="tropes-menu"
+                    id="tropes-menu"
+                ></div>
+
+                <div
+                    class="books-grid"
+                    id="tropes-books-grid"
+                    style="display:none;"
+                ></div>
+
+            </div>
+
+            <div
+                class="books-grid"
+                id="standalones-container"
+                style="display:none;"
+            ></div>
+
+        </section>
+
+
+        <!-- ========================= -->
+        <!-- ПРОФИЛЬ -->
+        <!-- ========================= -->
+
+        <section
+            id="page-profile"
+            style="display:none;"
+        >
+
+            <div class="page-heading">
+                <p class="section-kicker">МОЙ ПРОФИЛЬ</p>
+                <h1 class="page-title">Профиль</h1>
+            </div>
+
+            <div class="profile-card">
+
+                <div class="profile-header-info">
+
+                    <div class="profile-avatar">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="22"
+                            height="22"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </div>
+
+                    <div class="profile-text-info">
+
+                        <h3
+                            class="profile-name"
+                            id="profile-display-name"
+                        >
+                            Читатель
+                        </h3>
+
+                        <p
+                            class="profile-status"
+                            id="profile-status-text"
+                        >
+                            Новичок
+                        </p>
+
+                    </div>
+
+                    <button
+                        class="theme-toggle-btn"
+                        id="theme-btn"
+                        onclick="toggleTheme()"
+                        type="button"
+                        aria-label="Сменить тему"
+                    ></button>
+
+                </div>
+
+
+                <div class="profile-progress-block">
+
+                    <div class="progress-topline">
+
+                        <p class="progress-title">
+                            Развернутые отзывы
+                        </p>
+
+                        <span id="review-count-text">
+                            0/5
+                        </span>
+
+                    </div>
+
+                    <div class="progress-bar-bg">
+                        <div
+                            class="progress-bar-fill"
+                            id="review-progress-fill"
+                        ></div>
+                    </div>
+
+                    <p
+                        class="progress-hint"
+                        id="progress-hint-text"
+                    >
+                        Напишите 5 развернутых отзывов, чтобы получить возможность выбрать уникальный никнейм.
+                    </p>
+
+                </div>
+
+
+                <div
+                    id="nickname-edit-block"
+                    style="display:none;"
+                >
+
+                    <p class="nickname-label">
+                        Цель достигнута! Выберите никнейм
+                    </p>
+
+                    <div class="nickname-input-group">
+
+                        <input
+                            type="text"
+                            id="nickname-input"
+                            class="nickname-input"
+                            placeholder="Ваш никнейм"
+                            maxlength="15"
+                        >
+
+                        <button
+                            class="nickname-save-btn"
+                            onclick="saveNickname()"
+                            type="button"
+                        >
+                            Сохранить
                         </button>
+
                     </div>
+
                 </div>
 
-                <div class="read-accordion-wrapper" id="read-accordion">
-                    <button class="mark-read-btn" id="details-mark-read-btn" onclick="toggleReadFromDetails()">Прочитано</button>
-                </div>
             </div>
-        </div>
 
-        <nav class="floating-nav" id="bottom-nav">
-            <div class="nav-indicator" id="nav-indicator"></div>
-            <div class="nav-item active-pill" id="nav-home">
-                <div class="nav-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+
+            <div class="profile-tabs-row">
+
+                <button
+                    class="pill-btn active-filter"
+                    id="tab-saved"
+                    onclick="selectProfileTab('saved')"
+                    type="button"
+                >
+                    Сохранено
+                </button>
+
+                <button
+                    class="pill-btn"
+                    id="tab-read"
+                    onclick="selectProfileTab('read')"
+                    type="button"
+                >
+                    Прочитано
+                </button>
+
+            </div>
+
+            <div
+                class="books-grid"
+                id="profile-books-grid"
+            ></div>
+
+        </section>
+
+
+        <!-- ========================= -->
+        <!-- СТРАНИЦА КНИГИ -->
+        <!-- ========================= -->
+
+        <section
+            id="page-book-details"
+            style="display:none;"
+        >
+
+            <div class="details-top-bar">
+
+                <button
+                    class="back-btn"
+                    onclick="closeBook()"
+                    type="button"
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="17"
+                        height="17"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.7"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+
+                    <span>Назад</span>
+                </button>
+
+
+                <div class="top-bar-actions">
+
+                    <button
+                        class="action-btn fav-btn"
+                        id="details-share-btn"
+                        onclick="shareBook()"
+                        type="button"
+                        aria-label="Поделиться"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="17"
+                            height="17"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.6"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        </svg>
+                    </button>
+
+                    <button
+                        class="action-btn fav-btn"
+                        id="details-fav-btn"
+                        onclick="toggleSaveFromDetails()"
+                        type="button"
+                        aria-label="Сохранить книгу"
+                    ></button>
+
                 </div>
+
+            </div>
+
+
+            <div class="details-content">
+
+                <div class="details-cover-wrapper">
+                    <img
+                        src=""
+                        alt=""
+                        class="details-cover"
+                        id="details-cover"
+                    >
+                </div>
+
+
+                <div
+                    class="details-series-wrapper"
+                    id="details-series-container"
+                ></div>
+
+                <h2
+                    class="details-title"
+                    id="details-title"
+                >
+                    Название
+                </h2>
+
+                <p
+                    class="details-author"
+                    id="details-author"
+                >
+                    Автор
+                </p>
+
+
+                <div class="details-rating-wrapper">
+
+                    <button
+                        class="details-rating-box"
+                        id="details-rating-box"
+                        onclick="openReviewsListModal()"
+                        type="button"
+                    >
+                        0.00
+                    </button>
+
+                </div>
+
+
+                <!-- Тропы -->
+                <div class="warnings-wrapper">
+
+                    <button
+                        class="warnings-header"
+                        onclick="toggleDetailsTropes()"
+                        type="button"
+                    >
+                        <span>Тропы</span>
+
+                        <span
+                            class="round-arrow"
+                            id="tropes-arrow"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="11"
+                                height="11"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1.7"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </span>
+                    </button>
+
+                    <div
+                        class="warnings-content"
+                        id="tropes-wrapper"
+                    ></div>
+
+                </div>
+
+
+                <!-- Предупреждения -->
+                <div
+                    class="warnings-wrapper"
+                    id="warnings-wrapper"
+                >
+
+                    <button
+                        class="warnings-header"
+                        onclick="toggleWarnings()"
+                        type="button"
+                    >
+                        <span>Предупреждения о содержании</span>
+
+                        <span
+                            class="round-arrow"
+                            id="warnings-arrow"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="11"
+                                height="11"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1.7"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </span>
+                    </button>
+
+                    <div
+                        class="warnings-content"
+                        id="warnings-content"
+                    ></div>
+
+                </div>
+
+
+                <div
+                    class="details-annotation"
+                    id="details-annotation"
+                >
+                    Аннотация...
+                </div>
+
+
+                <div class="actions-row">
+
+                    <button
+                        class="round-back-btn"
+                        onclick="closeBook()"
+                        type="button"
+                        aria-label="Назад"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.7"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                    </button>
+
+
+                    <button
+                        class="download-btn"
+                        id="details-download"
+                        onclick="downloadBook()"
+                        type="button"
+                    >
+                        Скачать
+                    </button>
+
+
+                    <div class="combo-btn">
+
+                        <button
+                            class="combo-main"
+                            onclick="openReviewModal()"
+                            type="button"
+                        >
+                            Оценить
+                        </button>
+
+                        <button
+                            class="combo-arrow"
+                            id="read-arrow-btn"
+                            onclick="toggleReadAccordion()"
+                            type="button"
+                            aria-label="Статус прочтения"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="14"
+                                height="14"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1.7"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="read-accordion-wrapper"
+                    id="read-accordion"
+                >
+
+                    <button
+                        class="mark-read-btn"
+                        id="details-mark-read-btn"
+                        onclick="toggleReadFromDetails()"
+                        type="button"
+                    >
+                        Прочитано
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ========================= -->
+        <!-- НИЖНЯЯ НАВИГАЦИЯ -->
+        <!-- ========================= -->
+
+        <nav
+            class="floating-nav"
+            id="bottom-nav"
+            aria-label="Основная навигация"
+        >
+
+            <button
+                class="nav-item active-pill"
+                id="nav-home"
+                type="button"
+            >
+                <span class="nav-icon">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.6"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <path d="M3 11.5L12 4l9 7.5"></path>
+                        <path d="M5.5 10v9a1 1 0 001 1h11a1 1 0 001-1v-9"></path>
+                        <path d="M9.5 20v-5a1 1 0 011-1h3a1 1 0 011 1v5"></path>
+                    </svg>
+                </span>
+
                 <span class="nav-text">Главная</span>
-            </div>
-            <div class="nav-item" id="nav-all">
-                <div class="nav-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect></svg>
-                </div>
+            </button>
+
+
+            <button
+                class="nav-item"
+                id="nav-all"
+                type="button"
+            >
+                <span class="nav-icon">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.6"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <rect x="3.5" y="3.5" width="7" height="7" rx="1.3"></rect>
+                        <rect x="13.5" y="3.5" width="7" height="7" rx="1.3"></rect>
+                        <rect x="3.5" y="13.5" width="7" height="7" rx="1.3"></rect>
+                        <rect x="13.5" y="13.5" width="7" height="7" rx="1.3"></rect>
+                    </svg>
+                </span>
+
                 <span class="nav-text">Все</span>
-            </div>
-            <div class="nav-item" id="nav-profile">
-                <div class="nav-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                </div>
+            </button>
+
+
+            <button
+                class="nav-item"
+                id="nav-profile"
+                type="button"
+            >
+                <span class="nav-icon">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.6"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <circle cx="12" cy="7.5" r="3.5"></circle>
+                        <path d="M5 21v-1.5A5.5 5.5 0 0110.5 14h3a5.5 5.5 0 015.5 5.5V21"></path>
+                    </svg>
+                </span>
+
                 <span class="nav-text">Профиль</span>
-            </div>
+            </button>
+
+
+            <button
+                class="nav-search"
+                id="nav-search"
+                type="button"
+                aria-label="Поиск"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <circle cx="10.8" cy="10.8" r="6.8"></circle>
+                    <line x1="16" y1="16" x2="21" y2="21"></line>
+                </svg>
+            </button>
+
         </nav>
-    </div>
 
-    <div id="review-modal" class="modal-overlay" style="display: none;">
+    </main>
+
+
+    <!-- ========================= -->
+    <!-- ОКНО ОЦЕНКИ -->
+    <!-- ========================= -->
+
+    <div
+        id="review-modal"
+        class="modal-overlay"
+        style="display:none;"
+    >
+
         <div class="modal-content">
-            <h3 class="modal-title">Оценить книгу</h3>
-            <div class="stars-container" id="stars-container">
-                <span class="star" data-val="1"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></span>
-                <span class="star" data-val="2"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></span>
-                <span class="star" data-val="3"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></span>
-                <span class="star" data-val="4"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></span>
-                <span class="star" data-val="5"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></span>
+
+            <div class="modal-handle"></div>
+
+            <p class="modal-eyebrow">ВАШЕ МНЕНИЕ</p>
+
+            <h3 class="modal-title">
+                Оценить книгу
+            </h3>
+
+            <div
+                class="stars-container"
+                id="stars-container"
+            >
+
+                <button
+                    class="star"
+                    data-val="1"
+                    type="button"
+                    aria-label="1 звезда"
+                >
+                    ★
+                </button>
+
+                <button
+                    class="star"
+                    data-val="2"
+                    type="button"
+                    aria-label="2 звезды"
+                >
+                    ★
+                </button>
+
+                <button
+                    class="star"
+                    data-val="3"
+                    type="button"
+                    aria-label="3 звезды"
+                >
+                    ★
+                </button>
+
+                <button
+                    class="star"
+                    data-val="4"
+                    type="button"
+                    aria-label="4 звезды"
+                >
+                    ★
+                </button>
+
+                <button
+                    class="star"
+                    data-val="5"
+                    type="button"
+                    aria-label="5 звезд"
+                >
+                    ★
+                </button>
+
             </div>
-            <textarea id="review-text" class="review-textarea" placeholder="Напишите пару слов о книге... (необязательно)"></textarea>
+
+            <textarea
+                id="review-text"
+                class="review-textarea"
+                placeholder="Напишите пару слов о книге... (необязательно)"
+            ></textarea>
+
             <div class="modal-actions">
-                <button class="modal-btn cancel-btn" onclick="closeReviewModal()">Отмена</button>
-                <button class="modal-btn submit-btn" onclick="submitReview()">Отправить</button>
+
+                <button
+                    class="modal-btn cancel-btn"
+                    onclick="closeReviewModal()"
+                    type="button"
+                >
+                    Отмена
+                </button>
+
+                <button
+                    class="modal-btn submit-btn"
+                    onclick="submitReview()"
+                    type="button"
+                >
+                    Отправить
+                </button>
+
             </div>
+
         </div>
+
     </div>
 
-    <div id="reviews-list-modal" class="modal-overlay" style="display: none;">
+
+    <!-- ========================= -->
+    <!-- СПИСОК ОТЗЫВОВ -->
+    <!-- ========================= -->
+
+    <div
+        id="reviews-list-modal"
+        class="modal-overlay"
+        style="display:none;"
+    >
+
         <div class="modal-content reviews-list-content">
-            <h3 class="modal-title">Отзывы читателей</h3>
-            <div id="reviews-list-container"></div>
+
+            <div class="modal-handle"></div>
+
+            <p class="modal-eyebrow">ОТЗЫВЫ</p>
+
+            <h3 class="modal-title">
+                Отзывы читателей
+            </h3>
+
+            <div
+                id="reviews-list-container"
+            ></div>
+
             <div class="modal-actions">
-                <button class="modal-btn cancel-btn" onclick="closeReviewsListModal()">Закрыть</button>
+
+                <button
+                    class="modal-btn cancel-btn"
+                    onclick="closeReviewsListModal()"
+                    type="button"
+                >
+                    Закрыть
+                </button>
+
             </div>
+
         </div>
+
     </div>
+
 
     <script src="app.js?ver=68"></script>
+
 </body>
 </html>
